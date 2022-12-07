@@ -1,7 +1,7 @@
 import React from "react";
-import useStateContext from "../../../hooks/useStateContext";
-import { createAPIEndpoint, ENDPOINTS } from "../../../api";
-import Center from "../../layout/Center";
+import useStateContext from "../../hooks/useStateContext";
+import { createAPIEndpoint, ENDPOINTS } from "../../api";
+import Center from "../layout/Center";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   Typography,
+  Link,
 } from "@mui/material";
 
 export default function UserLogin() {
@@ -113,10 +114,15 @@ export default function UserLogin() {
                 onClick={handleSubmit}
                 size="large"
                 sx={{ width: "50%" }}
-                style={{ backgroundColor: '#FF7753' }}
+                style={{ backgroundColor: "#FF7753" }}
               >
                 Login
               </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <p>
+                Are you a user? <Link href="/"> Login</Link>
+              </p>
             </Grid>
           </Grid>
         </CardContent>

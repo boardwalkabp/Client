@@ -1,17 +1,24 @@
-import React from 'react'
-import useStateContext from "../../../hooks/useStateContext";
-import { createAPIEndpoint, ENDPOINTS } from "../../../api";
-import Center from "../../layout/Center";
+import React from "react";
+import useStateContext from "../../hooks/useStateContext";
+import { createAPIEndpoint, ENDPOINTS } from "../../api";
+import Center from "../layout/Center";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Grid, TextField, Button, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function UserRegister() {
   const { context } = useStateContext();
   // console.log(context);
-  
+
   const [user, setUser] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -21,21 +28,31 @@ export default function UserRegister() {
     email: "",
     username: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
   const { name, email, username, password, confirmPassword } = values;
-  const { name: nameError, email: emailError, username: usernameError, password: passwordError, confirmPassword: confirmPasswordError } = errors;
+  const {
+    name: nameError,
+    email: emailError,
+    username: usernameError,
+    password: passwordError,
+    confirmPassword: confirmPasswordError,
+  } = errors;
 
   const validate = () => {
     let temp = {};
     temp.name = values.name ? "" : "This field is required.";
-    temp.email = (/\S+@\S+\.\S+/).test(values.email) ? "" : "Email is not valid.";
+    temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
     temp.username = values.username ? "" : "This field is required.";
-    temp.password = (/^(?=.{6,}$)/).test(values.password) ? "" : "Must contain at least 6 characters";
+    temp.password = /^(?=.{6,}$)/.test(values.password)
+      ? ""
+      : "Must contain at least 6 characters";
     // temp.password = (/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/).test(values.password) ? "" : "Must contain at least one number and one uppercase and lowercase letter, special charecter and at least 6 characters";
-    temp.confirmPassword = values.confirmPassword ? "" : "This field is required.";
+    temp.confirmPassword = values.confirmPassword
+      ? ""
+      : "This field is required.";
     setErrors({
       ...temp,
     });
@@ -66,11 +83,11 @@ export default function UserRegister() {
 
   return (
     <Center>
-     <Card sx={{ width: 400 }}>
-      <CardContent sx={{ textAlign: "center" }}>
-      <Typography variant="h3" sx={{ my: 3 }}>
-          Register User
-        </Typography>
+      <Card sx={{ width: 400 }}>
+        <CardContent sx={{ textAlign: "center" }}>
+          <Typography variant="h3" sx={{ my: 3 }}>
+            Register User
+          </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -121,7 +138,10 @@ export default function UserRegister() {
                   }
                   value={username}
                   variant="outlined"
-                  {...(usernameError && { error: true, helperText: usernameError })}
+                  {...(usernameError && {
+                    error: true,
+                    helperText: usernameError,
+                  })}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -139,7 +159,10 @@ export default function UserRegister() {
                   type="password"
                   value={password}
                   variant="outlined"
-                  {...(passwordError && { error: true, helperText: passwordError })}
+                  {...(passwordError && {
+                    error: true,
+                    helperText: passwordError,
+                  })}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -157,7 +180,10 @@ export default function UserRegister() {
                   type="password"
                   value={confirmPassword}
                   variant="outlined"
-                  {...(confirmPasswordError && { error: true, helperText: confirmPasswordError })}
+                  {...(confirmPasswordError && {
+                    error: true,
+                    helperText: confirmPasswordError,
+                  })}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -167,15 +193,15 @@ export default function UserRegister() {
                   size="large"
                   type="submit"
                   variant="contained"
-                  style={{ backgroundColor: '#FF7753' }}
+                  style={{ backgroundColor: "#FF7753" }}
                 >
                   Register
                 </Button>
               </Grid>
             </Grid>
           </form>
-      </CardContent>
-    </Card>
-  </Center>
+        </CardContent>
+      </Card>
+    </Center>
   );
 }

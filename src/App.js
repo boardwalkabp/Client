@@ -2,10 +2,10 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Auth routes
-import UserLogin from "./components/builder/users/UserLogin";
-import UserRegister from "./components/builder/users/UserRegister";
-import ClientRegister from "./components/builder/clients/ClientRegister";
-import ClientLogin from "./components/builder/clients/ClientLogin";
+import UserLogin from "./components/auth/UserLogin";
+import UserRegister from "./components/auth/UserRegister";
+import ClientRegister from "./components/auth/ClientRegister";
+import ClientLogin from "./components/auth/ClientLogin";
 
 // Builder routes
 import BuilderHome from "./components/layout/BuilderHome";

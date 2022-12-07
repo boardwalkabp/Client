@@ -1,6 +1,6 @@
 import React from "react";
-import { createAPIEndpoint, ENDPOINTS } from "../../../api";
-import Center from "../../layout/Center";
+import { createAPIEndpoint, ENDPOINTS } from "../../api";
+import Center from "../layout/Center";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 
 export default function UserRegister() {
-
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -203,7 +202,7 @@ export default function UserRegister() {
                   color="primary"
                   fullWidth
                   type="submit"
-                  style={{ backgroundColor: '#FF7753' }}
+                  style={{ backgroundColor: "#FF7753" }}
                 >
                   Register
                 </Button>
