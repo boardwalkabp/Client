@@ -1,9 +1,20 @@
-import React from 'react'
+import React from "react";
 import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Card, CardContent, Grid, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
 
@@ -39,11 +50,24 @@ export default function AddQuestion() {
   const validate = () => {
     let temp = {};
     temp.body = values.body ? "" : "This field is required.";
-    temp.type = values.type ? "" : "This field is required.";
+    // temp.type = values.type ? "" : "This field is required.";
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x === "");
+  };
+
+  const handleSubmit = (e) => {
+    console.log(values);
+    e.preventDefault();
+    if (validate()) {
+      createAPIEndpoint(ENDPOINTS.questions)
+        .post(values)
+        .then((res) => {
+          navigate("/builder/questions");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   // const handleSubmit = (e) => {
@@ -67,17 +91,6 @@ export default function AddQuestion() {
   //     }
   //   }
   // };
-
-  const handleSubmit = (e) => {
-    console.log(values);
-    e.preventDefault();
-    createAPIEndpoint(ENDPOINTS.questions)
-      .post(values)
-      .then((res) => {
-        navigate("/builder/questions");
-      })
-      .catch((err) => console.log(err));
-  };
 
   useEffect(() => {
     if (id) {
@@ -109,7 +122,8 @@ export default function AddQuestion() {
                       ...values,
                       body: e.target.value,
                     })
-                  }{...(errors.body && {
+                  }
+                  {...(errors.body && {
                     error: true,
                     helperText: errors.body,
                   })}
@@ -120,7 +134,9 @@ export default function AddQuestion() {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Question Type</InputLabel>
+                  <InputLabel id="demo-simple-select-label">
+                    Question Type
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -139,8 +155,8 @@ export default function AddQuestion() {
                   </Select>
                 </FormControl>
               </Grid>
-              {(values.questionType === "CheckBox" || values.questionType === "Radio") && (
-
+              {(values.questionType === "CheckBox" ||
+                values.questionType === "Radio") && (
                 <Grid item xs={12}>
                   <button onClick={addInputField}>Add Choices</button>
                   {values.mous.map((x, i) => {
@@ -156,13 +172,13 @@ export default function AddQuestion() {
                               ...values,
                               mous: values.mous.map((x, j) =>
                                 i === j ? { value: e.target.value } : x
-                              )
+                              ),
                             })
-                          }{...(errors.points && {
+                          }
+                          {...(errors.points && {
                             error: true,
                             helperText: errors.points,
                           })}
-
                           value={x.value}
                           margin="normal"
                         />

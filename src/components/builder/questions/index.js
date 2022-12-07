@@ -5,15 +5,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardContent, CardHeader, Grid, TextField, Button, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  TextField,
+  Button,
+  IconButton,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Questions() {
   const { context } = useStateContext();
-  // console.log(context);
-
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -46,13 +52,12 @@ export default function Questions() {
 
   const columns = [
     // { field: "id", headerName: "ID", width: 90 },
-    { field: "body", headerName: "Body", width: 200 },
+    { field: "body", headerName: "Question", width: 200 },
     // { field: "type", headerName: "Type", width: 200 },
-    { field: "questionType", headerName: "Question Type", width: 150 },
+    { field: "questionType", headerName: "Type", width: 200 },
+    { field: "category", headerName: "Category", width: 200 },
     // { field: "options", headerName: "Options", width: 200 },
-    { field: "mous", headerName: "Mous", width: 200 },
-
-
+    // { field: "mous", headerName: "Mous", width: 200 },
     // { field: "createdAt", headerName: "Created At", width: 200 },
     // { field: "updatedAt", headerName: "Updated At", width: 200 },
     {
