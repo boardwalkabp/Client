@@ -2,11 +2,13 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Auth routes
+import HomeView from "./views/HomeView";
 import UserLogin from "./components/auth/UserLogin";
 import UserRegister from "./components/auth/UserRegister";
 import ClientRegister from "./components/auth/ClientRegister";
 import ClientLogin from "./components/auth/ClientLogin";
-import ProtectedRoute from "./utils/ProtectedRoute";
+import BuilderProtectedRoute from "./utils/BuilderProtectedRoute";
+import ViewerProtectedRoute from "./utils/ViewerProtectedRoute";
 
 // Builder routes
 import BuilderHome from "./components/layout/BuilderHome";
@@ -45,8 +47,10 @@ function App() {
         <Route path="/login" exact element={<UserLogin />} />
         <Route path="/viewer/login" exact element={<ClientLogin />} />
         <Route path="*" exact element={<h1>404 Not Found</h1>} />
+        <Route path="/" exact element={<HomeView />} />
+
         {/* Builder routes */}
-        <Route path="/" exact element={<ProtectedRoute />}>
+        <Route path="/builder" exact element={<BuilderProtectedRoute />}>
           <Route path="/builder" exact element={<BuilderLayout />}>
             <Route path="/builder/home" exact element={<BuilderHome />} />
 
@@ -142,8 +146,11 @@ function App() {
               element={<DeleteQuestion />}
             />
           </Route>
-          {/* Viewer routes */}
-          <Route path="/" exact element={<ViewerLayout />}>
+        </Route>
+
+        {/* Viewer routes */}
+        <Route path="/" exact element={<ViewerProtectedRoute />}>
+          <Route path="/viewer" exact element={<ViewerLayout />}>
             <Route path="/viewer/home" exact element={<ViewerHome />} />
             <Route
               path="/viewer/applications"

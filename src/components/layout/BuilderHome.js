@@ -6,7 +6,7 @@ import Deposits from "./Deposits";
 
 export default function Home() {
   const { context } = useStateContext();
-  // console.log(context);
+  console.log(context);
 
   return (
     <div>

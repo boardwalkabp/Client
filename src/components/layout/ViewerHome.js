@@ -5,7 +5,7 @@ import Applications from "../viewer/Applications";
 
 export default function Home() {
   const { context } = useStateContext();
-  // console.log(context);
+  console.log(context);
 
   return (
     <div>
@@ -21,7 +21,7 @@ export default function Home() {
           </Grid>
           {/* Applications */}
           <Grid item xs={12} md={8} lg={12}>
-              <Applications />
+            <Applications />
           </Grid>
         </Grid>
       </Box>

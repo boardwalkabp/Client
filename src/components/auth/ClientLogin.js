@@ -50,7 +50,7 @@ export default function UserLogin() {
                 username: res.data.message,
                 password: res.data.message,
               });
-              navigate("/");
+              // navigate("/viewer/login");
             }
           })
           .catch((err) => console.log(err));
