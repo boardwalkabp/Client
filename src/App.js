@@ -46,7 +46,6 @@ function App() {
         <Route path="/viewer/login" exact element={<ClientLogin />} />
         <Route path="*" exact element={<h1>404 Not Found</h1>} />
         {/* Builder routes */}
-        ProtectedRoute
         <Route path="/" exact element={<ProtectedRoute />}>
           <Route path="/builder" exact element={<BuilderLayout />}>
             <Route path="/builder/home" exact element={<BuilderHome />} />
