@@ -121,7 +121,7 @@ export default function UserLogin() {
             </Grid>
             <Grid item xs={12}>
               <p>
-                Are you a user? <Link href="/"> Login</Link>
+                Are you a user? <Link href="/login"> Login</Link>
               </p>
             </Grid>
           </Grid>
