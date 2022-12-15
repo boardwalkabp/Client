@@ -21,10 +21,10 @@ import { useParams } from "react-router-dom";
 export default function AddQuestion() {
   const [values, setValues] = useState({
     body: "",
-    type: "",
+    // type: "",
     questionType: "",
-    choicesQuestion: [],
-    mous: [],
+    // choicesQuestion: [],
+    choices: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -35,39 +35,26 @@ export default function AddQuestion() {
   const addInputField = (event) => {
     setValues({
       ...values,
-      mous: [...values.mous, { value: "" }],
+      choices: [...values.choices, { value: "" }],
     });
     event.preventDefault();
   };
   const deleteInputField = (index) => {
-    const list = [...values.mous];
+    const list = [...values.choices];
     list.splice(index, 1);
     setValues({
       ...values,
-      mous: list,
+      choices: list,
     });
   };
   const validate = () => {
     let temp = {};
     temp.body = values.body ? "" : "This field is required.";
-    // temp.type = values.type ? "" : "This field is required.";
+    temp.type = values.type ? "" : "This field is required.";
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x === "");
-  };
-
-  const handleSubmit = (e) => {
-    console.log(values);
-    e.preventDefault();
-    if (validate()) {
-      createAPIEndpoint(ENDPOINTS.questions)
-        .post(values)
-        .then((res) => {
-          navigate("/builder/questions");
-        })
-        .catch((err) => console.log(err));
-    }
   };
 
   // const handleSubmit = (e) => {
@@ -91,6 +78,17 @@ export default function AddQuestion() {
   //     }
   //   }
   // };
+
+  const handleSubmit = (e) => {
+    console.log(values);
+    e.preventDefault();
+    createAPIEndpoint(ENDPOINTS.questions)
+      .post(values)
+      .then((res) => {
+        navigate("/builder/questions");
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     if (id) {
@@ -159,7 +157,7 @@ export default function AddQuestion() {
                 values.questionType === "Radio") && (
                 <Grid item xs={12}>
                   <button onClick={addInputField}>Add Choices</button>
-                  {values.mous.map((x, i) => {
+                  {values.choices.map((x, i) => {
                     return (
                       <Grid item xs={12} key={i}>
                         <TextField
@@ -170,7 +168,7 @@ export default function AddQuestion() {
                           onChange={(e) =>
                             setValues({
                               ...values,
-                              mous: values.mous.map((x, j) =>
+                              choices: values.choices.map((x, j) =>
                                 i === j ? { value: e.target.value } : x
                               ),
                             })
