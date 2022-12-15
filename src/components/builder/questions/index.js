@@ -52,10 +52,10 @@ export default function Questions() {
 
   const columns = [
     // { field: "id", headerName: "ID", width: 90 },
-    { field: "body", headerName: "Question", width: 200 },
+    { field: "body", headerName: "Question", width: 400 },
     // { field: "type", headerName: "Type", width: 200 },
     { field: "questionType", headerName: "Type", width: 200 },
-    { field: "category", headerName: "Category", width: 200 },
+    // { field: "category", headerName: "Category", width: 200 },
     // { field: "options", headerName: "Options", width: 200 },
     // { field: "mous", headerName: "Mous", width: 200 },
     // { field: "createdAt", headerName: "Created At", width: 200 },
