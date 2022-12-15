@@ -52,7 +52,7 @@ export default function Questions() {
 
   const columns = [
     // { field: "id", headerName: "ID", width: 90 },
-    { field: "body", headerName: "Question", width: 400 },
+    { field: "body", headerName: "Question", width: 600 },
     // { field: "type", headerName: "Type", width: 200 },
     { field: "questionType", headerName: "Type", width: 200 },
     // { field: "category", headerName: "Category", width: 200 },

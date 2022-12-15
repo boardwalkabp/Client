@@ -2,9 +2,81 @@
   text-align: center;
 }
 
+.select_question {
+  display: flex;
+  column-gap: 15px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.added_question {
+  margin: 10px 0;
+  background: white;
+  padding: 15px;
+  font-size: 18px;
+  border: 1px solid #bfc1c1;
+  display: flex;
+  flex-direction: column;
+}
+
+.qst_order {
+  display: flex;
+}
+
+.qst_order img {
+  cursor: pointer;
+}
+
+.cho_start,
+.cho_end,
+.a_q_title {
+  flex: 1;
+}
+
+.cho_start {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.select_condition {
+  width: 100%;
+}
+
+.cho_start input {
+  width: auto;
+}
+
+.cho_start input[type="TEXT"] {
+  width: 100%;
+}
+
+.q_choices {
+  margin: 8px 0;
+}
+
+.qst {
+  flex: 1.1;
+  display: flex;
+}
+
+.cho_end,
+.b_end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete_Button input {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  padding: 5px 10px;
+  cursor: pointer;
+  flex-basis: 95px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -32,6 +104,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

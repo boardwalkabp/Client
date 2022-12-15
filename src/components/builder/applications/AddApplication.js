@@ -297,7 +297,7 @@ export default function AddApplication() {
                         ']" value="' +
                         qNum +
                         '" /></div>' +
-                        '<div class="delete_Button"><input type="button" class="delete_bracnh" value="delete" /></div>';
+                        '<div class="delete_Button"><input type="button" class="delete_bracnh" value="Delete" /></div>';
                       $(".add-question").append(
                         '<div class="added_question" key="' +
                           question_id +
