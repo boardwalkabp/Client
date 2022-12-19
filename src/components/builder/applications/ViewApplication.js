@@ -49,7 +49,7 @@ export default function ViewApplication() {
               {application.title}
             </Typography>
           </Grid>
-          {questions.map((question) => {
+          {questions.map((question, index) => {
             let question_title = question.body;
             let question_id = question.id;
             let question_type = question.questionType;
@@ -76,10 +76,10 @@ export default function ViewApplication() {
             //   );
             // });
 
-            const question_info = question_choices.map((choice, i) => {
+            const question_info = question_choices.map((choice, index) => {
               if (question_type == "Radio") {
                 return (
-                  <div key={choice.id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
                         disabled
@@ -88,7 +88,7 @@ export default function ViewApplication() {
                         name={question_id}
                         value={choice.value}
                       />
-                      <label for="radio" name={question_id}>
+                      <label htmlFor="radio" name={question_id}>
                         {choice.value}
                       </label>
                     </div>
@@ -99,7 +99,7 @@ export default function ViewApplication() {
                 );
               } else if (question_type == "CheckBox") {
                 return (
-                  <div key={choice.id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
                         disabled
@@ -107,7 +107,7 @@ export default function ViewApplication() {
                         name={question_id}
                         value={choice.value}
                       />
-                      <label for="checkbox" name={question_id}>
+                      <label htmlFor="checkbox" name={question_id}>
                         {choice.value}
                       </label>
                     </div>
@@ -115,7 +115,7 @@ export default function ViewApplication() {
                 );
               } else {
                 return (
-                  <div key={question_id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input disabled type="text" name={question_id} value="" />
                     </div>
@@ -138,26 +138,26 @@ export default function ViewApplication() {
             //     }
             //   }
             // } else {
-            //   question_info = <div key={question_id} class="q_choices qst"><div class="cho_start">
+            //   question_info = <div key={index} class="q_choices qst"><div class="cho_start">
             //     <input disabled type="text" name={question_id} value="" />
             //   </div></div>;
             // }
             console.log(question_info);
             return (
-              <Grid key={id} item xs={12}>
+              <Grid key={index} item xs={12}>
                 <Typography variant="h6" gutterBottom>
                   <div
-                    class="added_question"
-                    key={question_id}
+                    className="added_question"
+                    key={index}
                     data-order={qNum}
                     data-question={question_id}
                   >
-                    <div class="qst_order">
-                      <div class="a_q_title">
+                    <div className="qst_order">
+                      <div className="a_q_title">
                         <h4>{question_title}</h4>
                       </div>
                     </div>
-                    <div class="que_cho">{question_info}</div>
+                    <div className="que_cho">{question_info}</div>
                     <input
                       type="hidden"
                       name="questions[]"

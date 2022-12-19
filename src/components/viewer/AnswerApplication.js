@@ -46,17 +46,17 @@ export default function AnswerApplication() {
               {application.title}
             </Typography>
           </Grid>
-          {questions.map((question) => {
+          {questions.map((question, index) => {
             let question_title = question.body;
             let question_id = question.id;
             let question_type = question.questionType;
             let question_choices = question.choices;
             let qNum = 1;
 
-            const question_info = question_choices.map((choice, i) => {
-              if (question_type == "Radio") {
+            const question_info = question_choices.map((choice, index) => {
+              if (question_type === "Radio") {
                 return (
-                  <div key={choice.id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
                         disabled
@@ -65,7 +65,7 @@ export default function AnswerApplication() {
                         name={question_id}
                         value={choice.value}
                       />
-                      <label for="radio" name={question_id}>
+                      <label htmlFor="radio" name={question_id}>
                         {choice.value}
                       </label>
                     </div>
@@ -74,9 +74,9 @@ export default function AnswerApplication() {
                     </div>
                   </div>
                 );
-              } else if (question_type == "CheckBox") {
+              } else if (question_type === "CheckBox") {
                 return (
-                  <div key={choice.id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
                         disabled
@@ -84,7 +84,7 @@ export default function AnswerApplication() {
                         name={question_id}
                         value={choice.value}
                       />
-                      <label for="checkbox" name={question_id}>
+                      <label htmlFor="checkbox" name={question_id}>
                         {choice.value}
                       </label>
                     </div>
@@ -92,7 +92,7 @@ export default function AnswerApplication() {
                 );
               } else {
                 return (
-                  <div key={question_id} className="q_choices qst">
+                  <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input disabled type="text" name={question_id} value="" />
                     </div>
@@ -101,20 +101,20 @@ export default function AnswerApplication() {
               }
             });
             return (
-              <Grid key={id} item xs={12}>
+              <Grid key={index} item xs={12}>
                 <Typography variant="h6" gutterBottom>
                   <div
-                    class="added_question"
-                    key={question_id}
+                    className="added_question"
+                    key={index}
                     data-order={qNum}
                     data-question={question_id}
                   >
-                    <div class="qst_order">
-                      <div class="a_q_title">
+                    <div className="qst_order">
+                      <div className="a_q_title">
                         <h4>{question_title}</h4>
                       </div>
                     </div>
-                    <div class="que_cho">{question_info}</div>
+                    <div className="que_cho">{question_info}</div>
                     <input
                       type="hidden"
                       name="questions[]"

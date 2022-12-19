@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 export default function Applications() {
   const { context, setContext } = useStateContext();
-  console.log(context);
+  // console.log(context);
   const [applications, setApplications] = useState([]);
   const [client, setClient] = useState(null);
   const navigate = useNavigate();
