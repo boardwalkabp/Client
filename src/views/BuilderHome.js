@@ -1,8 +1,8 @@
 import React from "react";
-import useStateContext from "../../hooks/useStateContext";
+import useStateContext from "../hooks/useStateContext";
 import { Paper, Box, Grid, Typography } from "@mui/material";
-import Chart from "./Chart";
-import Deposits from "./Deposits";
+import Chart from "../components/layout/Chart";
+import Deposits from "../components/layout/Deposits";
 
 export default function Home() {
   const { context } = useStateContext();

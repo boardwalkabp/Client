@@ -6,12 +6,22 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardContent, CardHeader, Grid, TextField, Button, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  TextField,
+  Button,
+  IconButton,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 export default function Applications() {
   const { context, setContext } = useStateContext();
+  console.log(context);
   const [applications, setApplications] = useState([]);
+  const [client, setClient] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
   const [page, setPage] = useState(0);
@@ -38,25 +48,12 @@ export default function Applications() {
   }, []);
 
   const columns = [
-    // { field: "id", headerName: "ID", width: 90 },
     {
       field: "title",
       headerName: "Title",
       width: 200,
       editable: true,
     },
-    {
-      field: "createdAt",
-      headerName: "Created At",
-      width: 150,
-      editable: true,
-    },
-    // {
-    //   field: "updatedAt",
-    //   headerName: "Updated At",
-    //   width: 150,
-    //   editable: true,
-    // },
     {
       field: "actions",
       headerName: "Actions",
@@ -66,7 +63,7 @@ export default function Applications() {
           <IconButton
             onClick={() => {
               setContext({ ...context, selectedApplication: params.row });
-              navigate(`/viewer/applications/fill/${params.row.id}`);
+              navigate(`/viewer/applications/answer/${params.row.id}`);
             }}
           >
             <EditIcon color="primary" />
@@ -120,16 +117,11 @@ export default function Applications() {
     }
   }, [searchKeyword, applications]);
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    navigate("/builder/applications/add");
-  };
-
   return (
     <div>
       <Box sx={{ width: "100%" }}>
         <Card>
-        <CardHeader title="Applications" />
+          <CardHeader title="Applications" />
           <CardContent>
             <Grid container spacing={3}>
               <Grid item xs={12}>

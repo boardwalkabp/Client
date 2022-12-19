@@ -1,11 +1,11 @@
 import React from "react";
-import useStateContext from "../../hooks/useStateContext";
+import useStateContext from "../hooks/useStateContext";
 import { Paper, Box, Grid, Typography } from "@mui/material";
-import Applications from "../viewer/Applications";
+import Applications from "../components/viewer/Applications";
 
-export default function Home() {
+export default function ViewerHome() {
   const { context } = useStateContext();
-  console.log(context);
+  // console.log(context);
 
   return (
     <div>
@@ -28,3 +28,5 @@ export default function Home() {
     </div>
   );
 }
+
+ViewerHome.displayName = "ViewerHome";

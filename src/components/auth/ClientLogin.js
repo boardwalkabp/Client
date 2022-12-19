@@ -16,7 +16,6 @@ import {
 
 export default function UserLogin() {
   const { setContext } = useStateContext();
-  // console.log(context);
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -50,7 +49,6 @@ export default function UserLogin() {
                 username: res.data.message,
                 password: res.data.message,
               });
-              // navigate("/viewer/login");
             }
           })
           .catch((err) => console.log(err));

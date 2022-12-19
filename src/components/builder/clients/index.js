@@ -4,7 +4,15 @@ import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "@mui/system";
-import { Card, CardContent, CardHeader, Grid, TextField, Button, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  TextField,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -43,26 +51,26 @@ export default function Clients() {
   }, []);
 
   const columns = [
-    // { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 200 },
-    // { field: "username", headerName: "Username", width: 200 },
     { field: "email", headerName: "Email", width: 200 },
-    // { field: "phoneNumber", headerName: "Phone Number", width: 200 },
     { field: "address", headerName: "Address", width: 200 },
-    // { field: "applicationId", headerName: "Application ID", width: 200 },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
       renderCell: (params) => (
         <div>
-          <IconButton onClick={() => navigate(`/builder/clients/view/${params.row.id}`)}>
+          <IconButton
+            onClick={() => navigate(`/builder/clients/view/${params.row.id}`)}
+          >
             <VisibilityIcon color="primary" />
           </IconButton>
-          <IconButton onClick={() => navigate(`/builder/clients/edit/${params.row.id}`)}>
+          <IconButton
+            onClick={() => navigate(`/builder/clients/edit/${params.row.id}`)}
+          >
             <EditIcon color="primary" />
           </IconButton>
-          <IconButton onClick={() => navigate(`/builder/clients/delete/${params.row.id}`)}>
+          <IconButton onClick={() => navigate(`/builder/clients/delete/`)}>
             <DeleteIcon color="primary" />
           </IconButton>
         </div>

@@ -3,13 +3,7 @@ import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function ViewCategory() {
@@ -40,16 +34,6 @@ export default function ViewCategory() {
             </Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Created At: {category.createdAt}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Updated At: {category.updatedAt}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
             <Button
               fullWidth
               variant="contained"
@@ -62,5 +46,5 @@ export default function ViewCategory() {
         </Grid>
       </CardContent>
     </Card>
-  )
+  );
 }

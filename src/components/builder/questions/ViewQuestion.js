@@ -1,15 +1,9 @@
-import React from 'react'
+import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function ViewQuestion() {
@@ -31,30 +25,20 @@ export default function ViewQuestion() {
   }, []);
 
   return (
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                {question.body}
-              </Typography>
-            </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>
-                  Type: {question.type}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Created At: {question.createdAt}
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              {question.body}
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6" gutterBottom>
-              Updated At: {question.updatedAt}
+              Type: {question.questionType}
             </Typography>
           </Grid>
-              <Grid item xs={12}>
+          <Grid item xs={12}>
             <Button
               fullWidth
               variant="contained"
@@ -64,8 +48,8 @@ export default function ViewQuestion() {
               Edit
             </Button>
           </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-  )
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 }

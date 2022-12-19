@@ -11,7 +11,7 @@ import BuilderProtectedRoute from "./utils/BuilderProtectedRoute";
 import ViewerProtectedRoute from "./utils/ViewerProtectedRoute";
 
 // Builder routes
-import BuilderHome from "./components/layout/BuilderHome";
+import BuilderHome from "./views/BuilderHome";
 import BuilderLayout from "./components/layout/BuilderLayout";
 import Applications from "./components/builder/applications/index";
 import AddApplication from "./components/builder/applications/AddApplication";
@@ -34,10 +34,10 @@ import EditQuestion from "./components/builder/questions/EditQuestion";
 import DeleteQuestion from "./components/builder/questions/DeleteQuestion";
 
 // Viewer routes
-import ViewerHome from "./components/layout/ViewerHome";
+import ViewerHome from "./views/ViewerHome";
 import ViewerLayout from "./components/layout/ViewerLayout";
 import ClientApplications from "./components/viewer/Applications";
-import Profile from "./components/viewer/Profile";
+import AnswerApplication from "./components/viewer/AnswerApplication";
 
 function App() {
   return (
@@ -157,7 +157,11 @@ function App() {
               exact
               element={<ClientApplications />}
             />
-            <Route path="/viewer/profile" exact element={<Profile />} />
+            <Route
+              path="/viewer/applications/answer/:id"
+              exact
+              element={<AnswerApplication />}
+            />
           </Route>
         </Route>
       </Routes>
