@@ -37,6 +37,30 @@ export default function AnswerApplication() {
     fetchApplication();
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const answers = [];
+    questions.forEach((question) => {
+      const answer = {
+        questionId: question.id,
+        value: $(`input[name=${question.id}]`).val(),
+      };
+      answers.push(answer);
+      // console.log(answer);
+    });
+    const applicationAnswer = {
+      applicationId: id,
+      answers: answers,
+    };
+    console.log(applicationAnswer);
+    createAPIEndpoint(ENDPOINTS.applications)
+      .put(id, applicationAnswer)
+      .then((res) => {
+        navigate("/viewer/applications");
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <Card>
       <CardContent>
@@ -59,7 +83,6 @@ export default function AnswerApplication() {
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
-                        disabled
                         type="radio"
                         id="radio"
                         name={question_id}
@@ -79,7 +102,6 @@ export default function AnswerApplication() {
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
-                        disabled
                         type="checkbox"
                         name={question_id}
                         value={choice.value}
@@ -94,7 +116,7 @@ export default function AnswerApplication() {
                 return (
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
-                      <input disabled type="text" name={question_id} value="" />
+                      <input type="text" name={question_id} value="" />
                     </div>
                   </div>
                 );
@@ -130,7 +152,7 @@ export default function AnswerApplication() {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={() => navigate(`/viewer/applications`)}
+              onClick={handleSubmit}
             >
               Save
             </Button>

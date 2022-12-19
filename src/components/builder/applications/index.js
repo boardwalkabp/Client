@@ -6,7 +6,15 @@ import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardContent, CardHeader, Grid, TextField, Button, IconButton } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Grid,
+  TextField,
+  Button,
+  IconButton,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -40,25 +48,12 @@ export default function Applications() {
   }, []);
 
   const columns = [
-    // { field: "id", headerName: "ID", width: 90 },
     {
       field: "title",
       headerName: "Title",
-      width: 200,
+      width: 400,
       editable: true,
     },
-    {
-      field: "createdAt",
-      headerName: "Created At",
-      width: 150,
-      editable: true,
-    },
-    // {
-    //   field: "updatedAt",
-    //   headerName: "Updated At",
-    //   width: 150,
-    //   editable: true,
-    // },
     {
       field: "actions",
       headerName: "Actions",
