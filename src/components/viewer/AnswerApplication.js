@@ -3,7 +3,14 @@ import { createAPIEndpoint, ENDPOINTS } from "../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  Typography,
+  Alert,
+} from "@mui/material";
 import $ from "jquery";
 
 export default function AnswerApplication() {
@@ -11,9 +18,12 @@ export default function AnswerApplication() {
     answers: [],
     completedAt: "",
   });
-
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -40,6 +50,7 @@ export default function AnswerApplication() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     let answers = [];
     questions.forEach((question) => {
       let answer = {};
@@ -62,10 +73,23 @@ export default function AnswerApplication() {
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {
-        console.log(application);
-        navigate("/viewer/applications");
+        setSuccess("Application submitted successfully");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 2000);
+        setLoading(false);
+        setTimeout(() => {
+          navigate("/viewer/applications");
+        }, 4000);
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+    console.log(values);
   };
 
   useEffect(() => {
@@ -98,14 +122,13 @@ export default function AnswerApplication() {
                         id="radio"
                         name={question_id}
                         value={choice.value}
+                        onChange={handleInputChange}
                       />
                       <label htmlFor="radio" name={question_id}>
                         {choice.value}
                       </label>
                     </div>
-                    <div className="cho_end">
-                      {/* {conditions.replace("xxx", i)} */}
-                    </div>
+                    <div className="cho_end"></div>
                   </div>
                 );
               } else if (question_type === "CheckBox") {
@@ -116,6 +139,7 @@ export default function AnswerApplication() {
                         type="checkbox"
                         name={question_id}
                         value={choice.value}
+                        onChange={handleInputChange}
                       />
                       <label htmlFor="checkbox" name={question_id}>
                         {choice.value}
@@ -127,7 +151,11 @@ export default function AnswerApplication() {
                 return (
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
-                      <input type="text" name={question_id} value="" />
+                      <input
+                        type="text"
+                        name={question_id}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
                 );
@@ -167,6 +195,15 @@ export default function AnswerApplication() {
             >
               Save
             </Button>
+            <Alert
+              severity="success"
+              variant="string"
+              sx={{
+                visibility: showAlert ? "visible" : "hidden",
+              }}
+            >
+              Application submitted successfully!
+            </Alert>
           </Grid>
         </Grid>
       </CardContent>

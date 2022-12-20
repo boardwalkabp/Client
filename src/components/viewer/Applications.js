@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 export default function Applications() {
   const { context, setContext } = useStateContext();
-  const [application, setApplication] = useState([]);
+  // const [application, setApplication] = useState([]);
   const [applications, setApplications] = useState([]);
   const [client, setClient] = useState(null);
   const navigate = useNavigate();
@@ -29,8 +29,6 @@ export default function Applications() {
   const [search, setSearch] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -47,18 +45,18 @@ export default function Applications() {
     fetchApplications();
   }, []);
 
-  const filteredApplications = applications.filter(
-    (application) => application.completedAt === null
-  );
+  // const filteredApplications = applications.filter(
+  //   (application) => application.completedAt === null
+  // );
 
-  const rows = filteredApplications.map((application) => {
-    return {
-      id: application.id,
-      title: application.title,
-      createdAt: application.createdAt,
-      updatedAt: application.updatedAt,
-    };
-  });
+  // const rows = filteredApplications.map((application) => {
+  //   return {
+  //     id: application.id,
+  //     title: application.title,
+  //     createdAt: application.createdAt,
+  //     updatedAt: application.updatedAt,
+  //   };
+  // });
 
   const columns = [
     {
@@ -159,7 +157,7 @@ export default function Applications() {
               <Grid item xs={12}>
                 <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={searchKeyword !== "" ? searchResults : rows}
+                    rows={searchKeyword !== "" ? searchResults : applications}
                     columns={columns}
                     pageSize={rowsPerPage}
                     rowsPerPageOptions={[5, 10, 25]}
