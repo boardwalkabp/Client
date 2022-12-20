@@ -7,6 +7,11 @@ import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
 import $ from "jquery";
 
 export default function AnswerApplication() {
+  const [values, setValues] = useState({
+    answers: [],
+    completedAt: "",
+  });
+
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
   const navigate = useNavigate();
@@ -33,33 +38,39 @@ export default function AnswerApplication() {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    fetchApplication();
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const answers = [];
+    let answers = [];
     questions.forEach((question) => {
-      const answer = {
-        questionId: question.id,
-        value: $(`input[name=${question.id}]`).val(),
-      };
+      let answer = {};
+      if (question.questionType === "Radio") {
+        answer.value = $(`input[name=${question.id}]:checked`).val();
+      } else if (question.questionType === "CheckBox") {
+        let checkedValues = [];
+        $(`input[name=${question.id}]:checked`).each(function () {
+          checkedValues.push($(this).val());
+          answer.value = checkedValues.toString().replace(/,/g, ", ");
+        });
+      } else if (question.questionType === "Text") {
+        answer.value = $(`input[name=${question.id}]`).val();
+      }
       answers.push(answer);
-      // console.log(answer);
     });
-    const applicationAnswer = {
-      applicationId: id,
-      answers: answers,
-    };
-    console.log(applicationAnswer);
+    setValues({ ...values, answers: answers });
+    application.answers = answers;
+    application.completedAt = new Date().toISOString();
     createAPIEndpoint(ENDPOINTS.applications)
-      .put(id, applicationAnswer)
+      .put(id, application)
       .then((res) => {
+        console.log(application);
         navigate("/viewer/applications");
       })
       .catch((err) => console.log(err));
   };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
 
   return (
     <Card>

@@ -19,7 +19,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 export default function Applications() {
   const { context, setContext } = useStateContext();
-  // console.log(context);
+  const [application, setApplication] = useState([]);
   const [applications, setApplications] = useState([]);
   const [client, setClient] = useState(null);
   const navigate = useNavigate();
@@ -46,6 +46,19 @@ export default function Applications() {
   useEffect(() => {
     fetchApplications();
   }, []);
+
+  const filteredApplications = applications.filter(
+    (application) => application.completedAt === null
+  );
+
+  const rows = filteredApplications.map((application) => {
+    return {
+      id: application.id,
+      title: application.title,
+      createdAt: application.createdAt,
+      updatedAt: application.updatedAt,
+    };
+  });
 
   const columns = [
     {
@@ -146,7 +159,7 @@ export default function Applications() {
               <Grid item xs={12}>
                 <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={searchKeyword !== "" ? searchResults : applications}
+                    rows={searchKeyword !== "" ? searchResults : rows}
                     columns={columns}
                     pageSize={rowsPerPage}
                     rowsPerPageOptions={[5, 10, 25]}

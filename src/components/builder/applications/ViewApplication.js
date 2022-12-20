@@ -56,7 +56,7 @@ export default function ViewApplication() {
             let question_choices = question.choices;
             // let question_info = '';
             let qNum = 1;
-            console.log(question_type);
+            // console.log(question_type);
             // const conditions = $('<select>')
             //   .attr('name', `conditions['${question_id}'][xxx]`)
             //   .attr('data-question', question_id)
@@ -77,7 +77,7 @@ export default function ViewApplication() {
             // });
 
             const question_info = question_choices.map((choice, index) => {
-              if (question_type == "Radio") {
+              if (question_type === "Radio") {
                 return (
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
@@ -97,7 +97,7 @@ export default function ViewApplication() {
                     </div>
                   </div>
                 );
-              } else if (question_type == "CheckBox") {
+              } else if (question_type === "CheckBox") {
                 return (
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
@@ -142,7 +142,7 @@ export default function ViewApplication() {
             //     <input disabled type="text" name={question_id} value="" />
             //   </div></div>;
             // }
-            console.log(question_info);
+            // console.log(question_info);
             return (
               <Grid key={index} item xs={12}>
                 <Typography variant="h6" gutterBottom>

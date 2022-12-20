@@ -44,11 +44,11 @@ export default function EditApplication() {
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {
+        // console.log(application);
         navigate("/builder/applications");
       })
       .catch((err) => console.log(err));
   };
-
 
   return (
     <Card>
@@ -56,10 +56,10 @@ export default function EditApplication() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
-            {application.title}
+              {application.title}
             </Typography>
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               name="title"
@@ -68,7 +68,7 @@ export default function EditApplication() {
               fullWidth
             />
           </Grid>
-              <Grid item xs={12}>
+          <Grid item xs={12}>
             <Button
               fullWidth
               variant="contained"
@@ -77,8 +77,8 @@ export default function EditApplication() {
             >
               Update
             </Button>
-            </Grid>
           </Grid>
+        </Grid>
       </CardContent>
     </Card>
   );

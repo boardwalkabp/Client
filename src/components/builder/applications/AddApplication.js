@@ -48,7 +48,7 @@ export default function AddApplication() {
     createAPIEndpoint(ENDPOINTS.questions)
       .fetch()
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setQuestions(res.data);
       })
       .catch((err) => console.log(err));
@@ -68,7 +68,7 @@ export default function AddApplication() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(values);
+    // console.log(values);
     if (validate()) {
       if (id) {
         createAPIEndpoint(ENDPOINTS.applications)
@@ -81,6 +81,7 @@ export default function AddApplication() {
         createAPIEndpoint(ENDPOINTS.applications)
           .post(values)
           .then((res) => {
+            // console.log(res.data);
             navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
@@ -243,8 +244,8 @@ export default function AddApplication() {
                       conditions += "</select>";
                       if (question_choices.length > 0) {
                         for (let i = 0; i < question_choices.length; i++) {
-                          console.log(question_choices[i]);
-                          if (question_type == "Radio") {
+                          // console.log(question_choices[i]);
+                          if (question_type === "Radio") {
                             question_info +=
                               '<div key="' +
                               question_choices[i].id +
