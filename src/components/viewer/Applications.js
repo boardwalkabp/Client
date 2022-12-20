@@ -41,24 +41,24 @@ export default function Applications() {
     fetchApplications();
   }, []);
 
-  const filteredApplications = applications.filter(
-    (application) => application.completedAt === null
-  );
+  // const filteredApplications = applications.filter(
+  //   (application) => application.completedAt === null
+  // );
 
-  const rows = filteredApplications.map((application) => {
-    return {
-      id: application.id,
-      title: application.title,
-      createdAt: application.createdAt,
-      updatedAt: application.updatedAt,
-    };
-  });
+  // const rows = filteredApplications.map((application) => {
+  //   return {
+  //     id: application.id,
+  //     title: application.title,
+  //     createdAt: application.createdAt,
+  //     updatedAt: application.updatedAt,
+  //   };
+  // });
 
   const columns = [
     {
       field: "title",
       headerName: "Title",
-      width: 200,
+      width: 400,
       editable: true,
     },
     {
@@ -153,7 +153,8 @@ export default function Applications() {
               <Grid item xs={12}>
                 <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={searchKeyword !== "" ? searchResults : rows}
+                    // rows={searchKeyword !== "" ? searchResults : rows}
+                    rows={searchKeyword !== "" ? searchResults : applications}
                     columns={columns}
                     pageSize={rowsPerPage}
                     rowsPerPageOptions={[5, 10, 25]}

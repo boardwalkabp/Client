@@ -53,7 +53,10 @@ export default function AnswerApplication() {
     setLoading(true);
     let answers = [];
     questions.forEach((question) => {
-      let answer = {};
+      let answer = {
+        questionId: question.id,
+        value: "",
+      };
       if (question.questionType === "Radio") {
         answer.value = $(`input[name=${question.id}]:checked`).val();
       } else if (question.questionType === "CheckBox") {
@@ -70,6 +73,8 @@ export default function AnswerApplication() {
     setValues({ ...values, answers: answers });
     application.answers = answers;
     application.completedAt = new Date().toISOString();
+    application.status = "Completed";
+    console.log(application);
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {

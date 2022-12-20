@@ -299,6 +299,26 @@ export default function AddApplication() {
                         qNum +
                         '" /></div>' +
                         '<div class="delete_Button"><input type="button" class="delete_bracnh" value="Delete" /></div>';
+                      // // when the user clicks on the delete button, the question will be deleted
+                      // $(".delete_bracnh").trigger("click", function () {
+                      //   $(this).parent().parent().parent().remove();
+                      // });
+                      // // when the user clicks on the up button, the question will be moved up
+                      // $(".up").trigger("click", function () {
+                      //   let current = $(this).parent().parent().parent();
+                      //   let prev = current.prev();
+                      //   if (prev.length) {
+                      //     current.insertBefore(prev);
+                      //   }
+                      // });
+                      // // when the user clicks on the down button, the question will be moved down
+                      // $(".down").trigger("click", function () {
+                      //   let current = $(this).parent().parent().parent();
+                      //   let next = current.next();
+                      //   if (next.length) {
+                      //     current.insertAfter(next);
+                      //   }
+                      // });
                       $(".add-question").append(
                         '<div class="added_question" key="' +
                           question_id +
@@ -320,7 +340,7 @@ export default function AddApplication() {
 
                       $(".select_condition").each(function (i) {
                         let q_id = $(this).attr("data-question");
-                        if (q_id != question_id) {
+                        if (q_id !== question_id) {
                           $(this).append(
                             '<option key="' +
                               question_id +
