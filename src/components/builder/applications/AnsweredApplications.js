@@ -1,8 +1,9 @@
 import React from "react";
-import useStateContext from "../../hooks/useStateContext";
-import { createAPIEndpoint, ENDPOINTS } from "../../api";
+import useStateContext from "../../../hooks/useStateContext";
+import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import {
@@ -14,9 +15,9 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
-export default function Applications() {
+export default function AnsweredApplications() {
   const { context, setContext } = useStateContext();
   const [applications, setApplications] = useState([]);
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function Applications() {
   }, []);
 
   const filteredApplications = applications.filter(
-    (application) => application.completedAt === null
+    (application) => application.completedAt !== null
   );
 
   const rows = filteredApplications.map((application) => {
@@ -58,7 +59,7 @@ export default function Applications() {
     {
       field: "title",
       headerName: "Title",
-      width: 200,
+      width: 400,
       editable: true,
     },
     {
@@ -70,10 +71,10 @@ export default function Applications() {
           <IconButton
             onClick={() => {
               setContext({ ...context, selectedApplication: params.row });
-              navigate(`/viewer/applications/answer/${params.row.id}`);
+              navigate(`/builder/applications/answer/${params.row.id}`);
             }}
           >
-            <EditIcon color="primary" />
+            <VisibilityIcon color="primary" />
           </IconButton>
         </div>
       ),
@@ -128,7 +129,7 @@ export default function Applications() {
     <div>
       <Box sx={{ width: "100%" }}>
         <Card>
-          <CardHeader title="Applications" />
+          <CardHeader title="Answered Applications" />
           <CardContent>
             <Grid container spacing={3}>
               <Grid item xs={12}>

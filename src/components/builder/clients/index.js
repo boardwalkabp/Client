@@ -122,7 +122,7 @@ export default function Clients() {
     <div>
       <Box sx={{ width: "100%" }}>
         <Card>
-          <CardHeader title="Clients" />
+          <CardHeader title="Clients Builder" />
           <CardContent>
             <Grid container spacing={3}>
               <Grid item xs={12}>

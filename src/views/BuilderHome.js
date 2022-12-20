@@ -1,8 +1,7 @@
 import React from "react";
 import useStateContext from "../hooks/useStateContext";
 import { Paper, Box, Grid, Typography } from "@mui/material";
-import Chart from "../components/layout/Chart";
-import Deposits from "../components/layout/Deposits";
+import AnsweredApplications from "../components/builder/applications/AnsweredApplications";
 
 export default function Home() {
   const { context } = useStateContext();
@@ -20,31 +19,8 @@ export default function Home() {
               </Typography>
             </Paper>
           </Grid>
-          {/* Chart */}
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-                height: 240,
-              }}
-            >
-              <Chart />
-            </Paper>
-          </Grid>
-          {/* Recent Deposits */}
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper
-              sx={{
-                p: 2,
-                display: "flex",
-                flexDirection: "column",
-                height: 240,
-              }}
-            >
-              <Deposits />
-            </Paper>
+          <Grid item xs={12}>
+            <AnsweredApplications />
           </Grid>
         </Grid>
       </Box>

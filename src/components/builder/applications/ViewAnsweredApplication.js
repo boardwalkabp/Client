@@ -1,30 +1,12 @@
 import React from "react";
-import { createAPIEndpoint, ENDPOINTS } from "../../api";
+import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Typography,
-  Alert,
-} from "@mui/material";
-import $ from "jquery";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
 
-export default function AnswerApplication() {
-  const [values, setValues] = useState({
-    answers: [],
-    completedAt: "",
-  });
+export default function ViewAnsweredApplication() {
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const fetchApplication = async () => {
@@ -44,44 +26,6 @@ export default function AnswerApplication() {
             setQuestions(filteredQuestions);
           })
           .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    let answers = [];
-    questions.forEach((question) => {
-      let answer = {};
-      if (question.questionType === "Radio") {
-        answer.value = $(`input[name=${question.id}]:checked`).val();
-      } else if (question.questionType === "CheckBox") {
-        let checkedValues = [];
-        $(`input[name=${question.id}]:checked`).each(function () {
-          checkedValues.push($(this).val());
-          answer.value = checkedValues.toString().replace(/,/g, ", ");
-        });
-      } else if (question.questionType === "Text") {
-        answer.value = $(`input[name=${question.id}]`).val();
-      }
-      answers.push(answer);
-    });
-    setValues({ ...values, answers: answers });
-    application.answers = answers;
-    application.completedAt = new Date().toISOString();
-    createAPIEndpoint(ENDPOINTS.applications)
-      .put(id, application)
-      .then((res) => {
-        setSuccess("Application submitted successfully");
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 2000);
-        setLoading(false);
-        setTimeout(() => {
-          navigate("/viewer/applications");
-        }, 4000);
       })
       .catch((err) => console.log(err));
   };
@@ -112,16 +56,11 @@ export default function AnswerApplication() {
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
+                        disabled
                         type="radio"
                         id="radio"
                         name={question_id}
                         value={choice.value}
-                        // onChange={handleInputChange}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
                       />
                       <label htmlFor="radio" name={question_id}>
                         {choice.value}
@@ -135,14 +74,10 @@ export default function AnswerApplication() {
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
                       <input
+                        disabled
                         type="checkbox"
                         name={question_id}
                         value={choice.value}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
                       />
                       <label htmlFor="checkbox" name={question_id}>
                         {choice.value}
@@ -154,15 +89,7 @@ export default function AnswerApplication() {
                 return (
                   <div key={index} className="q_choices qst">
                     <div className="cho_start">
-                      <input
-                        type="text"
-                        name={question_id}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
-                      />
+                      <input type="text" name={question_id} />
                     </div>
                   </div>
                 );
@@ -193,25 +120,6 @@ export default function AnswerApplication() {
               </Grid>
             );
           })}
-          <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              Save
-            </Button>
-            <Alert
-              severity="success"
-              variant="string"
-              sx={{
-                visibility: showAlert ? "visible" : "hidden",
-              }}
-            >
-              Application submitted successfully!
-            </Alert>
-          </Grid>
         </Grid>
       </CardContent>
     </Card>

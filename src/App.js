@@ -18,6 +18,7 @@ import AddApplication from "./components/builder/applications/AddApplication";
 import ViewApplication from "./components/builder/applications/ViewApplication";
 import EditApplication from "./components/builder/applications/EditApplication";
 import DeleteApplication from "./components/builder/applications/DeleteApplication";
+import ViewAnsweredApplication from "./components/builder/applications/ViewAnsweredApplication";
 import Categories from "./components/builder/categories/index";
 import AddCategory from "./components/builder/categories/AddCategory";
 import EditCategory from "./components/builder/categories/EditCategory";
@@ -78,6 +79,11 @@ function App() {
               path="/builder/applications/delete/:id"
               exact
               element={<DeleteApplication />}
+            />
+            <Route
+              path="/builder/applications/answer/:id"
+              exact
+              element={<ViewAnsweredApplication />}
             />
 
             <Route path="/builder/categories/" exact element={<Categories />} />
