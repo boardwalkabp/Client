@@ -146,7 +146,7 @@ export default function AnswerApplication() {
             {questions[currentQuestionIndex] && (
               <div>
                 <Typography variant="h6" gutterBottom>
-                  {questions[currentQuestionIndex].question}
+                  {questions[currentQuestionIndex].body}
                 </Typography>
                 {questions[currentQuestionIndex].questionType === "Radio" && (
                   <FormControl>
