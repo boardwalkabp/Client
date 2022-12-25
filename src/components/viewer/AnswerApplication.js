@@ -10,8 +10,15 @@ import {
   Button,
   Typography,
   Alert,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Radio,
+  FormControl,
+  FormLabel,
+  RadioGroup
 } from "@mui/material";
-import $ from "jquery";
+import $, { contains } from "jquery";
 
 export default function AnswerApplication() {
   const [values, setValues] = useState({
@@ -26,12 +33,16 @@ export default function AnswerApplication() {
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const fetchApplication = async () => {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
       .then((res) => {
         setApplication(res.data);
+        console.log(res.data);
+        if (res.data.status !== "") {
+          setShowAlert(true);
+        }
         const questionIds = res.data.questions.map(
           (question) => question.value
         );
@@ -48,30 +59,46 @@ export default function AnswerApplication() {
       .catch((err) => console.log(err));
   };
 
+
+  const handleChange = (e) => {
+    const questionId = e.target.name;
+    const value = e.target.value;
+
+    const answerIndex = values.answers.findIndex((answer) => answer.questionId === questionId);
+    if (answerIndex !== -1) {
+      if (e.target.type === "checkbox") {
+        const newAnswers = [...values.answers];
+        newAnswers[answerIndex] = {
+          questionId,
+          value: [...newAnswers[answerIndex].value, value],
+        };
+        setValues({ ...values, answers: newAnswers });
+      } else {
+        const newAnswers = [...values.answers];
+        newAnswers[answerIndex] = { questionId, value };
+        setValues({ ...values, answers: newAnswers });
+      }
+    } else {
+      if (e.target.type === "checkbox") {
+        setValues({
+          ...values,
+          answers: [...values.answers, { questionId, value: [value] }],
+        });
+      } else {
+        setValues({ ...values, answers: [...values.answers, { questionId, value }] });
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    let answers = [];
-    questions.forEach((question) => {
-      let answer = {
-        questionId: question.id,
-        value: "",
-      };
-      if (question.questionType === "Radio") {
-        answer.value = $(`input[name=${question.id}]:checked`).val();
-      } else if (question.questionType === "CheckBox") {
-        let checkedValues = [];
-        $(`input[name=${question.id}]:checked`).each(function () {
-          checkedValues.push($(this).val());
-          answer.value = checkedValues.toString().replace(/,/g, ", ");
-        });
-      } else if (question.questionType === "Text") {
-        answer.value = $(`input[name=${question.id}]`).val();
+    application.answers = values.answers.map((answer) => {
+      if (Array.isArray(answer.value)) {
+        return { ...answer, value: answer.value.join(", ") };
       }
-      answers.push(answer);
+      return answer;
     });
-    setValues({ ...values, answers: answers });
-    application.answers = answers;
     application.completedAt = new Date().toISOString();
     application.status = "Completed";
     console.log(application);
@@ -82,143 +109,168 @@ export default function AnswerApplication() {
         setShowAlert(true);
         setTimeout(() => {
           setShowAlert(false);
-        }, 2000);
+        }, 1000);
         setLoading(false);
         setTimeout(() => {
           navigate("/viewer/applications");
-        }, 4000);
+        }, 1000);
       })
       .catch((err) => console.log(err));
   };
-
   useEffect(() => {
     fetchApplication();
   }, []);
+  const handleNext = () => {
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  };
+  const handleBack = () => {
+    setCurrentQuestionIndex(currentQuestionIndex - 1);
+  };
+
 
   return (
     <Card>
       <CardContent>
+        {showAlert && (
+          <Alert severity="error">
+            You have already answered this application
+          </Alert>
+        )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
               {application.title}
             </Typography>
           </Grid>
-          {questions.map((question, index) => {
-            let question_title = question.body;
-            let question_id = question.id;
-            let question_type = question.questionType;
-            let question_choices = question.choices;
-            let qNum = 1;
-
-            const question_info = question_choices.map((choice, index) => {
-              if (question_type === "Radio") {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input
-                        type="radio"
-                        id="radio"
-                        name={question_id}
-                        value={choice.value}
-                        // onChange={handleInputChange}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
-                      />
-                      <label htmlFor="radio" name={question_id}>
-                        {choice.value}
-                      </label>
-                    </div>
-                    <div className="cho_end"></div>
-                  </div>
-                );
-              } else if (question_type === "CheckBox") {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input
-                        type="checkbox"
-                        name={question_id}
-                        value={choice.value}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
-                      />
-                      <label htmlFor="checkbox" name={question_id}>
-                        {choice.value}
-                      </label>
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input
-                        type="text"
-                        name={question_id}
-                        onChange={(e) => {
-                          let answers = [...values.answers];
-                          answers[index] = e.target.value;
-                          setValues({ ...values, answers });
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              }
-            });
-            return (
-              <Grid key={index} item xs={12}>
-                <Typography variant="h6" gutterBottom>
-                  <div
-                    className="added_question"
-                    key={index}
-                    data-order={qNum}
-                    data-question={question_id}
-                  >
-                    <div className="qst_order">
-                      <div className="a_q_title">
-                        <h4>{question_title}</h4>
-                      </div>
-                    </div>
-                    <div className="que_cho">{question_info}</div>
-                    <input
-                      type="hidden"
-                      name="questions[]"
-                      value={question_id}
-                    />
-                  </div>
-                </Typography>
-              </Grid>
-            );
-          })}
           <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              Save
-            </Button>
-            <Alert
-              severity="success"
-              variant="string"
-              sx={{
-                visibility: showAlert ? "visible" : "hidden",
-              }}
-            >
-              Application submitted successfully!
-            </Alert>
+            {questions[currentQuestionIndex] && (
+              <div>
+                <Typography variant="h6" gutterBottom>
+                  {questions[currentQuestionIndex].question}
+                </Typography>
+                {questions[currentQuestionIndex].questionType === "Radio" && (
+                  <FormControl>
+                    <FormLabel id="demo-controlled-radio-buttons-group">
+                      {questions[currentQuestionIndex].question}
+                    </FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name={questions[currentQuestionIndex].id}
+                      onChange={handleChange}
+                    >
+                      {questions[currentQuestionIndex].choices.map((option, index) => {
+                        let checked;
+                        if (showAlert) {
+                          checked = application.answers.find(
+                            (answer) => answer.questionId === questions[currentQuestionIndex].id
+                          )?.value === option.value;
+                        }
+                        return (
+                          <FormControlLabel
+                            key={index}
+                            value={option.value}
+                            control={<Radio />}
+                            label={option.value}
+                            disabled={showAlert}
+                            checked={checked}
+                          />
+                        );
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+                )}
+
+
+                {questions[currentQuestionIndex].questionType === "CheckBox" && (
+                  <FormGroup>
+                    {questions[currentQuestionIndex].choices.map((option, index) => {
+                      let checked;
+                      if (showAlert) {
+                        checked = application.answers.find(
+                          (answer) => answer.questionId === questions[currentQuestionIndex].id
+                        )?.value.includes(option.value);
+                      }
+                      return (
+                        < FormControlLabel
+                          key={index}
+                          control={
+                            < Checkbox
+                              name={questions[currentQuestionIndex].id}
+                              value={option.value}
+                              onChange={handleChange}
+                              key={option.id}
+                              disabled={showAlert}
+                              checked={checked}
+                            />
+                          }
+                          label={option.value}
+                        />
+                      );
+                    })}
+                  </FormGroup>
+                )}
+                {questions[currentQuestionIndex].questionType === "Text" && (
+                  <input
+                    type="text"
+                    name={questions[currentQuestionIndex].id}
+                    placeholder={questions[currentQuestionIndex].placeholder}
+                    onChange={handleChange}
+                    disabled={showAlert}
+                    {...(showAlert
+                      ? {
+                        value: application.answers.find(
+                          (answer) => answer.questionId === questions[currentQuestionIndex].id
+                        )?.value
+                      }
+                      : {})}
+                  />
+                )}
+              </div>
+            )}
           </Grid>
+
+          {currentQuestionIndex > 0 && (
+            <Grid item xs={11}>
+              <Button variant="contained" color="secondary" onClick={handleBack}>
+                Back
+              </Button>
+            </Grid>
+          )}
+          {currentQuestionIndex < questions.length - 1 && (
+            <Grid item xs={1}>
+              <Button variant="contained" color="primary" onClick={handleNext}>
+                Next
+              </Button>
+            </Grid>
+          )}
+          {currentQuestionIndex === questions.length - 1 && (
+            !showAlert && (
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  Submit
+                </Button>
+              </Grid>
+            )
+          )}
+          {error && (
+            <Grid item xs={12}>
+              <Alert severity="error">{error}</Alert>
+            </Grid>
+          )}
+          {success && showAlert && (
+            <Grid item xs={12}>
+              <Alert severity="success">{success}</Alert>
+            </Grid>
+          )}
         </Grid>
       </CardContent>
     </Card>
   );
 }
+
+
