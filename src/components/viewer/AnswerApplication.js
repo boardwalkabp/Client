@@ -16,9 +16,9 @@ import {
   Radio,
   FormControl,
   FormLabel,
-  RadioGroup
+  RadioGroup,
+  TextField,
 } from "@mui/material";
-import $, { contains } from "jquery";
 
 export default function AnswerApplication() {
   const [values, setValues] = useState({
@@ -39,7 +39,7 @@ export default function AnswerApplication() {
       .fetchById(id)
       .then((res) => {
         setApplication(res.data);
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data.status !== "") {
           setShowAlert(true);
         }
@@ -59,12 +59,13 @@ export default function AnswerApplication() {
       .catch((err) => console.log(err));
   };
 
-
   const handleChange = (e) => {
     const questionId = e.target.name;
     const value = e.target.value;
 
-    const answerIndex = values.answers.findIndex((answer) => answer.questionId === questionId);
+    const answerIndex = values.answers.findIndex(
+      (answer) => answer.questionId === questionId
+    );
     if (answerIndex !== -1) {
       if (e.target.type === "checkbox") {
         const newAnswers = [...values.answers];
@@ -85,7 +86,10 @@ export default function AnswerApplication() {
           answers: [...values.answers, { questionId, value: [value] }],
         });
       } else {
-        setValues({ ...values, answers: [...values.answers, { questionId, value }] });
+        setValues({
+          ...values,
+          answers: [...values.answers, { questionId, value }],
+        });
       }
     }
   };
@@ -101,7 +105,7 @@ export default function AnswerApplication() {
     });
     application.completedAt = new Date().toISOString();
     application.status = "Completed";
-    console.log(application);
+    // console.log(application);
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {
@@ -127,15 +131,20 @@ export default function AnswerApplication() {
     setCurrentQuestionIndex(currentQuestionIndex - 1);
   };
 
-
   return (
     <Card>
       <CardContent>
         {showAlert && (
-          <Alert severity="error">
-            You have already answered this application
+          <Alert
+            severity={application.status === "Completed" ? "success" : "error"}
+          >
+            {application.status === "Completed"
+              ? "Application submitted successfully"
+              : "Application already submitted"}
           </Alert>
         )}
+
+        <br />
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
@@ -158,59 +167,74 @@ export default function AnswerApplication() {
                       name={questions[currentQuestionIndex].id}
                       onChange={handleChange}
                     >
-                      {questions[currentQuestionIndex].choices.map((option, index) => {
-                        let checked;
-                        if (showAlert) {
-                          checked = application.answers.find(
-                            (answer) => answer.questionId === questions[currentQuestionIndex].id
-                          )?.value === option.value;
+                      {questions[currentQuestionIndex].choices.map(
+                        (option, index) => {
+                          let checked;
+                          if (showAlert) {
+                            checked =
+                              application.answers.find(
+                                (answer) =>
+                                  answer.questionId ===
+                                  questions[currentQuestionIndex].id
+                              )?.value === option.value;
+                          }
+                          return (
+                            <FormControlLabel
+                              key={index}
+                              value={option.value}
+                              control={<Radio />}
+                              label={option.value}
+                              disabled={showAlert}
+                              checked={checked}
+                            />
+                          );
                         }
-                        return (
-                          <FormControlLabel
-                            key={index}
-                            value={option.value}
-                            control={<Radio />}
-                            label={option.value}
-                            disabled={showAlert}
-                            checked={checked}
-                          />
-                        );
-                      })}
+                      )}
                     </RadioGroup>
                   </FormControl>
                 )}
 
-
-                {questions[currentQuestionIndex].questionType === "CheckBox" && (
+                {questions[currentQuestionIndex].questionType ===
+                  "CheckBox" && (
                   <FormGroup>
-                    {questions[currentQuestionIndex].choices.map((option, index) => {
-                      let checked;
-                      if (showAlert) {
-                        checked = application.answers.find(
-                          (answer) => answer.questionId === questions[currentQuestionIndex].id
-                        )?.value.includes(option.value);
+                    {questions[currentQuestionIndex].choices.map(
+                      (option, index) => {
+                        let checked;
+                        if (showAlert) {
+                          checked = application.answers
+                            .find(
+                              (answer) =>
+                                answer.questionId ===
+                                questions[currentQuestionIndex].id
+                            )
+                            ?.value.includes(option.value);
+                        }
+                        return (
+                          <FormControlLabel
+                            key={index}
+                            control={
+                              <Checkbox
+                                name={questions[currentQuestionIndex].id}
+                                value={option.value}
+                                onChange={handleChange}
+                                key={option.id}
+                                disabled={showAlert}
+                                checked={checked}
+                              />
+                            }
+                            label={option.value}
+                          />
+                        );
                       }
-                      return (
-                        < FormControlLabel
-                          key={index}
-                          control={
-                            < Checkbox
-                              name={questions[currentQuestionIndex].id}
-                              value={option.value}
-                              onChange={handleChange}
-                              key={option.id}
-                              disabled={showAlert}
-                              checked={checked}
-                            />
-                          }
-                          label={option.value}
-                        />
-                      );
-                    })}
+                    )}
                   </FormGroup>
                 )}
                 {questions[currentQuestionIndex].questionType === "Text" && (
-                  <input
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
                     type="text"
                     name={questions[currentQuestionIndex].id}
                     placeholder={questions[currentQuestionIndex].placeholder}
@@ -218,10 +242,12 @@ export default function AnswerApplication() {
                     disabled={showAlert}
                     {...(showAlert
                       ? {
-                        value: application.answers.find(
-                          (answer) => answer.questionId === questions[currentQuestionIndex].id
-                        )?.value
-                      }
+                          value: application.answers.find(
+                            (answer) =>
+                              answer.questionId ===
+                              questions[currentQuestionIndex].id
+                          )?.value,
+                        }
                       : {})}
                   />
                 )}
@@ -229,24 +255,59 @@ export default function AnswerApplication() {
             )}
           </Grid>
 
-          {currentQuestionIndex > 0 && (
-            <Grid item xs={11}>
-              <Button variant="contained" color="secondary" onClick={handleBack}>
-                Back
-              </Button>
-            </Grid>
-          )}
-          {currentQuestionIndex < questions.length - 1 && (
-            <Grid item xs={1}>
-              <Button variant="contained" color="primary" onClick={handleNext}>
-                Next
-              </Button>
-            </Grid>
-          )}
-          {currentQuestionIndex === questions.length - 1 && (
-            !showAlert && (
+          <Grid item xs={12}>
+            {currentQuestionIndex > 0 && (
               <Grid item xs={12}>
                 <Button
+                  style={{ float: "left" }}
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleBack}
+                >
+                  Back
+                </Button>
+              </Grid>
+            )}
+            {currentQuestionIndex < questions.length - 1 && (
+              <Grid item xs={12}>
+                <Button
+                  style={{ float: "right" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  disabled={
+                    !showAlert &&
+                    ((questions[currentQuestionIndex].questionType ===
+                      "Radio" &&
+                      !values.answers.find(
+                        (answer) =>
+                          answer.questionId ===
+                          questions[currentQuestionIndex].id
+                      )) ||
+                      (questions[currentQuestionIndex].questionType ===
+                        "CheckBox" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )) ||
+                      (questions[currentQuestionIndex].questionType ===
+                        "Text" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )))
+                  }
+                >
+                  Next
+                </Button>
+              </Grid>
+            )}
+            {currentQuestionIndex === questions.length - 1 && !showAlert && (
+              <Grid item xs={12}>
+                <Button
+                  style={{ float: "right" }}
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
@@ -255,22 +316,15 @@ export default function AnswerApplication() {
                   Submit
                 </Button>
               </Grid>
-            )
-          )}
-          {error && (
-            <Grid item xs={12}>
-              <Alert severity="error">{error}</Alert>
-            </Grid>
-          )}
-          {success && showAlert && (
-            <Grid item xs={12}>
-              <Alert severity="success">{success}</Alert>
-            </Grid>
-          )}
+            )}
+            {error && (
+              <Grid item xs={12}>
+                <Alert severity="error">{error}</Alert>
+              </Grid>
+            )}
+          </Grid>
         </Grid>
       </CardContent>
     </Card>
   );
 }
-
-
