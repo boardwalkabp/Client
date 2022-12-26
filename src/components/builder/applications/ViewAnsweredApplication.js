@@ -2,6 +2,7 @@ import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router";
 import {
   Card,
   CardContent,
@@ -30,9 +31,7 @@ export default function ViewAnsweredApplication() {
     answers: [],
     completedAt: "",
   });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -95,18 +94,23 @@ export default function ViewAnsweredApplication() {
       }
     }
   };
-
-  useEffect(() => {
-    fetchApplication();
-  }, []);
   const handleNext = () => {
     setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
+
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
+
+  const handleClose = () => {
+    navigate("/builder/home");
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.applications)
@@ -301,6 +305,18 @@ export default function ViewAnsweredApplication() {
                     onClick={handleNext}
                   >
                     Next
+                  </Button>
+                </Grid>
+              )}
+              {currentQuestionIndex === questions.length - 1 && (
+                <Grid item xs={12}>
+                  <Button
+                    style={{ float: "right" }}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleClose}
+                  >
+                    Close
                   </Button>
                 </Grid>
               )}

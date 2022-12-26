@@ -121,15 +121,21 @@ export default function AnswerApplication() {
       })
       .catch((err) => console.log(err));
   };
-  useEffect(() => {
-    fetchApplication();
-  }, []);
+
   const handleNext = () => {
     setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
   const handleBack = () => {
     setCurrentQuestionIndex(currentQuestionIndex - 1);
   };
+
+  const handleClose = () => {
+    navigate("/viewer/applications");
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
 
   return (
     <Card>
@@ -235,9 +241,8 @@ export default function AnswerApplication() {
                     margin="normal"
                     required
                     fullWidth
-                    type="text"
+                    placeholder="Enter your answer here"
                     name={questions[currentQuestionIndex].id}
-                    placeholder={questions[currentQuestionIndex].placeholder}
                     onChange={handleChange}
                     disabled={showAlert}
                     {...(showAlert
@@ -311,32 +316,21 @@ export default function AnswerApplication() {
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
-                  disabled={
-                    !showAlert &&
-                    ((questions[currentQuestionIndex].questionType ===
-                      "Radio" &&
-                      !values.answers.find(
-                        (answer) =>
-                          answer.questionId ===
-                          questions[currentQuestionIndex].id
-                      )) ||
-                      (questions[currentQuestionIndex].questionType ===
-                        "CheckBox" &&
-                        !values.answers.find(
-                          (answer) =>
-                            answer.questionId ===
-                            questions[currentQuestionIndex].id
-                        )) ||
-                      (questions[currentQuestionIndex].questionType ===
-                        "Text" &&
-                        !values.answers.find(
-                          (answer) =>
-                            answer.questionId ===
-                            questions[currentQuestionIndex].id
-                        )))
-                  }
+                  disabled={values.answers.length !== questions.length}
                 >
                   Submit
+                </Button>
+              </Grid>
+            )}
+            {currentQuestionIndex === questions.length - 1 && showAlert && (
+              <Grid item xs={12}>
+                <Button
+                  style={{ float: "right" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClose}
+                >
+                  Close
                 </Button>
               </Grid>
             )}
