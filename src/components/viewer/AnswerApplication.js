@@ -311,7 +311,30 @@ export default function AnswerApplication() {
                   variant="contained"
                   color="primary"
                   onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={
+                    !showAlert &&
+                    ((questions[currentQuestionIndex].questionType ===
+                      "Radio" &&
+                      !values.answers.find(
+                        (answer) =>
+                          answer.questionId ===
+                          questions[currentQuestionIndex].id
+                      )) ||
+                      (questions[currentQuestionIndex].questionType ===
+                        "CheckBox" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )) ||
+                      (questions[currentQuestionIndex].questionType ===
+                        "Text" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )))
+                  }
                 >
                   Submit
                 </Button>

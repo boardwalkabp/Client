@@ -47,6 +47,19 @@ export default function Applications() {
     fetchApplications();
   }, []);
 
+  const filteredApplications = applications.filter(
+    (application) => application.completedAt === null
+  );
+
+  const rows = filteredApplications.map((application) => {
+    return {
+      id: application.id,
+      title: application.title,
+      createdAt: application.createdAt,
+      updatedAt: application.updatedAt,
+    };
+  });
+
   const columns = [
     {
       field: "title",
@@ -175,7 +188,7 @@ export default function Applications() {
               <Grid item xs={12}>
                 <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    rows={searchKeyword !== "" ? searchResults : applications}
+                    rows={searchKeyword !== "" ? searchResults : rows}
                     columns={columns}
                     pageSize={rowsPerPage}
                     rowsPerPageOptions={[5, 10, 25]}

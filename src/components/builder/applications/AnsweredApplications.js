@@ -16,6 +16,7 @@ import {
   IconButton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function AnsweredApplications() {
   const { context, setContext } = useStateContext();
@@ -75,6 +76,14 @@ export default function AnsweredApplications() {
             }}
           >
             <VisibilityIcon color="primary" />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              setContext({ ...context, selectedApplication: params.row });
+              navigate(`/builder/applications/delete/${params.row.id}`);
+            }}
+          >
+            <DeleteIcon color="primary" />
           </IconButton>
         </div>
       ),
