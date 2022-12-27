@@ -32,27 +32,17 @@ export default function Applications() {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetch()
       .then((res) => {
-        setApplications(res.data);
+        let filtered = res.data.filter(
+          (application) => application.clientId === context.id
+        );
+        setApplications(filtered);
       })
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  // const filteredApplications = applications.filter(
-  //   (application) => application.completedAt === null
-  // );
-
-  // const rows = filteredApplications.map((application) => {
-  //   return {
-  //     id: application.id,
-  //     title: application.title,
-  //     createdAt: application.createdAt,
-  //     updatedAt: application.updatedAt,
-  //   };
-  // });
+  // useEffect(() => {
+  //   fetchApplications();
+  // }, []);
 
   const columns = [
     {
@@ -153,7 +143,6 @@ export default function Applications() {
               <Grid item xs={12}>
                 <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
-                    // rows={searchKeyword !== "" ? searchResults : rows}
                     rows={searchKeyword !== "" ? searchResults : applications}
                     columns={columns}
                     pageSize={rowsPerPage}

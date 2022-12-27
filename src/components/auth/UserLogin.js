@@ -47,6 +47,7 @@ export default function UserLogin() {
             setContext(res.data);
             if (res.data.username !== null) {
               navigate("/builder/home");
+              // console.log(res.data);
             }
             if (res.data.username === null) {
               setErrors({
