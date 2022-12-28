@@ -40,10 +40,6 @@ export default function Applications() {
       .catch((err) => console.log(err));
   };
 
-  // useEffect(() => {
-  //   fetchApplications();
-  // }, []);
-
   const columns = [
     {
       field: "title",

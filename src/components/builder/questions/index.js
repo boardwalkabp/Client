@@ -122,7 +122,7 @@ export default function Questions() {
 
   return (
     <Card>
-      <CardHeader title="Questions Builder" />
+      <CardHeader title="Question Builder" />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>

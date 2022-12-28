@@ -1,15 +1,14 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
   Grid,
-  Typography,
   Button,
-  Alert,
+  Typography,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -19,22 +18,20 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
+import $ from "jquery";
 
 export default function ViewAnsweredApplication() {
-  const [application, setApplication] = useState({});
-  const [client, setClient] = useState({});
-  const [category, setCategory] = useState({});
-  const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState([]);
-  const { id } = useParams();
   const [values, setValues] = useState({
     answers: [],
     completedAt: "",
   });
-  const navigate = useNavigate();
+  const [application, setApplication] = useState({});
+  const [questions, setQuestions] = useState([]);
+  const [client, setClient] = useState({});
+  const [category, setCategory] = useState({});
   const [showAlert, setShowAlert] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
+  const navigate = useNavigate();
+  const { id } = useParams();
   const fetchApplication = async () => {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
@@ -94,15 +91,6 @@ export default function ViewAnsweredApplication() {
       }
     }
   };
-  const handleNext = () => {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-  };
-
-  const handleBack = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
 
   const handleClose = () => {
     navigate("/builder/home");
@@ -112,16 +100,6 @@ export default function ViewAnsweredApplication() {
     fetchApplication();
   }, []);
 
-  useEffect(() => {
-    createAPIEndpoint(ENDPOINTS.applications)
-      .fetchById(id)
-      .then((res) => {
-        setApplication(res.data);
-        setQuestions(res.data.questions);
-        setAnswers(res.data.answers);
-      })
-      .catch((err) => console.log(err));
-  }, [id]);
   const clientId = application.clientId;
   const categoryId = application.categoryId;
 
@@ -148,182 +126,126 @@ export default function ViewAnsweredApplication() {
   }, [categoryId]);
 
   return (
-    <div>
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                {application.title}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" gutterBottom>
-                Client: {client.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" gutterBottom>
-                Category: {category.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" gutterBottom>
-                Status: {application.status}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" gutterBottom>
-                Questions and Answers:
-              </Typography>
-            </Grid>
-            <br />
-            <Grid container spacing={2}></Grid>
-            <Grid item xs={12}>
-              {questions[currentQuestionIndex] && (
-                <div>
-                  <Typography variant="h6" gutterBottom>
-                    {questions[currentQuestionIndex].body}
-                  </Typography>
-                  {questions[currentQuestionIndex].questionType === "Radio" && (
-                    <FormControl>
-                      <FormLabel id="demo-controlled-radio-buttons-group">
-                        {questions[currentQuestionIndex].question}
-                      </FormLabel>
-                      <RadioGroup
-                        aria-labelledby="demo-controlled-radio-buttons-group"
-                        name={questions[currentQuestionIndex].id}
-                        onChange={handleChange}
-                      >
-                        {questions[currentQuestionIndex].choices.map(
-                          (option, index) => {
-                            let checked;
-                            if (showAlert) {
-                              checked =
-                                application.answers.find(
-                                  (answer) =>
-                                    answer.questionId ===
-                                    questions[currentQuestionIndex].id
-                                )?.value === option.value;
-                            }
-                            return (
-                              <FormControlLabel
-                                key={index}
-                                value={option.value}
-                                control={<Radio />}
-                                label={option.value}
-                                disabled={showAlert}
-                                checked={checked}
-                              />
-                            );
-                          }
-                        )}
-                      </RadioGroup>
-                    </FormControl>
-                  )}
-
-                  {questions[currentQuestionIndex].questionType ===
-                    "CheckBox" && (
-                    <FormGroup>
-                      {questions[currentQuestionIndex].choices.map(
-                        (option, index) => {
-                          let checked;
-                          if (showAlert) {
-                            checked = application.answers
-                              .find(
-                                (answer) =>
-                                  answer.questionId ===
-                                  questions[currentQuestionIndex].id
-                              )
-                              ?.value.includes(option.value);
-                          }
-                          return (
-                            <FormControlLabel
-                              key={index}
-                              control={
-                                <Checkbox
-                                  name={questions[currentQuestionIndex].id}
-                                  value={option.value}
-                                  onChange={handleChange}
-                                  key={option.id}
-                                  disabled={showAlert}
-                                  checked={checked}
-                                />
-                              }
-                              label={option.value}
-                            />
-                          );
-                        }
-                      )}
-                    </FormGroup>
-                  )}
-                  {questions[currentQuestionIndex].questionType === "Text" && (
-                    <TextField
-                      variant="outlined"
-                      margin="normal"
-                      required
-                      fullWidth
-                      type="text"
-                      name={questions[currentQuestionIndex].id}
-                      placeholder={questions[currentQuestionIndex].placeholder}
-                      onChange={handleChange}
-                      disabled={showAlert}
-                      {...(showAlert
-                        ? {
-                            value: application.answers.find(
-                              (answer) =>
-                                answer.questionId ===
-                                questions[currentQuestionIndex].id
-                            )?.value,
-                          }
-                        : {})}
-                    />
-                  )}
-                </div>
-              )}
-            </Grid>
-
-            <Grid item xs={12}>
-              {currentQuestionIndex > 0 && (
-                <Grid item xs={12}>
-                  <Button
-                    style={{ float: "left" }}
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleBack}
-                  >
-                    Back
-                  </Button>
-                </Grid>
-              )}
-              {currentQuestionIndex < questions.length - 1 && (
-                <Grid item xs={12}>
-                  <Button
-                    style={{ float: "right" }}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                  >
-                    Next
-                  </Button>
-                </Grid>
-              )}
-              {currentQuestionIndex === questions.length - 1 && (
-                <Grid item xs={12}>
-                  <Button
-                    style={{ float: "right" }}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleClose}
-                  >
-                    Close
-                  </Button>
-                </Grid>
-              )}
-            </Grid>
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              {application.title}
+            </Typography>
           </Grid>
-        </CardContent>
-      </Card>
-    </div>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Client: {client.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Category: {category.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Status: {application.status}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {questions.map((question) => (
+              <div className="added_question" key={question.id}>
+                <Typography variant="h6" gutterBottom>
+                  {question.body}
+                </Typography>
+                {question.questionType === "Radio" && (
+                  <FormControl>
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name={question.id}
+                      onChange={handleChange}
+                    >
+                      {question.choices.map((option, index) => {
+                        let checked;
+                        if (showAlert) {
+                          checked =
+                            application.answers.find(
+                              (answer) => answer.questionId === question.id
+                            )?.value === option.value;
+                        }
+                        return (
+                          <FormControlLabel
+                            key={index}
+                            value={option.value}
+                            control={<Radio />}
+                            label={option.value}
+                            disabled={showAlert}
+                            checked={checked}
+                          />
+                        );
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+                )}
+                {question.questionType === "CheckBox" && (
+                  <FormGroup>
+                    {question.choices.map((option, index) => {
+                      let checked;
+                      if (showAlert) {
+                        checked = application.answers
+                          .find((answer) => answer.questionId === question.id)
+                          ?.value.includes(option.value);
+                      }
+                      return (
+                        <FormControlLabel
+                          key={index}
+                          control={
+                            <Checkbox
+                              name={question.id}
+                              value={option.value}
+                              onChange={handleChange}
+                              key={option.id}
+                              disabled={showAlert}
+                              checked={checked}
+                            />
+                          }
+                          label={option.value}
+                        />
+                      );
+                    })}
+                  </FormGroup>
+                )}
+                {question.questionType === "Text" && (
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    name={question.id}
+                    placeholder={question.placeholder}
+                    onChange={handleChange}
+                    disabled={showAlert}
+                    {...(showAlert
+                      ? {
+                          value: application.answers.find(
+                            (answer) => answer.questionId === question.id
+                          )?.value,
+                        }
+                      : {})}
+                  />
+                )}
+              </div>
+            ))}
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
   );
 }

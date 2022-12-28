@@ -111,13 +111,10 @@ export default function AnswerApplication() {
       .then((res) => {
         setSuccess("Application submitted successfully");
         setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 1000);
         setLoading(false);
         setTimeout(() => {
           navigate("/viewer/applications");
-        }, 1000);
+        }, 5000);
       })
       .catch((err) => console.log(err));
   };
@@ -317,6 +314,8 @@ export default function AnswerApplication() {
                   color="primary"
                   onClick={handleSubmit}
                   disabled={values.answers.length !== questions.length}
+                  hidden={showAlert}
+                  // hide
                 >
                   Submit
                 </Button>

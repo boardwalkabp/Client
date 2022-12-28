@@ -3,24 +3,49 @@ import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Button,
+  Typography,
+  Alert,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Radio,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 import $ from "jquery";
 
 export default function ViewApplication() {
+  const [values, setValues] = useState({
+    answers: [],
+    completedAt: "",
+  });
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
-
   const fetchApplication = async () => {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
       .then((res) => {
         setApplication(res.data);
+        // console.log(res.data);
+        if (res.data.status !== "") {
+          setShowAlert(true);
+        }
         const questionIds = res.data.questions.map(
           (question) => question.value
         );
-        // console.log(questionIds);
         createAPIEndpoint(ENDPOINTS.questions)
           .fetch()
           .then((res) => {
@@ -28,156 +53,150 @@ export default function ViewApplication() {
               questionIds.includes(question.id)
             );
             setQuestions(filteredQuestions);
-            // console.log(filteredQuestions);
           })
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
   };
 
+  const handleChange = (e) => {
+    const questionId = e.target.name;
+    const value = e.target.value;
+
+    const answerIndex = values.answers.findIndex(
+      (answer) => answer.questionId === questionId
+    );
+    if (answerIndex !== -1) {
+      if (e.target.type === "checkbox") {
+        const newAnswers = [...values.answers];
+        newAnswers[answerIndex] = {
+          questionId,
+          value: [...newAnswers[answerIndex].value, value],
+        };
+        setValues({ ...values, answers: newAnswers });
+      } else {
+        const newAnswers = [...values.answers];
+        newAnswers[answerIndex] = { questionId, value };
+        setValues({ ...values, answers: newAnswers });
+      }
+    } else {
+      if (e.target.type === "checkbox") {
+        setValues({
+          ...values,
+          answers: [...values.answers, { questionId, value: [value] }],
+        });
+      } else {
+        setValues({
+          ...values,
+          answers: [...values.answers, { questionId, value }],
+        });
+      }
+    }
+  };
   useEffect(() => {
     fetchApplication();
-    // fetchQuestions();
   }, []);
 
   return (
     <Card>
       <CardContent>
+        {showAlert && (
+          <Alert severity="error">
+            This application has already been submitted by{" "}
+            {application.clientId}
+          </Alert>
+        )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
               {application.title}
             </Typography>
           </Grid>
-          {questions.map((question, index) => {
-            let question_title = question.body;
-            let question_id = question.id;
-            let question_type = question.questionType;
-            let question_choices = question.choices;
-            // let question_info = '';
-            let qNum = 1;
-            // console.log(question_type);
-            // const conditions = $('<select>')
-            //   .attr('name', `conditions['${question_id}'][xxx]`)
-            //   .attr('data-question', question_id)
-            //   .addClass('select_condition qSelect')
-            //   .append(
-            //     $('<option>')
-            //       .val(0)
-            //       .text('Go to next')
-            //   );
-
-            // $('.added_question').each(function (i) {
-            //   conditions.append(
-            //     $('<option>')
-            //       .key(question_id)
-            //       .val($(this).attr('data-question'))
-            //       .text(`Go to:  ${$(this).find('h4').text()}`)
-            //   );
-            // });
-
-            const question_info = question_choices.map((choice, index) => {
-              if (question_type === "Radio") {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input
-                        disabled
-                        type="radio"
-                        id="radio"
-                        name={question_id}
-                        value={choice.value}
-                      />
-                      <label htmlFor="radio" name={question_id}>
-                        {choice.value}
-                      </label>
-                    </div>
-                    <div className="cho_end">
-                      {/* {conditions.replace("xxx", i)} */}
-                    </div>
-                  </div>
-                );
-              } else if (question_type === "CheckBox") {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input
-                        disabled
-                        type="checkbox"
-                        name={question_id}
-                        value={choice.value}
-                      />
-                      <label htmlFor="checkbox" name={question_id}>
-                        {choice.value}
-                      </label>
-                    </div>
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={index} className="q_choices qst">
-                    <div className="cho_start">
-                      <input disabled type="text" name={question_id} value="" />
-                    </div>
-                  </div>
-                );
-              }
-            });
-
-            // if (question_choices.length > 0) {
-            //   for (let i = 0; i < question_choices.length; i++) {
-            //     if (question_type == 'Radio') {
-            //       question_info = <div key="' + question_choices[i].id + '" class="q_choices qst"><div class="cho_start">
-            //         <input disabled type="radio" id="radio" name={question_id} value="' + question_choices[i].value + '" />
-            //         <label for="radio" name={question_id}>{question_choices[i].value}</label></div>
-            //         <div class="cho_end">' + conditions.replace('xxx', i) + '</div></div>;
-            //     } else {
-            //       question_info = <div><div class="cho_start">
-            //         <input disabled type="checkbox" name={question_id} value={question_choices[i].value} />
-            //         <label for="checkbox" name={question_id}>{question_choices[i].value}</label></div></div>;
-            //     }
-            //   }
-            // } else {
-            //   question_info = <div key={index} class="q_choices qst"><div class="cho_start">
-            //     <input disabled type="text" name={question_id} value="" />
-            //   </div></div>;
-            // }
-            // console.log(question_info);
-            return (
-              <Grid key={index} item xs={12}>
-                <Typography variant="h6" gutterBottom>
-                  <div
-                    className="added_question"
-                    key={index}
-                    data-order={qNum}
-                    data-question={question_id}
-                  >
-                    <div className="qst_order">
-                      <div className="a_q_title">
-                        <h4>{question_title}</h4>
-                      </div>
-                    </div>
-                    <div className="que_cho">{question_info}</div>
-                    <input
-                      type="hidden"
-                      name="questions[]"
-                      value={question_id}
-                    />
-                  </div>
-                </Typography>
-              </Grid>
-            );
-          })}
-          {/* <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Created At: {application.createdAt}
-            </Typography>
-          </Grid>
           <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Updated At: {application.updatedAt}
-            </Typography>
-          </Grid> */}
+            {questions.map((question) => (
+              <div className="added_question" key={question.id}>
+                <Typography variant="h6" gutterBottom>
+                  {question.body}
+                </Typography>
+                {question.questionType === "Radio" && (
+                  <FormControl>
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name={question.id}
+                      onChange={handleChange}
+                    >
+                      {question.choices.map((option, index) => {
+                        let checked;
+                        if (showAlert) {
+                          checked =
+                            application.answers.find(
+                              (answer) => answer.questionId === question.id
+                            )?.value === option.value;
+                        }
+                        return (
+                          <FormControlLabel
+                            key={index}
+                            value={option.value}
+                            control={<Radio />}
+                            label={option.value}
+                            disabled
+                            checked={checked}
+                          />
+                        );
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+                )}
+                {question.questionType === "CheckBox" && (
+                  <FormGroup>
+                    {question.choices.map((option, index) => {
+                      let checked;
+                      if (showAlert) {
+                        checked = application.answers
+                          .find((answer) => answer.questionId === question.id)
+                          ?.value.includes(option.value);
+                      }
+                      return (
+                        <FormControlLabel
+                          key={index}
+                          control={
+                            <Checkbox
+                              name={question.id}
+                              value={option.value}
+                              onChange={handleChange}
+                              key={option.id}
+                              disabled
+                              checked={checked}
+                            />
+                          }
+                          label={option.value}
+                        />
+                      );
+                    })}
+                  </FormGroup>
+                )}
+                {question.questionType === "Text" && (
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    name={question.id}
+                    placeholder={question.placeholder}
+                    onChange={handleChange}
+                    disabled
+                    {...(showAlert
+                      ? {
+                          value: application.answers.find(
+                            (answer) => answer.questionId === question.id
+                          )?.value,
+                        }
+                      : {})}
+                  />
+                )}
+              </div>
+            ))}
+          </Grid>
           <Grid item xs={12}>
             <Button
               fullWidth
