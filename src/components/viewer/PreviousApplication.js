@@ -21,19 +21,13 @@ import {
 } from "@mui/material";
 
 export default function AnswerApplication() {
-  const [values, setValues] = useState({
-    answers: [],
-    completedAt: "",
-  });
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const navigate = useNavigate();
   const { id } = useParams();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const navigate = useNavigate();
+
   const fetchApplication = async () => {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
@@ -59,66 +53,6 @@ export default function AnswerApplication() {
       .catch((err) => console.log(err));
   };
 
-  const handleChange = (e) => {
-    const questionId = e.target.name;
-    const value = e.target.value;
-
-    const answerIndex = values.answers.findIndex(
-      (answer) => answer.questionId === questionId
-    );
-    if (answerIndex !== -1) {
-      if (e.target.type === "checkbox") {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = {
-          questionId,
-          value: [...newAnswers[answerIndex].value, value],
-        };
-        setValues({ ...values, answers: newAnswers });
-      } else {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = { questionId, value };
-        setValues({ ...values, answers: newAnswers });
-      }
-    } else {
-      if (e.target.type === "checkbox") {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value: [value] }],
-        });
-      } else {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value }],
-        });
-      }
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    application.answers = values.answers.map((answer) => {
-      if (Array.isArray(answer.value)) {
-        return { ...answer, value: answer.value.join(", ") };
-      }
-      return answer;
-    });
-    application.completedAt = new Date().toISOString();
-    application.status = "Completed";
-    // console.log(application);
-    createAPIEndpoint(ENDPOINTS.applications)
-      .put(id, application)
-      .then((res) => {
-        setSuccess("Application submitted successfully");
-        setShowAlert(true);
-        setLoading(false);
-        setTimeout(() => {
-          navigate("/viewer/applications");
-        }, 5000);
-      })
-      .catch((err) => console.log(err));
-  };
-
   const handleNext = () => {
     setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
@@ -130,6 +64,10 @@ export default function AnswerApplication() {
     navigate("/viewer/applications");
   };
 
+  const handleAlertClose = () => {
+    setShowAlert(false);
+  };
+
   useEffect(() => {
     fetchApplication();
   }, []);
@@ -139,6 +77,7 @@ export default function AnswerApplication() {
       <CardContent>
         {showAlert && (
           <Alert
+            onClose={handleAlertClose}
             severity={application.status === "Completed" ? "success" : "error"}
           >
             {application.status === "Completed"
@@ -168,26 +107,23 @@ export default function AnswerApplication() {
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name={questions[currentQuestionIndex].id}
-                      onChange={handleChange}
                     >
                       {questions[currentQuestionIndex].choices.map(
                         (option, index) => {
                           let checked;
-                          if (showAlert) {
-                            checked =
-                              application.answers.find(
-                                (answer) =>
-                                  answer.questionId ===
-                                  questions[currentQuestionIndex].id
-                              )?.value === option.value;
-                          }
+                          checked =
+                            application.answers.find(
+                              (answer) =>
+                                answer.questionId ===
+                                questions[currentQuestionIndex].id
+                            )?.value === option.value;
                           return (
                             <FormControlLabel
                               key={index}
                               value={option.value}
                               control={<Radio />}
                               label={option.value}
-                              disabled={showAlert}
+                              disabled
                               checked={checked}
                             />
                           );
@@ -203,15 +139,13 @@ export default function AnswerApplication() {
                     {questions[currentQuestionIndex].choices.map(
                       (option, index) => {
                         let checked;
-                        if (showAlert) {
-                          checked = application.answers
-                            .find(
-                              (answer) =>
-                                answer.questionId ===
-                                questions[currentQuestionIndex].id
-                            )
-                            ?.value.includes(option.value);
-                        }
+                        checked = application.answers
+                          .find(
+                            (answer) =>
+                              answer.questionId ===
+                              questions[currentQuestionIndex].id
+                          )
+                          ?.value.includes(option.value);
                         return (
                           <FormControlLabel
                             key={index}
@@ -219,9 +153,8 @@ export default function AnswerApplication() {
                               <Checkbox
                                 name={questions[currentQuestionIndex].id}
                                 value={option.value}
-                                onChange={handleChange}
                                 key={option.id}
-                                disabled={showAlert}
+                                disabled
                                 checked={checked}
                               />
                             }
@@ -238,11 +171,9 @@ export default function AnswerApplication() {
                     margin="normal"
                     required
                     fullWidth
-                    placeholder="Enter your answer here"
                     name={questions[currentQuestionIndex].id}
-                    onChange={handleChange}
-                    disabled={showAlert}
-                    {...(showAlert
+                    disabled
+                    {...(application.answers
                       ? {
                           value: application.answers.find(
                             (answer) =>
@@ -277,50 +208,12 @@ export default function AnswerApplication() {
                   variant="contained"
                   color="primary"
                   onClick={handleNext}
-                  disabled={
-                    !showAlert &&
-                    ((questions[currentQuestionIndex].questionType ===
-                      "Radio" &&
-                      !values.answers.find(
-                        (answer) =>
-                          answer.questionId ===
-                          questions[currentQuestionIndex].id
-                      )) ||
-                      (questions[currentQuestionIndex].questionType ===
-                        "CheckBox" &&
-                        !values.answers.find(
-                          (answer) =>
-                            answer.questionId ===
-                            questions[currentQuestionIndex].id
-                        )) ||
-                      (questions[currentQuestionIndex].questionType ===
-                        "Text" &&
-                        !values.answers.find(
-                          (answer) =>
-                            answer.questionId ===
-                            questions[currentQuestionIndex].id
-                        )))
-                  }
                 >
                   Next
                 </Button>
               </Grid>
             )}
-            {currentQuestionIndex === questions.length - 1 && !showAlert && (
-              <Grid item xs={12}>
-                <Button
-                  style={{ float: "right" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={values.answers.length !== questions.length}
-                  hidden={showAlert}
-                >
-                  Submit
-                </Button>
-              </Grid>
-            )}
-            {currentQuestionIndex === questions.length - 1 && showAlert && (
+            {currentQuestionIndex === questions.length - 1 && (
               <Grid item xs={12}>
                 <Button
                   style={{ float: "right" }}
@@ -330,11 +223,6 @@ export default function AnswerApplication() {
                 >
                   Close
                 </Button>
-              </Grid>
-            )}
-            {error && (
-              <Grid item xs={12}>
-                <Alert severity="error">{error}</Alert>
               </Grid>
             )}
           </Grid>

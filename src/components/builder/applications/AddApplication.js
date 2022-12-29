@@ -13,8 +13,12 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function AddApplication() {
   const [values, setValues] = useState({
@@ -38,7 +42,7 @@ export default function AddApplication() {
       ...temp,
     });
     return Object.values(temp).every((x) => x === "");
-  }
+  };
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.categories)
@@ -61,6 +65,7 @@ export default function AddApplication() {
       })
       .catch((err) => console.log(err));
   }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
@@ -94,54 +99,6 @@ export default function AddApplication() {
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   console.log(values);
-  //   e.preventDefault();
-  //   if (validate()) {
-  //     if (id) {
-  //       createAPIEndpoint(ENDPOINTS.applications)
-  //         .put(id, values)
-  //         .then((res) => {
-  //           navigate("/builder/applications");
-  //         })
-  //         .catch((err) => console.log(err));
-  //     } else {
-  //       createAPIEndpoint(ENDPOINTS.applications)
-  //         .post(values)
-  //         .then((res) => {
-  //           navigate("/builder/applications");
-  //         })
-  //         .catch((err) => console.log(err));
-  //     }
-  //   }
-  // };
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (validate()) {
-  //     if (id) {
-  //       createAPIEndpoint(ENDPOINTS.applications)
-  //         .put(id, {
-  //           ...values,
-  //           questions: values.questions.map((q) => q.questions_content.id),
-  //         })
-  //         .then((res) => {
-  //           navigate("/builder/applications");
-  //         })
-  //         .catch((err) => console.log(err));
-  //     } else {
-  //       createAPIEndpoint(ENDPOINTS.applications)
-
-  //         .post({
-  //           ...values,
-  //           questions: values.questions.map((q) => q.questions_content.id),
-  //         })
-  //         .then((res) => {
-  //           navigate("/builder/applications");
-  //         })
-  //         .catch((err) => console.log(err));
-  //     }
-  //   }
-  // };
   const handleAddClick = () => {
     setValues({
       ...values,
@@ -172,7 +129,7 @@ export default function AddApplication() {
         <Typography variant="h6" component="div">
           {id ? "Edit Application" : "Add Application"}
         </Typography>
-        <br></br>
+        <br />
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -194,6 +151,7 @@ export default function AddApplication() {
                 })}
               />
             </Grid>
+
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
@@ -220,6 +178,7 @@ export default function AddApplication() {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
@@ -246,9 +205,12 @@ export default function AddApplication() {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12} className="select_question">
               <FormControl fullWidth>
-                <InputLabel id="question-select-label">Select a Question</InputLabel>
+                <InputLabel id="question-select-label">
+                  Select a Question
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -271,114 +233,185 @@ export default function AddApplication() {
                   ))}
                 </Select>
               </FormControl>
-              <Button variant="contained" color="primary" onClick={handleAddClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddClick}
+              >
                 Add
               </Button>
             </Grid>
+
             <Grid item xs={12}>
               {values.questions.map((question, index) => (
                 <div className="added_question" key={index}>
-                  <div className="a_q_title">
-                    {question.questions_content.body}
-                    <button onClick={(e) => {
-                      e.preventDefault();
-                      // Remove the question from the array
-                      setValues({
-                        ...values,
-                        questions: values.questions.filter((q) => q !== question),
-                      });
-                    }}>
-                      Delete
-                    </button>
-                    <button onClick={(e) => {
-                      e.preventDefault();
-                      if (index > 0) {
-                        const newQuestions = [...values.questions];
-                        newQuestions.splice(index - 1, 0, newQuestions.splice(index, 1)[0]);
+                  <Grid item xs={12}>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Remove the question from the array
                         setValues({
                           ...values,
-                          questions: newQuestions,
+                          questions: values.questions.filter(
+                            (q) => q !== question
+                          ),
                         });
-                      }
-                    }}>
-                      Up
-                    </button>
-                    <button onClick={(e) => {
-                      e.preventDefault();
-                      if (index < values.questions.length - 1) {
-                        const newQuestions = [...values.questions];
-                        newQuestions.splice(index + 1, 0, newQuestions.splice(index, 1)[0]);
-                        setValues({
-                          ...values,
-                          questions: newQuestions,
-                        });
-                      }
-                    }}>
-                      Down
-                    </button>
-                  </div>
-                  <div className="que_cho">
-                    {(question.questions_content.questionType === 'CheckBox' || question.questions_content.questionType === 'Radio') && (
-                      <div>
-                        {question.questions_content.choices.map((choice, i) => (
-                          <label key={i}>
-                            < input
-                              type={question.questions_content.questionType}
-                              value={choice.value}
-                              onChange={(event) => {
-                                setValues({
-                                  ...values,
-                                  questions: values.questions.map((q) => {
-                                    if (q === question) {
-                                      return {
-                                        ...q,
-                                        questions_content: {
-                                          ...q.questions_content,
-                                          choices: q.questions_content.choices.map((c) => {
-                                            if (c === choice) {
-                                              return {
-                                                ...c,
-                                                value: event.target.value,
-                                              };
-                                            } else {
-                                              return c;
-                                            }
-                                          }),
-                                        },
-                                      };
-                                    } else {
-                                      return q;
+                      }}
+                    >
+                      <DeleteIcon color="primary" />
+                    </IconButton>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (index < values.questions.length - 1) {
+                          const newQuestions = [...values.questions];
+                          newQuestions.splice(
+                            index + 1,
+                            0,
+                            newQuestions.splice(index, 1)[0]
+                          );
+                          setValues({
+                            ...values,
+                            questions: newQuestions,
+                          });
+                        }
+                      }}
+                    >
+                      <ArrowDownwardIcon color="primary" />
+                    </IconButton>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (index > 0) {
+                          const newQuestions = [...values.questions];
+                          newQuestions.splice(
+                            index - 1,
+                            0,
+                            newQuestions.splice(index, 1)[0]
+                          );
+                          setValues({
+                            ...values,
+                            questions: newQuestions,
+                          });
+                        }
+                      }}
+                    >
+                      <ArrowUpwardIcon color="primary" />
+                    </IconButton>
+                  </Grid>
+                  <br />
+                  <Grid item xs={12}>
+                    <div className="a_q_title">
+                      {question.questions_content.body}
+                    </div>
+                    <br />
+                    <div className="que_cho">
+                      {(question.questions_content.questionType ===
+                        "CheckBox" ||
+                        question.questions_content.questionType ===
+                          "Radio") && (
+                        <div>
+                          <Grid item xs={12}>
+                            {question.questions_content.choices.map(
+                              (choice, i) => (
+                                <label key={i}>
+                                  <input
+                                    disabled
+                                    type={
+                                      question.questions_content.questionType
                                     }
-                                  }),
-                                });
-                              }}
-                            />
-                            {choice.value}
-                          </label>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                                    value={choice.value}
+                                    onChange={(event) => {
+                                      setValues({
+                                        ...values,
+                                        questions: values.questions.map((q) => {
+                                          if (q === question) {
+                                            return {
+                                              ...q,
+                                              questions_content: {
+                                                ...q.questions_content,
+                                                choices:
+                                                  q.questions_content.choices.map(
+                                                    (c) => {
+                                                      if (c === choice) {
+                                                        return {
+                                                          ...c,
+                                                          value:
+                                                            event.target.value,
+                                                        };
+                                                      } else {
+                                                        return c;
+                                                      }
+                                                    }
+                                                  ),
+                                              },
+                                            };
+                                          } else {
+                                            return q;
+                                          }
+                                        }),
+                                      });
+                                    }}
+                                  />
+                                  {choice.value}
+                                </label>
+                              )
+                            )}
+                          </Grid>
+                        </div>
+                      )}
+                    </div>
+                    <br />
+                  </Grid>
                 </div>
               ))}
             </Grid>
           </Grid>
-          <br></br>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                type="submit"
-                style={{ marginTop: "10px" }}
-              >
-                {id ? "Update" : "Save"}
-              </Button>
-            </Grid>
+          <br />
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{ marginTop: "10px" }}
+              // disable if any of the fields are empty or there are no questions
+              disabled={
+                !values.title ||
+                !values.categoryId ||
+                !values.clientId ||
+                values.questions.length === 0
+              }
+            >
+              {id ? "Update" : "Save"}
+            </Button>
           </Grid>
         </form>
       </CardContent>
-    </Card >
+    </Card>
   );
 }

@@ -77,7 +77,6 @@ export default function AnsweredApplications() {
     }
   }, [searchKeyword, applications]);
 
-  // map the client and category names to the application
   const mappedApplications = applications.map((application) => {
     const client = clients.find((client) => client.id === application.clientId);
     const category = categories.find(

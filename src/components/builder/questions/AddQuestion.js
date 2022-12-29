@@ -210,6 +210,8 @@ export default function AddQuestion() {
                   type="submit"
                   variant="contained"
                   disabled={
+                    !values.body ||
+                    values.body.trim() === "" ||
                     !values.questionType ||
                     (values.questionType === "CheckBox" &&
                       values.choices.length < 2) ||

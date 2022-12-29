@@ -79,7 +79,6 @@ export default function Applications() {
     }
   }, [searchKeyword, applications]);
 
-  // map the client and category names to the application
   const mappedApplications = applications.map((application) => {
     const client = clients.find((client) => client.id === application.clientId);
     const category = categories.find(
@@ -87,8 +86,8 @@ export default function Applications() {
     );
     return {
       ...application,
-      clientName: client.name,
-      categoryName: category.name,
+      clientName: client ? client.name : "",
+      categoryName: category ? category.name : "",
     };
   });
 
@@ -97,8 +96,8 @@ export default function Applications() {
     .map((application) => {
       return {
         ...application,
-        clientName: application.clientName,
-        categoryName: application.categoryName,
+        clientName: application.clientName ? application.clientName : "",
+        categoryName: application.categoryName ? application.categoryName : "",
       };
     });
 
