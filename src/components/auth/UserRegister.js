@@ -198,7 +198,11 @@ export default function UserRegister() {
                     !email ||
                     !username ||
                     !password ||
-                    !confirmPassword
+                    !confirmPassword ||
+                    passwordError ||
+                    confirmPasswordError
+                      ? true
+                      : false
                   }
                 >
                   Register

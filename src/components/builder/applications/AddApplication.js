@@ -21,6 +21,13 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function AddApplication() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [questionId, setQuestions] = useState([]);
+  const [categoryId, setCategories] = useState([]);
+  const [clientId, setClients] = useState([]);
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     title: "",
     questionId: "",
@@ -28,13 +35,7 @@ export default function AddApplication() {
     categoryId: "",
     questions: [],
   });
-  const [questionId, setQuestions] = useState([]);
-  const [categoryId, setCategories] = useState([]);
-  const [clientId, setClients] = useState([]);
-  const [selectedQuestion, setSelectedQuestion] = useState("");
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-  const { id } = useParams();
+
   const validate = () => {
     let temp = {};
     temp.title = values.title ? "" : "This field is required.";
@@ -127,7 +128,7 @@ export default function AddApplication() {
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          {id ? "Edit an Application" : "Add an Application"}
+          {id ? "Edit Application" : "Add Application"}
         </Typography>
         <br />
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>
@@ -338,47 +339,52 @@ export default function AddApplication() {
                           <Grid item xs={12}>
                             {question.questions_content.choices.map(
                               (choice, i) => (
-                                <label key={i}>
-                                  <input
-                                    disabled
-                                    type={
-                                      question.questions_content.questionType
-                                    }
-                                    value={choice.value}
-                                    onChange={(event) => {
-                                      setValues({
-                                        ...values,
-                                        questions: values.questions.map((q) => {
-                                          if (q === question) {
-                                            return {
-                                              ...q,
-                                              questions_content: {
-                                                ...q.questions_content,
-                                                choices:
-                                                  q.questions_content.choices.map(
-                                                    (c) => {
-                                                      if (c === choice) {
-                                                        return {
-                                                          ...c,
-                                                          value:
-                                                            event.target.value,
-                                                        };
-                                                      } else {
-                                                        return c;
-                                                      }
-                                                    }
-                                                  ),
-                                              },
-                                            };
-                                          } else {
-                                            return q;
-                                          }
-                                        }),
-                                      });
-                                    }}
-                                  />
-                                  {choice.value}
-                                </label>
+                                <Grid item xs={12} key={i}>
+                                  <label key={i}>
+                                    <input
+                                      disabled
+                                      type={
+                                        question.questions_content.questionType
+                                      }
+                                      value={choice.value}
+                                      onChange={(event) => {
+                                        setValues({
+                                          ...values,
+                                          questions: values.questions.map(
+                                            (q) => {
+                                              if (q === question) {
+                                                return {
+                                                  ...q,
+                                                  questions_content: {
+                                                    ...q.questions_content,
+                                                    choices:
+                                                      q.questions_content.choices.map(
+                                                        (c) => {
+                                                          if (c === choice) {
+                                                            return {
+                                                              ...c,
+                                                              value:
+                                                                event.target
+                                                                  .value,
+                                                            };
+                                                          } else {
+                                                            return c;
+                                                          }
+                                                        }
+                                                      ),
+                                                  },
+                                                };
+                                              } else {
+                                                return q;
+                                              }
+                                            }
+                                          ),
+                                        });
+                                      }}
+                                    />
+                                    {choice.value}
+                                  </label>
+                                </Grid>
                               )
                             )}
                           </Grid>
@@ -399,12 +405,13 @@ export default function AddApplication() {
               color="primary"
               type="submit"
               style={{ marginTop: "10px" }}
-              // disable if any of the fields are empty or there are no questions
               disabled={
-                !values.title ||
-                !values.categoryId ||
-                !values.clientId ||
-                values.questions.length === 0
+                values.questions.length === 0 ||
+                values.questions.some((question) =>
+                  question.questions_content.choices.some(
+                    (choice) => choice.value === ""
+                  )
+                )
               }
             >
               {id ? "Update" : "Save"}

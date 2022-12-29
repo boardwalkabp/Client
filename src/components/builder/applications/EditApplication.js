@@ -14,22 +14,36 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  IconButton,
 } from "@mui/material";
-import $ from "jquery";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function EditApplication() {
-  const [values, setValues] = useState({
-    title: "",
-    clientId: "",
-    categoryId: "",
-    questionId: "",
-    questions: [],
-  });
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [questionId, setQuestions] = useState([]);
   const [categoryId, setCategories] = useState([]);
   const [clientId, setClients] = useState([]);
-  const [questionId, setQuestions] = useState([]);
-  const [questions, setQuestion_branching] = useState([]);
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [errors, setErrors] = useState({});
+  const [values, setValues] = useState({
+    title: "",
+    questionId: "",
+    clientId: "",
+    categoryId: "",
+    questions: [],
+  });
+
+  const validate = () => {
+    let temp = {};
+    temp.title = values.title ? "" : "This field is required.";
+    setErrors({
+      ...temp,
+    });
+    return Object.values(temp).every((x) => x === "");
+  };
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.categories)
@@ -48,44 +62,56 @@ export default function EditApplication() {
     createAPIEndpoint(ENDPOINTS.questions)
       .fetch()
       .then((res) => {
-        // console.log(res.data);
         setQuestions(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  const validate = () => {
-    let temp = {};
-    temp.title = values.title ? "" : "This field is required.";
-    setErrors({
-      ...temp,
-    });
-    return Object.values(temp).every((x) => x === "");
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(values);
     if (validate()) {
       if (id) {
         createAPIEndpoint(ENDPOINTS.applications)
-          .put(id, values)
+          .put(id, {
+            ...values,
+            questions: values.questions.map((q, index) => ({
+              ...q,
+              order: index,
+            })),
+          })
           .then((res) => {
             navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       } else {
         createAPIEndpoint(ENDPOINTS.applications)
-          .post(values)
+          .post({
+            ...values,
+            questions: values.questions.map((q, index) => ({
+              ...q,
+              order: index,
+            })),
+          })
           .then((res) => {
-            // console.log(res.data);
             navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       }
+    }
+  };
+
+  const handleAddClick = () => {
+    if (selectedQuestion) {
+      setValues({
+        ...values,
+        questions: [
+          ...values.questions,
+          {
+            value: selectedQuestion.id ? selectedQuestion.id : "",
+            questionContent: selectedQuestion ? selectedQuestion.content : "",
+          },
+        ],
+      });
     }
   };
 
@@ -106,7 +132,7 @@ export default function EditApplication() {
         <Typography variant="h6" component="div">
           {id ? "Edit Application" : "Add Application"}
         </Typography>
-        <br></br>
+        <br />
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -128,6 +154,7 @@ export default function EditApplication() {
                 })}
               />
             </Grid>
+
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
@@ -154,6 +181,7 @@ export default function EditApplication() {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
@@ -180,10 +208,11 @@ export default function EditApplication() {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12} className="select_question">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Select a question
+                <InputLabel id="question-select-label">
+                  Select a Question
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -195,8 +224,6 @@ export default function EditApplication() {
                       ...values,
                       questionId: e.target.value,
                     });
-
-                    // Set selected question to the selected item
                     setSelectedQuestion(
                       questionId.find((item) => item.id === e.target.value)
                     );
@@ -204,7 +231,7 @@ export default function EditApplication() {
                 >
                   {questionId.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
-                      {item.body}
+                      {item.body} - {item.questionType}
                     </MenuItem>
                   ))}
                 </Select>
@@ -212,167 +239,181 @@ export default function EditApplication() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  if (!selectedQuestion) {
-                    alert("Please select a question");
-                  } else {
-                    if (
-                      !$(".add-question").find(`#${selectedQuestion.id}`).length
-                    ) {
-                      let question_title = selectedQuestion.body;
-                      let question_id = selectedQuestion.id;
-                      let question_type = selectedQuestion.questionType;
-                      let question_choices = selectedQuestion.choices;
-                      let qNum = 1;
-                      let conditions =
-                        '<select name="conditions[' +
-                        question_id +
-                        '][xxx]" data-question="' +
-                        question_id +
-                        '" class="select_condition qSelect"><option value="0">Go to next</option>';
-                      let question_info = "";
-                      $(".added_question").each(function (i) {
-                        conditions +=
-                          '<option key="' +
-                          question_id +
-                          '" value="' +
-                          $(this).attr("data-question") +
-                          '">Go to: ' +
-                          $(this).find("h4").text() +
-                          "</option>";
-                      });
-                      conditions += "</select>";
-                      if (question_choices.length > 0) {
-                        for (let i = 0; i < question_choices.length; i++) {
-                          // console.log(question_choices[i]);
-                          if (question_type === "Radio") {
-                            question_info +=
-                              '<div key="' +
-                              question_choices[i].id +
-                              '" class="q_choices qst"><div class="cho_start">' +
-                              '<input disabled type="radio" id="radio" name="' +
-                              question_id +
-                              '" value="' +
-                              question_choices[i].value +
-                              '" />' +
-                              '<label for="radio" name="' +
-                              question_id +
-                              '">' +
-                              question_choices[i].value +
-                              "</label></div>" +
-                              '<div class="cho_end">' +
-                              conditions.replace("xxx", i) +
-                              "</div></div>";
-                          } else {
-                            question_info +=
-                              '<div key="' +
-                              question_choices[i].id +
-                              '" class="q_choices qst"><div class="cho_start">' +
-                              '<input disabled type="checkbox" name="' +
-                              question_id +
-                              '" value="' +
-                              question_choices[i].value +
-                              '" />' +
-                              '<label for="checkbox" name="' +
-                              question_id +
-                              '">' +
-                              question_choices[i].value +
-                              "</label></div></div>";
-                          }
-                        }
-                      } else {
-                        question_info +=
-                          '<div key="' +
-                          question_id +
-                          '" class="q_choices qst"><div class="cho_start">' +
-                          '<input disabled type="text" name="' +
-                          question_id +
-                          '" value="" />' +
-                          "</div></div>";
-                      }
-                      let order_html =
-                        '<div key="' +
-                        question_id +
-                        '" class="updown b_end"><input type="hidden" class="input_order" style="width:20px;" name="order[' +
-                        question_id +
-                        ']" value="' +
-                        qNum +
-                        '" /></div>' +
-                        '<div class="delete_Button"><input type="button" class="delete_bracnh" value="Delete" /></div>';
-                      $(".add-question").append(
-                        '<div class="added_question" key="' +
-                          question_id +
-                          '" data-order="' +
-                          qNum +
-                          '" data-question="' +
-                          question_id +
-                          '"><div class="qst_order"><div class="a_q_title"><h4>' +
-                          question_title +
-                          "</h4></div>" +
-                          order_html +
-                          '</div><div class="que_cho">' +
-                          question_info +
-                          "</div>" +
-                          '<input type="hidden" name="questions[]" value="' +
-                          question_id +
-                          '" /></div>'
-                      );
-
-                      $(".select_condition").each(function (i) {
-                        let q_id = $(this).attr("data-question");
-                        if (q_id != question_id) {
-                          $(this).append(
-                            '<option key="' +
-                              question_id +
-                              '" value="' +
-                              question_id +
-                              '">Go to: ' +
-                              question_title +
-                              "</option>"
-                          );
-                        }
-                      });
-
-                      qNum++;
-                      setQuestion_branching([...questions, question_id]);
-                      setValues({
-                        ...values,
-                        questions: [
-                          ...values.questions,
-                          {
-                            value: question_id,
-                          },
-                        ],
-                      });
-                    } else {
-                      alert("This question already exists");
-                    }
-                  }
-                }}
+                onClick={handleAddClick}
               >
                 Add
               </Button>
             </Grid>
+
             <Grid item xs={12}>
-              <div className="add-question"></div>
+              {values.questions.map((question, index) => (
+                <div className="added_question" key={index}>
+                  <Grid item xs={12}>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Remove the question from the array
+                        setValues({
+                          ...values,
+                          questions: values.questions.filter(
+                            (q) => q !== question
+                          ),
+                        });
+                      }}
+                    >
+                      <DeleteIcon color="primary" />
+                    </IconButton>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (index < values.questions.length - 1) {
+                          const newQuestions = [...values.questions];
+                          newQuestions.splice(
+                            index + 1,
+                            0,
+                            newQuestions.splice(index, 1)[0]
+                          );
+                          setValues({
+                            ...values,
+                            questions: newQuestions,
+                          });
+                        }
+                      }}
+                    >
+                      <ArrowDownwardIcon color="primary" />
+                    </IconButton>
+                    <IconButton
+                      style={{
+                        float: "right",
+                        marginRight: "5px",
+                        border: "1px solid #FF7753",
+                      }}
+                      margin="dense"
+                      variant="outlined"
+                      color="primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (index > 0) {
+                          const newQuestions = [...values.questions];
+                          newQuestions.splice(
+                            index - 1,
+                            0,
+                            newQuestions.splice(index, 1)[0]
+                          );
+                          setValues({
+                            ...values,
+                            questions: newQuestions,
+                          });
+                        }
+                      }}
+                    >
+                      <ArrowUpwardIcon color="primary" />
+                    </IconButton>
+                  </Grid>
+                  <br />
+                  {/* <Grid item xs={12}>
+                    <div className="a_q_title">
+                      {question.questionContent.body}
+                    </div>
+                    <br />
+                    <div className="que_cho">
+                      {(question.questionContent.questionType === "CheckBox" ||
+                        question.questionContent.questionType === "Radio") && (
+                        <div>
+                          <Grid item xs={12}>
+                            {question.questionContent.choices.map(
+                              (choice, i) => (
+                                <Grid item xs={12} key={i}>
+                                  <label key={i}>
+                                    <input
+                                      disabled
+                                      type={
+                                        question.questionContent.questionType
+                                      }
+                                      value={choice.value}
+                                      onChange={(event) => {
+                                        setValues({
+                                          ...values,
+                                          questions: values.questions.map(
+                                            (q) => {
+                                              if (q === question) {
+                                                return {
+                                                  ...q,
+                                                  questionContent: {
+                                                    ...q.questionContent,
+                                                    choices:
+                                                      q.questionContent.choices.map(
+                                                        (c) => {
+                                                          if (c === choice) {
+                                                            return {
+                                                              ...c,
+                                                              value:
+                                                                event.target
+                                                                  .value,
+                                                            };
+                                                          } else {
+                                                            return c;
+                                                          }
+                                                        }
+                                                      ),
+                                                  },
+                                                };
+                                              } else {
+                                                return q;
+                                              }
+                                            }
+                                          ),
+                                        });
+                                      }}
+                                    />
+                                    {choice.value}
+                                  </label>
+                                </Grid>
+                              )
+                            )}
+                          </Grid>
+                        </div>
+                      )}
+                    </div>
+                    <br />
+                  </Grid> */}
+                </div>
+              ))}
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                type="submit"
-                style={{ marginTop: "10px" }}
-                disabled={
-                  !values.title ||
-                  !values.categoryId ||
-                  !values.clientId ||
-                  !values.questions.length
-                }
-              >
-                {id ? "Update" : "Save"}
-              </Button>
-            </Grid>
+          </Grid>
+          <br />
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              type="submit"
+              style={{ marginTop: "10px" }}
+              disabled={
+                !values.title ||
+                !values.categoryId ||
+                !values.clientId ||
+                values.questions.length === 0
+              }
+            >
+              {id ? "Update" : "Save"}
+            </Button>
           </Grid>
         </form>
       </CardContent>
