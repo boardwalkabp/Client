@@ -50,71 +50,71 @@ export default function EditClient() {
   };
 
   return (
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h6" component="div">
               {client.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Name"
-                name="name"
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Username"
-                name="username"
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Email"
-                name="email"
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Phone Number"
-                name="phoneNumber"
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Address"
-                name="address"
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Update
-              </Button>
-            </Grid>
+            </Typography>
           </Grid>
-        </CardContent>
-      </Card>
-  )
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Name"
+              name="name"
+              onChange={handleInputChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Username"
+              name="username"
+              onChange={handleInputChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Email"
+              name="email"
+              onChange={handleInputChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Phone Number"
+              name="phoneNumber"
+              onChange={handleInputChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Address"
+              name="address"
+              onChange={handleInputChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              Update
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 }

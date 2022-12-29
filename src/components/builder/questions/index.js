@@ -1,5 +1,4 @@
 import React from "react";
-import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -19,19 +18,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Questions() {
-  const { context } = useStateContext();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const fetchQuestions = async () => {
@@ -83,6 +79,7 @@ export default function Questions() {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setSearchKeyword(e.target.value);
   };
 
   const handleSearchClick = () => {
@@ -157,7 +154,8 @@ export default function Questions() {
               <DataGrid
                 rows={searchKeyword !== "" ? searchResults : questions}
                 columns={columns}
-                pageSize={rowsPerPage}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 rowsPerPageOptions={[5, 10, 20]}
                 checkboxSelection
                 disableSelectionOnClick

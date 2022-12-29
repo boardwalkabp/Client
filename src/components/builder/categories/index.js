@@ -27,6 +27,7 @@ export default function Categories() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState(null);
@@ -86,6 +87,7 @@ export default function Categories() {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setSearchKeyword(e.target.value);
   };
 
   const handleSearchClick = () => {
@@ -157,13 +159,14 @@ export default function Categories() {
               <DataGrid
                 rows={searchKeyword !== "" ? searchResults : categories}
                 columns={columns}
-                pageSize={rowsPerPage}
+                pageSize={pageSize}
+                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 rowsPerPageOptions={[5, 10, 20]}
                 checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={handleSelect}
-                onPageSizeChange={handleRowsPerPageChange}
                 onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
               />
             </div>
           </Grid>

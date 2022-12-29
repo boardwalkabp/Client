@@ -20,57 +20,119 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Applications() {
+  const navigate = useNavigate();
   const { context, setContext } = useStateContext();
   const [applications, setApplications] = useState([]);
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const [clients, setClients] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
 
-  const fetchApplications = async () => {
-    createAPIEndpoint(ENDPOINTS.applications)
+  const fetchClients = async () => {
+    createAPIEndpoint(ENDPOINTS.clients)
       .fetch()
       .then((res) => {
-        setApplications(res.data);
+        setClients(res.data);
       })
       .catch((err) => console.log(err));
   };
 
+  const fetchCategories = async () => {
+    createAPIEndpoint(ENDPOINTS.categories)
+      .fetch()
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const fetchApplications = async () => {
+    setTimeout(() => {
+      createAPIEndpoint(ENDPOINTS.applications)
+        .fetch()
+        .then((res) => {
+          setApplications(res.data);
+        })
+        .catch((err) => console.log(err));
+    }, 100);
+  };
+
   useEffect(() => {
-    fetchApplications();
+    fetchClients();
+    fetchCategories();
   }, []);
 
-  const filteredApplications = applications.filter(
-    (application) => application.completedAt === null
-  );
+  useEffect(() => {
+    if (searchKeyword !== "") {
+      const results = applications.filter((application) =>
+        application.title.toLowerCase().includes(searchKeyword)
+      );
+      setSearchResults(results);
+    } else {
+      setSearchResults(applications);
+    }
+  }, [searchKeyword, applications]);
 
-  const rows = filteredApplications.map((application) => {
+  // map the client and category names to the application
+  const mappedApplications = applications.map((application) => {
+    const client = clients.find((client) => client.id === application.clientId);
+    const category = categories.find(
+      (category) => category.id === application.categoryId
+    );
     return {
-      id: application.id,
-      title: application.title,
-      createdAt: application.createdAt,
-      updatedAt: application.updatedAt,
+      ...application,
+      clientName: client.name,
+      categoryName: category.name,
     };
   });
+
+  const newApplications = mappedApplications
+    .filter((application) => application.status !== "Completed")
+    .map((application) => {
+      return {
+        ...application,
+        clientName: application.clientName,
+        categoryName: application.categoryName,
+      };
+    });
+
+  const rows = newApplications;
 
   const columns = [
     {
       field: "title",
       headerName: "Title",
-      width: 400,
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "clientName",
+      headerName: "Client",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "categoryName",
+      headerName: "Category",
+      width: 150,
       editable: true,
     },
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <div>
           <IconButton
@@ -104,6 +166,7 @@ export default function Applications() {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setSearchKeyword(e.target.value);
   };
 
   const handleSearchClick = () => {
@@ -134,17 +197,6 @@ export default function Applications() {
   useEffect(() => {
     fetchApplications();
   }, [searchKeyword]);
-
-  useEffect(() => {
-    if (searchKeyword !== "") {
-      const results = applications.filter((application) =>
-        application.title.toLowerCase().includes(searchKeyword)
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults(applications);
-    }
-  }, [searchKeyword, applications]);
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -190,13 +242,14 @@ export default function Applications() {
                   <DataGrid
                     rows={searchKeyword !== "" ? searchResults : rows}
                     columns={columns}
-                    pageSize={rowsPerPage}
+                    pageSize={pageSize}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     rowsPerPageOptions={[5, 10, 25]}
                     checkboxSelection
                     disableSelectionOnClick
                     onSelectionModelChange={handleSelectionChange}
                     onRowClick={handleRowClick}
-                    onPageSizeChange={handleRowsPerPageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
                     onPageChange={handlePageChange}
                     onSearchClear={handleSearchClear}
                   />

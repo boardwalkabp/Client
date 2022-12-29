@@ -9,29 +9,20 @@ import {
   Grid,
   Button,
   Typography,
-  Alert,
   Checkbox,
   FormControlLabel,
   FormGroup,
   Radio,
   FormControl,
-  FormLabel,
   RadioGroup,
   TextField,
 } from "@mui/material";
-import $ from "jquery";
 
 export default function ViewApplication() {
-  const [values, setValues] = useState({
-    answers: [],
-    completedAt: "",
-  });
   const [application, setApplication] = useState({});
   const [questions, setQuestions] = useState([]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [client, setClient] = useState({});
+  const [category, setCategory] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   const fetchApplication = async () => {
@@ -40,9 +31,6 @@ export default function ViewApplication() {
       .then((res) => {
         setApplication(res.data);
         // console.log(res.data);
-        if (res.data.status !== "") {
-          setShowAlert(true);
-        }
         const questionIds = res.data.questions.map(
           (question) => question.value
         );
@@ -58,58 +46,57 @@ export default function ViewApplication() {
       })
       .catch((err) => console.log(err));
   };
-
-  const handleChange = (e) => {
-    const questionId = e.target.name;
-    const value = e.target.value;
-
-    const answerIndex = values.answers.findIndex(
-      (answer) => answer.questionId === questionId
-    );
-    if (answerIndex !== -1) {
-      if (e.target.type === "checkbox") {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = {
-          questionId,
-          value: [...newAnswers[answerIndex].value, value],
-        };
-        setValues({ ...values, answers: newAnswers });
-      } else {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = { questionId, value };
-        setValues({ ...values, answers: newAnswers });
-      }
-    } else {
-      if (e.target.type === "checkbox") {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value: [value] }],
-        });
-      } else {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value }],
-        });
-      }
-    }
-  };
   useEffect(() => {
     fetchApplication();
   }, []);
 
+  const clientId = application.clientId;
+  const categoryId = application.categoryId;
+
+  useEffect(() => {
+    if (clientId) {
+      createAPIEndpoint(ENDPOINTS.clients)
+        .fetchById(clientId)
+        .then((res) => {
+          setClient(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [clientId]);
+
+  useEffect(() => {
+    if (categoryId) {
+      createAPIEndpoint(ENDPOINTS.categories)
+        .fetchById(categoryId)
+        .then((res) => {
+          setCategory(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [categoryId]);
+
   return (
     <Card>
       <CardContent>
-        {showAlert && (
-          <Alert severity="error">
-            This application has already been submitted by{" "}
-            {application.clientId}
-          </Alert>
-        )}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h4" gutterBottom>
               {application.title}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Client: {client.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Category: {category.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Status: {application.status}
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -123,16 +110,9 @@ export default function ViewApplication() {
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name={question.id}
-                      onChange={handleChange}
                     >
                       {question.choices.map((option, index) => {
                         let checked;
-                        if (showAlert) {
-                          checked =
-                            application.answers.find(
-                              (answer) => answer.questionId === question.id
-                            )?.value === option.value;
-                        }
                         return (
                           <FormControlLabel
                             key={index}
@@ -151,11 +131,6 @@ export default function ViewApplication() {
                   <FormGroup>
                     {question.choices.map((option, index) => {
                       let checked;
-                      if (showAlert) {
-                        checked = application.answers
-                          .find((answer) => answer.questionId === question.id)
-                          ?.value.includes(option.value);
-                      }
                       return (
                         <FormControlLabel
                           key={index}
@@ -163,7 +138,6 @@ export default function ViewApplication() {
                             <Checkbox
                               name={question.id}
                               value={option.value}
-                              onChange={handleChange}
                               key={option.id}
                               disabled
                               checked={checked}
@@ -183,15 +157,7 @@ export default function ViewApplication() {
                     required
                     name={question.id}
                     placeholder={question.placeholder}
-                    onChange={handleChange}
                     disabled
-                    {...(showAlert
-                      ? {
-                          value: application.answers.find(
-                            (answer) => answer.questionId === question.id
-                          )?.value,
-                        }
-                      : {})}
                   />
                 )}
               </div>

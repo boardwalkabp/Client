@@ -19,20 +19,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Clients() {
-  const { context } = useStateContext();
-  // console.log(context)
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState(null);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const fetchClients = async () => {
@@ -80,6 +76,7 @@ export default function Clients() {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setSearchKeyword(e.target.value);
   };
 
   const handleSearchClick = () => {
@@ -157,8 +154,9 @@ export default function Clients() {
                   <DataGrid
                     rows={searchKeyword !== "" ? searchResults : clients}
                     columns={columns}
-                    pageSize={rowsPerPage}
-                    rowsPerPageOptions={[10, 20, 50]}
+                    pageSize={pageSize}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    rowsPerPageOptions={[5, 10, 20]}
                     checkboxSelection
                     disableSelectionOnClick
                     onSelectionModelChange={handleSelectionChange}

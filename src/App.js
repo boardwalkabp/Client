@@ -39,6 +39,7 @@ import ViewerHome from "./views/ViewerHome";
 import ViewerLayout from "./components/layout/ViewerLayout";
 import ClientApplications from "./components/viewer/Applications";
 import AnswerApplication from "./components/viewer/AnswerApplication";
+import PreviousApplication from "./components/viewer/PreviousApplication";
 
 function App() {
   return (
@@ -167,6 +168,11 @@ function App() {
               path="/viewer/applications/answer/:id"
               exact
               element={<AnswerApplication />}
+            />
+            <Route
+              path="/viewer/applications/view/:id"
+              exact
+              element={<PreviousApplication />}
             />
           </Route>
         </Route>

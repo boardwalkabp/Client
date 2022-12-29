@@ -114,7 +114,7 @@ export default function AnswerApplication() {
         setLoading(false);
         setTimeout(() => {
           navigate("/viewer/applications");
-        }, 2000);
+        }, 5000);
       })
       .catch((err) => console.log(err));
   };
@@ -127,7 +127,7 @@ export default function AnswerApplication() {
   };
 
   const handleClose = () => {
-    setShowAlert(false);
+    navigate("/viewer/applications");
   };
 
   useEffect(() => {
@@ -139,12 +139,11 @@ export default function AnswerApplication() {
       <CardContent>
         {showAlert && (
           <Alert
-            onClose={handleClose}
-            severity={application.status === "Completed" ? "success" : "info"}
+            severity={application.status === "Completed" ? "success" : "error"}
           >
             {application.status === "Completed"
               ? "Application submitted successfully"
-              : "Application started! Please complete it to submit."}
+              : "Application already submitted"}
           </Alert>
         )}
 
@@ -174,18 +173,21 @@ export default function AnswerApplication() {
                       {questions[currentQuestionIndex].choices.map(
                         (option, index) => {
                           let checked;
-                          checked =
-                            values.answers.find(
-                              (answer) =>
-                                answer.questionId ===
-                                questions[currentQuestionIndex].id
-                            )?.value === option.value;
+                          if (showAlert) {
+                            checked =
+                              application.answers.find(
+                                (answer) =>
+                                  answer.questionId ===
+                                  questions[currentQuestionIndex].id
+                              )?.value === option.value;
+                          }
                           return (
                             <FormControlLabel
                               key={index}
                               value={option.value}
                               control={<Radio />}
                               label={option.value}
+                              disabled={showAlert}
                               checked={checked}
                             />
                           );
@@ -201,13 +203,15 @@ export default function AnswerApplication() {
                     {questions[currentQuestionIndex].choices.map(
                       (option, index) => {
                         let checked;
-                        checked = values.answers
-                          .find(
-                            (answer) =>
-                              answer.questionId ===
-                              questions[currentQuestionIndex].id
-                          )
-                          ?.value.includes(option.value);
+                        if (showAlert) {
+                          checked = application.answers
+                            .find(
+                              (answer) =>
+                                answer.questionId ===
+                                questions[currentQuestionIndex].id
+                            )
+                            ?.value.includes(option.value);
+                        }
                         return (
                           <FormControlLabel
                             key={index}
@@ -217,6 +221,7 @@ export default function AnswerApplication() {
                                 value={option.value}
                                 onChange={handleChange}
                                 key={option.id}
+                                disabled={showAlert}
                                 checked={checked}
                               />
                             }
@@ -236,6 +241,16 @@ export default function AnswerApplication() {
                     placeholder="Enter your answer here"
                     name={questions[currentQuestionIndex].id}
                     onChange={handleChange}
+                    disabled={showAlert}
+                    {...(showAlert
+                      ? {
+                          value: application.answers.find(
+                            (answer) =>
+                              answer.questionId ===
+                              questions[currentQuestionIndex].id
+                          )?.value,
+                        }
+                      : {})}
                   />
                 )}
               </div>
@@ -263,32 +278,35 @@ export default function AnswerApplication() {
                   color="primary"
                   onClick={handleNext}
                   disabled={
-                    (questions[currentQuestionIndex].questionType === "Radio" &&
+                    !showAlert &&
+                    ((questions[currentQuestionIndex].questionType ===
+                      "Radio" &&
                       !values.answers.find(
                         (answer) =>
                           answer.questionId ===
                           questions[currentQuestionIndex].id
                       )) ||
-                    (questions[currentQuestionIndex].questionType ===
-                      "CheckBox" &&
-                      !values.answers.find(
-                        (answer) =>
-                          answer.questionId ===
-                          questions[currentQuestionIndex].id
-                      )) ||
-                    (questions[currentQuestionIndex].questionType === "Text" &&
-                      !values.answers.find(
-                        (answer) =>
-                          answer.questionId ===
-                          questions[currentQuestionIndex].id
-                      ))
+                      (questions[currentQuestionIndex].questionType ===
+                        "CheckBox" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )) ||
+                      (questions[currentQuestionIndex].questionType ===
+                        "Text" &&
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )))
                   }
                 >
                   Next
                 </Button>
               </Grid>
             )}
-            {currentQuestionIndex === questions.length - 1 && (
+            {currentQuestionIndex === questions.length - 1 && !showAlert && (
               <Grid item xs={12}>
                 <Button
                   style={{ float: "right" }}
@@ -296,9 +314,27 @@ export default function AnswerApplication() {
                   color="primary"
                   onClick={handleSubmit}
                   disabled={values.answers.length !== questions.length}
+                  hidden={showAlert}
                 >
                   Submit
                 </Button>
+              </Grid>
+            )}
+            {currentQuestionIndex === questions.length - 1 && showAlert && (
+              <Grid item xs={12}>
+                <Button
+                  style={{ float: "right" }}
+                  variant="contained"
+                  color="primary"
+                  onClick={handleClose}
+                >
+                  Close
+                </Button>
+              </Grid>
+            )}
+            {error && (
+              <Grid item xs={12}>
+                <Alert severity="error">{error}</Alert>
               </Grid>
             )}
           </Grid>

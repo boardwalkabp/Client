@@ -14,11 +14,9 @@ import {
   FormGroup,
   Radio,
   FormControl,
-  FormLabel,
   RadioGroup,
   TextField,
 } from "@mui/material";
-import $ from "jquery";
 
 export default function ViewAnsweredApplication() {
   const [values, setValues] = useState({
@@ -38,7 +36,7 @@ export default function ViewAnsweredApplication() {
       .then((res) => {
         setApplication(res.data);
         // console.log(res.data);
-        if (res.data.status !== "") {
+        if (res.data.completedAt !== null) {
           setShowAlert(true);
         }
         const questionIds = res.data.questions.map(
@@ -56,48 +54,10 @@ export default function ViewAnsweredApplication() {
       })
       .catch((err) => console.log(err));
   };
-
-  const handleChange = (e) => {
-    const questionId = e.target.name;
-    const value = e.target.value;
-
-    const answerIndex = values.answers.findIndex(
-      (answer) => answer.questionId === questionId
-    );
-    if (answerIndex !== -1) {
-      if (e.target.type === "checkbox") {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = {
-          questionId,
-          value: [...newAnswers[answerIndex].value, value],
-        };
-        setValues({ ...values, answers: newAnswers });
-      } else {
-        const newAnswers = [...values.answers];
-        newAnswers[answerIndex] = { questionId, value };
-        setValues({ ...values, answers: newAnswers });
-      }
-    } else {
-      if (e.target.type === "checkbox") {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value: [value] }],
-        });
-      } else {
-        setValues({
-          ...values,
-          answers: [...values.answers, { questionId, value }],
-        });
-      }
-    }
-  };
-
-  const handleClose = () => {
-    navigate("/builder/home");
-  };
-
   useEffect(() => {
-    fetchApplication();
+    setTimeout(() => {
+      fetchApplication();
+    }, 100);
   }, []);
 
   const clientId = application.clientId;
@@ -124,6 +84,10 @@ export default function ViewAnsweredApplication() {
         .catch((err) => console.log(err));
     }
   }, [categoryId]);
+
+  const handleClose = () => {
+    navigate("/builder/home");
+  };
 
   return (
     <Card>
@@ -160,7 +124,7 @@ export default function ViewAnsweredApplication() {
                     <RadioGroup
                       aria-labelledby="demo-controlled-radio-buttons-group"
                       name={question.id}
-                      onChange={handleChange}
+                      // onChange={handleChange}
                     >
                       {question.choices.map((option, index) => {
                         let checked;
@@ -200,7 +164,6 @@ export default function ViewAnsweredApplication() {
                             <Checkbox
                               name={question.id}
                               value={option.value}
-                              onChange={handleChange}
                               key={option.id}
                               disabled={showAlert}
                               checked={checked}
@@ -220,7 +183,6 @@ export default function ViewAnsweredApplication() {
                     required
                     name={question.id}
                     placeholder={question.placeholder}
-                    onChange={handleChange}
                     disabled={showAlert}
                     {...(showAlert
                       ? {

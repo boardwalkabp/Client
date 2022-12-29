@@ -1,9 +1,16 @@
-import React from 'react'
+import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Grid, TextField, Button, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function AddCategory() {
@@ -47,7 +54,7 @@ export default function AddCategory() {
   }, [id]);
 
   return (
-      <Card>
+    <Card>
       <CardContent>
         <Typography variant="h6" component="div">
           {id ? "Edit Category" : "Add Category"}
@@ -81,6 +88,7 @@ export default function AddCategory() {
                   variant="contained"
                   type="submit"
                   fullWidth
+                  disabled={Object.values(values).every((x) => x === "")}
                 >
                   {id ? "Update" : "Save"}
                 </Button>

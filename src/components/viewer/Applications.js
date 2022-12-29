@@ -15,12 +15,14 @@ import {
   IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Applications() {
+  const navigate = useNavigate();
   const { context, setContext } = useStateContext();
   const [applications, setApplications] = useState([]);
-  const navigate = useNavigate();
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -32,10 +34,10 @@ export default function Applications() {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetch()
       .then((res) => {
-        let filtered = res.data.filter(
+        const filteredApps = res.data.filter(
           (application) => application.clientId === context.id
         );
-        setApplications(filtered);
+        setApplications(filteredApps);
       })
       .catch((err) => console.log(err));
   };
@@ -44,8 +46,13 @@ export default function Applications() {
     {
       field: "title",
       headerName: "Title",
-      width: 400,
+      width: 300,
       editable: true,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 200,
     },
     {
       field: "actions",
@@ -53,14 +60,23 @@ export default function Applications() {
       width: 150,
       renderCell: (params) => (
         <div>
-          <IconButton
-            onClick={() => {
-              setContext({ ...context, selectedApplication: params.row });
-              navigate(`/viewer/applications/answer/${params.row.id}`);
-            }}
-          >
-            <EditIcon color="primary" />
-          </IconButton>
+          {params.row.status === "Completed" ? (
+            <IconButton
+              onClick={() =>
+                navigate(`/viewer/applications/view/${params.row.id}`)
+              }
+            >
+              <VisibilityIcon color="primary" />
+            </IconButton>
+          ) : (
+            <IconButton
+              onClick={() =>
+                navigate(`/viewer/applications/answer/${params.row.id}`)
+              }
+            >
+              <EditIcon color="primary" />
+            </IconButton>
+          )}
         </div>
       ),
     },
@@ -68,6 +84,7 @@ export default function Applications() {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+    setSearchKeyword(e.target.value);
   };
 
   const handleSearchClick = () => {
@@ -141,13 +158,14 @@ export default function Applications() {
                   <DataGrid
                     rows={searchKeyword !== "" ? searchResults : applications}
                     columns={columns}
-                    pageSize={rowsPerPage}
+                    pageSize={pageSize}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     rowsPerPageOptions={[5, 10, 25]}
                     checkboxSelection
                     disableSelectionOnClick
                     onSelectionModelChange={handleSelectionChange}
                     onRowClick={handleRowClick}
-                    onPageSizeChange={handleRowsPerPageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
                     onPageChange={handlePageChange}
                     onSearchClear={handleSearchClear}
                   />

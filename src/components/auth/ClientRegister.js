@@ -1,6 +1,5 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../api";
-import Center from "../layout/Center";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -11,6 +10,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import { Box } from "@mui/system";
 
 export default function UserRegister() {
   const [values, setValues] = useState({
@@ -88,14 +88,14 @@ export default function UserRegister() {
   }, [values.password, values.confirmPassword]);
 
   return (
-    <Center>
-      <Card sx={{ width: 400 }}>
-        <CardContent sx={{ textAlign: "center" }}>
-          <Typography variant="h3" sx={{ my: 3 }}>
-            Add Client
-          </Typography>
+    <Card>
+      <CardContent>
+        <Typography variant="h6" component="div">
+          Add Client
+        </Typography>
+        <Box sx={{ mt: 3 }}>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -202,15 +202,23 @@ export default function UserRegister() {
                   color="primary"
                   fullWidth
                   type="submit"
-                  style={{ backgroundColor: "#FF7753" }}
+                  disabled={
+                    !name ||
+                    !email ||
+                    !username ||
+                    !password ||
+                    !confirmPassword ||
+                    !phoneNumber ||
+                    !address
+                  }
                 >
-                  Register
+                  Save
                 </Button>
               </Grid>
             </Grid>
           </form>
-        </CardContent>
-      </Card>
-    </Center>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
