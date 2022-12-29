@@ -91,7 +91,7 @@ export default function UserRegister() {
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          Add Client
+          Add a Client
         </Typography>
         <Box sx={{ mt: 3 }}>
           <form onSubmit={handleSubmit}>

@@ -131,7 +131,7 @@ export default function Applications() {
     <div>
       <Box sx={{ width: "100%" }}>
         <Card>
-          <CardHeader title="Applications" />
+          <CardHeader title="Your Applications" />
           <CardContent>
             <Grid container spacing={3}>
               <Grid item xs={12}>

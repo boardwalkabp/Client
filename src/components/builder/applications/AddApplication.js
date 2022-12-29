@@ -127,7 +127,7 @@ export default function AddApplication() {
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          {id ? "Edit Application" : "Add Application"}
+          {id ? "Edit an Application" : "Add an Application"}
         </Typography>
         <br />
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>

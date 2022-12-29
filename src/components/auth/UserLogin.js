@@ -4,7 +4,6 @@ import { createAPIEndpoint, ENDPOINTS } from "../../api";
 import Center from "../layout/Center";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -13,20 +12,20 @@ import {
   Button,
   Typography,
   Link,
+  Alert,
 } from "@mui/material";
 
 export default function UserLogin() {
-  const { context, setContext } = useStateContext();
-  // console.log(context);
-  const [user, setUser] = useState("");
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { context, setContext } = useStateContext();
+  const [showAlert, setShowAlert] = useState(false);
+  const [error, setError] = useState("User not found");
+  const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     username: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+
   const validate = () => {
     let temp = {};
     temp.username = values.username ? "" : "This field is required.";
@@ -50,11 +49,7 @@ export default function UserLogin() {
               // console.log(res.data);
             }
             if (res.data.username === null) {
-              setErrors({
-                ...errors,
-                username: res.data.message,
-                password: res.data.message,
-              });
+              setShowAlert(true);
             }
           })
           .catch((err) => console.log(err));
@@ -73,6 +68,14 @@ export default function UserLogin() {
     validate({ [name]: value });
   };
 
+  // const handleForgetPassword = () => {
+  //   navigate("/forget-password");
+  // };
+
+  const handleClose = () => {
+    setShowAlert(false);
+  };
+
   return (
     <Center>
       <Card sx={{ width: 400 }}>
@@ -82,6 +85,13 @@ export default function UserLogin() {
               <Typography variant="h3" sx={{ my: 3 }}>
                 Application Building Platform
               </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              {showAlert && (
+                <Alert severity="error" onClose={handleClose}>
+                  {error}
+                </Alert>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -117,8 +127,17 @@ export default function UserLogin() {
                 variant="contained"
                 onClick={handleSubmit}
                 size="large"
-                style={{ backgroundColor: "#FF7753" }}
-                sx={{ width: "50%" }}
+                sx={{
+                  width: "50%",
+                  bgcolor: "#FF7753",
+                  "&:hover": {
+                    bgcolor: "#FF7753",
+                  },
+                  "&:disabled": {
+                    bgcolor: "#ccc",
+                  },
+                }}
+                disabled={values.username === "" || values.password === ""}
               >
                 Login
               </Button>

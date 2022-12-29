@@ -97,7 +97,7 @@ export default function AddQuestion() {
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          {id ? "Edit Question" : "Add Question"}
+          {id ? "Edit a Question" : "Add a Question"}
         </Typography>
         <Box sx={{ mt: 3 }}>
           <form autoComplete="off" noValidate onSubmit={handleSubmit}>

@@ -57,7 +57,7 @@ export default function AddCategory() {
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          {id ? "Edit Category" : "Add Category"}
+          {id ? "Edit a Category" : "Add a Category"}
         </Typography>
         <Box sx={{ mt: 3 }}>
           <form autoComplete="off" noValidate onSubmit={handleSubmit}>

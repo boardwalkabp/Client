@@ -12,16 +12,20 @@ import {
   Button,
   Typography,
   Link,
+  Alert,
 } from "@mui/material";
 
 export default function UserLogin() {
-  const { setContext } = useStateContext();
   const navigate = useNavigate();
+  const { context, setContext } = useStateContext();
+  const [error, setError] = useState("Client not found");
+  const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
   const [values, setValues] = useState({
     username: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+
   const validate = () => {
     let temp = {};
     temp.username = values.username ? "" : "This field is required.";
@@ -45,11 +49,7 @@ export default function UserLogin() {
               // console.log(res.data);
             }
             if (res.data.username === null) {
-              setErrors({
-                ...errors,
-                username: res.data.message,
-                password: res.data.message,
-              });
+              setShowAlert(true);
             }
           })
           .catch((err) => console.log(err));
@@ -68,6 +68,14 @@ export default function UserLogin() {
     validate({ [name]: value });
   };
 
+  // const handleForgetPassword = () => {
+  //   navigate("/forget-password");
+  // };
+
+  const handleClose = () => {
+    setShowAlert(false);
+  };
+
   return (
     <Center>
       <Card sx={{ width: 400 }}>
@@ -78,6 +86,14 @@ export default function UserLogin() {
                 Application Building Platform
               </Typography>
             </Grid>
+            <Grid item xs={12}>
+              {showAlert && (
+                <Alert severity="error" onClose={handleClose}>
+                  {error}
+                </Alert>
+              )}
+            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 required
@@ -112,8 +128,17 @@ export default function UserLogin() {
                 variant="contained"
                 onClick={handleSubmit}
                 size="large"
-                sx={{ width: "50%" }}
-                style={{ backgroundColor: "#FF7753" }}
+                sx={{
+                  width: "50%",
+                  bgcolor: "#FF7753",
+                  "&:hover": {
+                    bgcolor: "#FF7753",
+                  },
+                  "&:disabled": {
+                    bgcolor: "#ccc",
+                  },
+                }}
+                disabled={values.username === "" || values.password === ""}
               >
                 Login
               </Button>

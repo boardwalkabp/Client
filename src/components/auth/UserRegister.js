@@ -1,10 +1,8 @@
 import React from "react";
-import useStateContext from "../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../api";
 import Center from "../layout/Center";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -12,17 +10,12 @@ import {
   TextField,
   Button,
   Typography,
+  Alert,
 } from "@mui/material";
-import { Box } from "@mui/system";
 
 export default function UserRegister() {
-  const { context } = useStateContext();
-  // console.log(context);
-
-  const [user, setUser] = useState("");
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { id } = useParams();
+  const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -31,7 +24,6 @@ export default function UserRegister() {
     confirmPassword: "",
   });
 
-  const [errors, setErrors] = useState({});
   const { name, email, username, password, confirmPassword } = values;
   const {
     name: nameError,
@@ -46,10 +38,14 @@ export default function UserRegister() {
     temp.name = values.name ? "" : "This field is required.";
     temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
     temp.username = values.username ? "" : "This field is required.";
-    temp.password = /^(?=.{6,}$)/.test(values.password)
-      ? ""
-      : "Must contain at least 6 characters";
-    // temp.password = (/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/).test(values.password) ? "" : "Must contain at least one number and one uppercase and lowercase letter, special charecter and at least 6 characters";
+    // temp.password = /^(?=.{6,}$)/.test(values.password) ? ""
+    //   : "Must contain at least 6 characters.";
+    temp.password =
+      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(
+        values.password
+      )
+        ? ""
+        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length 6 characters.";
     temp.confirmPassword = values.confirmPassword
       ? ""
       : "This field is required.";
@@ -65,7 +61,7 @@ export default function UserRegister() {
       createAPIEndpoint(ENDPOINTS.registerUser)
         .post(values)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           navigate("/");
         })
         .catch((err) => console.log(err));
@@ -85,14 +81,13 @@ export default function UserRegister() {
     <Center>
       <Card sx={{ width: 400 }}>
         <CardContent sx={{ textAlign: "center" }}>
-          <Typography variant="h3" sx={{ my: 3 }}>
-            Register User
+          <Typography variant="h4" sx={{ my: 3 }}>
+            Register as a User
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   label="Name"
                   name="name"
@@ -109,7 +104,6 @@ export default function UserRegister() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   label="Email"
                   name="email"
@@ -126,7 +120,6 @@ export default function UserRegister() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   label="Username"
                   name="username"
@@ -146,7 +139,6 @@ export default function UserRegister() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   label="Password"
                   name="password"
@@ -167,7 +159,6 @@ export default function UserRegister() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   label="Confirm Password"
                   name="confirmPassword"
@@ -193,7 +184,22 @@ export default function UserRegister() {
                   size="large"
                   type="submit"
                   variant="contained"
-                  style={{ backgroundColor: "#FF7753" }}
+                  sx={{
+                    bgcolor: "#FF7753",
+                    "&:hover": {
+                      bgcolor: "#FF7753",
+                    },
+                    "&:disabled": {
+                      bgcolor: "#ccc",
+                    },
+                  }}
+                  disabled={
+                    !name ||
+                    !email ||
+                    !username ||
+                    !password ||
+                    !confirmPassword
+                  }
                 >
                   Register
                 </Button>
