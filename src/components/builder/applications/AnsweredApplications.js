@@ -85,8 +85,8 @@ export default function AnsweredApplications() {
     );
     return {
       ...application,
-      clientName: client.name,
-      categoryName: category.name,
+      clientName: client ? client.name : "",
+      categoryName: category ? category.name : "",
     };
   });
 
@@ -95,8 +95,8 @@ export default function AnsweredApplications() {
     .map((application) => {
       return {
         ...application,
-        clientName: application.clientName,
-        categoryName: application.categoryName,
+        clientName: application.clientName ? application.clientName : "",
+        categoryName: application.categoryName ? application.categoryName : "",
       };
     });
 
