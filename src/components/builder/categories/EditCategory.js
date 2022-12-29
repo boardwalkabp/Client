@@ -50,34 +50,35 @@ export default function EditCategory() {
   };
 
   return (
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                {category.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name="name"
-                label="Name"
-                onChange={handleInputChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Save
-              </Button>
-            </Grid>
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              {category.name}
+            </Typography>
           </Grid>
-        </CardContent>
-      </Card>
-  )
+          <Grid item xs={12}>
+            <TextField
+              name="name"
+              label="Name"
+              onChange={handleInputChange}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              disabled={!category.name}
+            >
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 }

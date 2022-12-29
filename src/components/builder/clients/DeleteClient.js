@@ -3,14 +3,7 @@ import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
+import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
 
 export default function DeleteClient() {
   const [client, setClient] = useState({});
@@ -41,14 +34,15 @@ export default function DeleteClient() {
   };
 
   return (
-      <Card>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h4" gutterBottom>
-                {client.name}
-              </Typography>
-              <Grid item xs={12}>
+    <Card>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h4" gutterBottom>
+              {client.name}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
             <Typography variant="h6" gutterBottom>
               Are you sure you want to delete this client?
             </Typography>
@@ -63,9 +57,8 @@ export default function DeleteClient() {
               Delete
             </Button>
           </Grid>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-  )
+        </Grid>
+      </CardContent>
+    </Card>
+  );
 }

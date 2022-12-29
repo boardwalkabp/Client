@@ -363,6 +363,12 @@ export default function EditApplication() {
                 color="primary"
                 type="submit"
                 style={{ marginTop: "10px" }}
+                disabled={
+                  !values.title ||
+                  !values.categoryId ||
+                  !values.clientId ||
+                  !values.questions.length
+                }
               >
                 {id ? "Update" : "Save"}
               </Button>

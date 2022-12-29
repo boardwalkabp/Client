@@ -1,5 +1,4 @@
 import React from "react";
-import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -14,7 +13,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  FormHelperText,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
@@ -29,7 +27,6 @@ export default function AddQuestion() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
-  const { state } = useStateContext();
 
   const addInputField = (event) => {
     setValues({

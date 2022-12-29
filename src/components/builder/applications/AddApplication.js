@@ -60,6 +60,9 @@ export default function AddApplication() {
   const validate = () => {
     let temp = {};
     temp.title = values.title ? "" : "This field is required.";
+    temp.categoryId = values.categoryId ? "" : "This field is required.";
+    temp.clientId = values.clientId ? "" : "This field is required.";
+
     setErrors({
       ...temp,
     });
@@ -386,6 +389,12 @@ export default function AddApplication() {
                 color="primary"
                 type="submit"
                 style={{ marginTop: "10px" }}
+                disabled={
+                  !values.title ||
+                  !values.categoryId ||
+                  !values.clientId ||
+                  values.questions.length === 0
+                }
               >
                 {id ? "Update" : "Save"}
               </Button>

@@ -109,6 +109,21 @@ export default function EditClient() {
               variant="contained"
               color="primary"
               onClick={handleSubmit}
+              disabled={
+                !client.name ||
+                client.name === " " ||
+                !client.username ||
+                client.username === " " ||
+                !client.email ||
+                client.email.match(/\S+@\S+\.\S+/) === null ||
+                !client.phoneNumber ||
+                isNaN(client.phoneNumber) ||
+                client.phoneNumber.length !== 10 ||
+                !client.address ||
+                client.address === " "
+                  ? true
+                  : false
+              }
             >
               Update
             </Button>
