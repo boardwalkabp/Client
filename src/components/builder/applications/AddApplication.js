@@ -13,23 +13,32 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
+  InputLabel
 } from "@mui/material";
-import $ from "jquery";
 
 export default function AddApplication() {
   const [values, setValues] = useState({
     title: "",
+    questionId: "",
     clientId: "",
     categoryId: "",
-    questionId: "",
     questions: [],
   });
+  const [questionId, setQuestions] = useState([]);
   const [categoryId, setCategories] = useState([]);
   const [clientId, setClients] = useState([]);
-  const [questionId, setQuestions] = useState([]);
-  const [questions, setQuestion_branching] = useState([]);
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const validate = () => {
+    let temp = {};
+    temp.title = values.title ? "" : "This field is required.";
+    setErrors({
+      ...temp,
+    });
+    return Object.values(temp).every((x) => x === "");
+  }
 
   useEffect(() => {
     createAPIEndpoint(ENDPOINTS.categories)
@@ -48,48 +57,102 @@ export default function AddApplication() {
     createAPIEndpoint(ENDPOINTS.questions)
       .fetch()
       .then((res) => {
-        // console.log(res.data);
         setQuestions(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
-  const [errors, setErrors] = useState({});
-  const navigate = useNavigate();
-  const { id } = useParams();
-
-  const validate = () => {
-    let temp = {};
-    temp.title = values.title ? "" : "This field is required.";
-    temp.categoryId = values.categoryId ? "" : "This field is required.";
-    temp.clientId = values.clientId ? "" : "This field is required.";
-
-    setErrors({
-      ...temp,
-    });
-    return Object.values(temp).every((x) => x === "");
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(values);
     if (validate()) {
       if (id) {
         createAPIEndpoint(ENDPOINTS.applications)
-          .put(id, values)
+          .put(id, {
+            ...values,
+            questions: values.questions.map((q, index) => ({
+              ...q,
+              order: index,
+            })),
+          })
           .then((res) => {
             navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       } else {
         createAPIEndpoint(ENDPOINTS.applications)
-          .post(values)
+          .post({
+            ...values,
+            questions: values.questions.map((q, index) => ({
+              ...q,
+              order: index,
+            })),
+          })
           .then((res) => {
-            // console.log(res.data);
             navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       }
     }
+  };
+
+  // const handleSubmit = (e) => {
+  //   console.log(values);
+  //   e.preventDefault();
+  //   if (validate()) {
+  //     if (id) {
+  //       createAPIEndpoint(ENDPOINTS.applications)
+  //         .put(id, values)
+  //         .then((res) => {
+  //           navigate("/builder/applications");
+  //         })
+  //         .catch((err) => console.log(err));
+  //     } else {
+  //       createAPIEndpoint(ENDPOINTS.applications)
+  //         .post(values)
+  //         .then((res) => {
+  //           navigate("/builder/applications");
+  //         })
+  //         .catch((err) => console.log(err));
+  //     }
+  //   }
+  // };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (validate()) {
+  //     if (id) {
+  //       createAPIEndpoint(ENDPOINTS.applications)
+  //         .put(id, {
+  //           ...values,
+  //           questions: values.questions.map((q) => q.questions_content.id),
+  //         })
+  //         .then((res) => {
+  //           navigate("/builder/applications");
+  //         })
+  //         .catch((err) => console.log(err));
+  //     } else {
+  //       createAPIEndpoint(ENDPOINTS.applications)
+
+  //         .post({
+  //           ...values,
+  //           questions: values.questions.map((q) => q.questions_content.id),
+  //         })
+  //         .then((res) => {
+  //           navigate("/builder/applications");
+  //         })
+  //         .catch((err) => console.log(err));
+  //     }
+  //   }
+  // };
+  const handleAddClick = () => {
+    setValues({
+      ...values,
+      questions: [
+        ...values.questions,
+        {
+          value: selectedQuestion.id,
+          questions_content: selectedQuestion,
+        },
+      ],
+    });
   };
 
   useEffect(() => {
@@ -185,9 +248,7 @@ export default function AddApplication() {
             </Grid>
             <Grid item xs={12} className="select_question">
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Select a question
-                </InputLabel>
+                <InputLabel id="question-select-label">Select a Question</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
@@ -198,8 +259,6 @@ export default function AddApplication() {
                       ...values,
                       questionId: e.target.value,
                     });
-
-                    // Set selected question to the selected item
                     setSelectedQuestion(
                       questionId.find((item) => item.id === e.target.value)
                     );
@@ -207,181 +266,105 @@ export default function AddApplication() {
                 >
                   {questionId.map((item) => (
                     <MenuItem key={item.id} value={item.id}>
-                      {item.body}
+                      {item.body} - {item.questionType}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  if (!selectedQuestion) {
-                    alert("Please select a question");
-                  } else {
-                    if (
-                      !$(".add-question").find(`#${selectedQuestion.id}`).length
-                    ) {
-                      let question_title = selectedQuestion.body;
-                      let question_id = selectedQuestion.id;
-                      let question_type = selectedQuestion.questionType;
-                      let question_choices = selectedQuestion.choices;
-                      let qNum = 1;
-                      let conditions =
-                        '<select name="conditions[' +
-                        question_id +
-                        '][xxx]" data-question="' +
-                        question_id +
-                        '" class="select_condition qSelect"><option value="0">Go to next</option>';
-                      let question_info = "";
-                      $(".added_question").each(function (i) {
-                        conditions +=
-                          '<option key="' +
-                          question_id +
-                          '" value="' +
-                          $(this).attr("data-question") +
-                          '">Go to: ' +
-                          $(this).find("h4").text() +
-                          "</option>";
-                      });
-                      conditions += "</select>";
-                      if (question_choices.length > 0) {
-                        for (let i = 0; i < question_choices.length; i++) {
-                          // console.log(question_choices[i]);
-                          if (question_type === "Radio") {
-                            question_info +=
-                              '<div key="' +
-                              question_choices[i].id +
-                              '" class="q_choices qst"><div class="cho_start">' +
-                              '<input disabled type="radio" id="radio" name="' +
-                              question_id +
-                              '" value="' +
-                              question_choices[i].value +
-                              '" />' +
-                              '<label for="radio" name="' +
-                              question_id +
-                              '">' +
-                              question_choices[i].value +
-                              "</label></div>" +
-                              '<div class="cho_end">' +
-                              conditions.replace("xxx", i) +
-                              "</div></div>";
-                          } else {
-                            question_info +=
-                              '<div key="' +
-                              question_choices[i].id +
-                              '" class="q_choices qst"><div class="cho_start">' +
-                              '<input disabled type="checkbox" name="' +
-                              question_id +
-                              '" value="' +
-                              question_choices[i].value +
-                              '" />' +
-                              '<label for="checkbox" name="' +
-                              question_id +
-                              '">' +
-                              question_choices[i].value +
-                              "</label></div></div>";
-                          }
-                        }
-                      } else {
-                        question_info +=
-                          '<div key="' +
-                          question_id +
-                          '" class="q_choices qst"><div class="cho_start">' +
-                          '<input disabled type="text" name="' +
-                          question_id +
-                          '" value="" />' +
-                          "</div></div>";
-                      }
-                      let order_html =
-                        '<div key="' +
-                        question_id +
-                        '" class="updown b_end"><input type="hidden" class="input_order" style="width:20px;" name="order[' +
-                        question_id +
-                        ']" value="' +
-                        qNum +
-                        '" /></div>' +
-                        '<div class="delete_Button"><input type="button" class="delete_bracnh" value="Delete" /></div>';
-                      // // when the user clicks on the delete button, the question will be deleted
-                      // $(".delete_bracnh").trigger("click", function () {
-                      //   $(this).parent().parent().parent().remove();
-                      // });
-                      // // when the user clicks on the up button, the question will be moved up
-                      // $(".up").trigger("click", function () {
-                      //   let current = $(this).parent().parent().parent();
-                      //   let prev = current.prev();
-                      //   if (prev.length) {
-                      //     current.insertBefore(prev);
-                      //   }
-                      // });
-                      // // when the user clicks on the down button, the question will be moved down
-                      // $(".down").trigger("click", function () {
-                      //   let current = $(this).parent().parent().parent();
-                      //   let next = current.next();
-                      //   if (next.length) {
-                      //     current.insertAfter(next);
-                      //   }
-                      // });
-                      $(".add-question").append(
-                        '<div class="added_question" key="' +
-                          question_id +
-                          '" data-order="' +
-                          qNum +
-                          '" data-question="' +
-                          question_id +
-                          '"><div class="qst_order"><div class="a_q_title"><h4>' +
-                          question_title +
-                          "</h4></div>" +
-                          order_html +
-                          '</div><div class="que_cho">' +
-                          question_info +
-                          "</div>" +
-                          '<input type="hidden" name="questions[]" value="' +
-                          question_id +
-                          '" /></div>'
-                      );
-
-                      $(".select_condition").each(function (i) {
-                        let q_id = $(this).attr("data-question");
-                        if (q_id !== question_id) {
-                          $(this).append(
-                            '<option key="' +
-                              question_id +
-                              '" value="' +
-                              question_id +
-                              '">Go to: ' +
-                              question_title +
-                              "</option>"
-                          );
-                        }
-                      });
-
-                      qNum++;
-                      setQuestion_branching([...questions, question_id]);
-                      setValues({
-                        ...values,
-                        questions: [
-                          ...values.questions,
-                          {
-                            value: question_id,
-                            // question_title: question_title,
-                            // question_choices: question_choices,
-                            // question_type: question_type,
-                          },
-                        ],
-                      });
-                    } else {
-                      alert("This question already exists");
-                    }
-                  }
-                }}
-              >
+              <Button variant="contained" color="primary" onClick={handleAddClick}>
                 Add
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <div className="add-question"></div>
+              {values.questions.map((question, index) => (
+                <div className="added_question" key={index}>
+                  <div className="a_q_title">
+                    {question.questions_content.body}
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      // Remove the question from the array
+                      setValues({
+                        ...values,
+                        questions: values.questions.filter((q) => q !== question),
+                      });
+                    }}>
+                      Delete
+                    </button>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      if (index > 0) {
+                        const newQuestions = [...values.questions];
+                        newQuestions.splice(index - 1, 0, newQuestions.splice(index, 1)[0]);
+                        setValues({
+                          ...values,
+                          questions: newQuestions,
+                        });
+                      }
+                    }}>
+                      Up
+                    </button>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      if (index < values.questions.length - 1) {
+                        const newQuestions = [...values.questions];
+                        newQuestions.splice(index + 1, 0, newQuestions.splice(index, 1)[0]);
+                        setValues({
+                          ...values,
+                          questions: newQuestions,
+                        });
+                      }
+                    }}>
+                      Down
+                    </button>
+                  </div>
+                  <div className="que_cho">
+                    {(question.questions_content.questionType === 'CheckBox' || question.questions_content.questionType === 'Radio') && (
+                      <div>
+                        {question.questions_content.choices.map((choice, i) => (
+                          <label key={i}>
+                            < input
+                              type={question.questions_content.questionType}
+                              value={choice.value}
+                              onChange={(event) => {
+                                setValues({
+                                  ...values,
+                                  questions: values.questions.map((q) => {
+                                    if (q === question) {
+                                      return {
+                                        ...q,
+                                        questions_content: {
+                                          ...q.questions_content,
+                                          choices: q.questions_content.choices.map((c) => {
+                                            if (c === choice) {
+                                              return {
+                                                ...c,
+                                                value: event.target.value,
+                                              };
+                                            } else {
+                                              return c;
+                                            }
+                                          }),
+                                        },
+                                      };
+                                    } else {
+                                      return q;
+                                    }
+                                  }),
+                                });
+                              }}
+                            />
+                            {choice.value}
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </Grid>
+          </Grid>
+          <br></br>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Button
                 fullWidth
@@ -389,12 +372,6 @@ export default function AddApplication() {
                 color="primary"
                 type="submit"
                 style={{ marginTop: "10px" }}
-                disabled={
-                  !values.title ||
-                  !values.categoryId ||
-                  !values.clientId ||
-                  values.questions.length === 0
-                }
               >
                 {id ? "Update" : "Save"}
               </Button>
@@ -402,6 +379,6 @@ export default function AddApplication() {
           </Grid>
         </form>
       </CardContent>
-    </Card>
+    </Card >
   );
 }
