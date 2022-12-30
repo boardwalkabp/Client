@@ -10,7 +10,6 @@ import {
   TextField,
   Button,
   Typography,
-  Alert,
 } from "@mui/material";
 
 export default function UserRegister() {
@@ -38,8 +37,6 @@ export default function UserRegister() {
     temp.name = values.name ? "" : "This field is required.";
     temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
     temp.username = values.username ? "" : "This field is required.";
-    // temp.password = /^(?=.{6,}$)/.test(values.password) ? ""
-    //   : "Must contain at least 6 characters.";
     temp.password =
       /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(
         values.password
@@ -184,15 +181,6 @@ export default function UserRegister() {
                   size="large"
                   type="submit"
                   variant="contained"
-                  sx={{
-                    bgcolor: "#FF7753",
-                    "&:hover": {
-                      bgcolor: "#FF7753",
-                    },
-                    "&:disabled": {
-                      bgcolor: "#ccc",
-                    },
-                  }}
                   disabled={
                     !name ||
                     !email ||

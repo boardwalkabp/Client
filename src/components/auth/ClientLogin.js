@@ -1,21 +1,62 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { styled } from "@mui/material/styles";
 import useStateContext from "../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../api";
-import Center from "../layout/Center";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
-  Card,
-  CardContent,
   Grid,
   TextField,
   Button,
-  Typography,
-  Link,
   Alert,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-export default function UserLogin() {
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
+
+function BootstrapDialogTitle(props) {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+}
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
+export default function ClientLogin() {
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { context, setContext } = useStateContext();
   const [error, setError] = useState("Client not found");
@@ -72,23 +113,38 @@ export default function UserLogin() {
   //   navigate("/forget-password");
   // };
 
-  const handleClose = () => {
+  const handleCloseAlert = () => {
     setShowAlert(false);
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <Center>
-      <Card sx={{ width: 400 }}>
-        <CardContent sx={{ textAlign: "center" }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h3" sx={{ my: 3 }}>
-                Application Building Platform
-              </Typography>
-            </Grid>
+    <div>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Login as a Client
+      </Button>
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <BootstrapDialogTitle
+          id="customized-dialog-title"
+          onClose={handleClose}
+        >
+          Login as a Client
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+          <Grid container spacing={2} sx={{ width: 400, textAlign: "center" }}>
             <Grid item xs={12}>
               {showAlert && (
-                <Alert severity="error" onClose={handleClose}>
+                <Alert severity="error" onClose={handleCloseAlert}>
                   {error}
                 </Alert>
               )}
@@ -128,29 +184,14 @@ export default function UserLogin() {
                 variant="contained"
                 onClick={handleSubmit}
                 size="large"
-                sx={{
-                  width: "50%",
-                  bgcolor: "#FF7753",
-                  "&:hover": {
-                    bgcolor: "#FF7753",
-                  },
-                  "&:disabled": {
-                    bgcolor: "#ccc",
-                  },
-                }}
                 disabled={values.username === "" || values.password === ""}
               >
                 Login
               </Button>
             </Grid>
-            <Grid item xs={12}>
-              <p>
-                Are you a user? <Link href="/login"> Login</Link>
-              </p>
-            </Grid>
           </Grid>
-        </CardContent>
-      </Card>
-    </Center>
+        </DialogContent>
+      </BootstrapDialog>
+    </div>
   );
 }

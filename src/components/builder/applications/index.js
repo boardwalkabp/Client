@@ -66,18 +66,15 @@ export default function Applications() {
   useEffect(() => {
     fetchClients();
     fetchCategories();
+    fetchApplications();
   }, []);
 
   useEffect(() => {
-    if (searchKeyword !== "") {
-      const results = applications.filter((application) =>
-        application.title.toLowerCase().includes(searchKeyword)
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults(applications);
-    }
-  }, [searchKeyword, applications]);
+    const results = applications.filter((application) =>
+      application.title.toLowerCase().includes(search.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [search, applications]);
 
   const mappedApplications = applications.map((application) => {
     const client = clients.find((client) => client.id === application.clientId);
@@ -109,29 +106,40 @@ export default function Applications() {
       headerName: "Title",
       width: 200,
       editable: true,
+      sortable: true,
+      searchable: true,
     },
     {
       field: "status",
       headerName: "Status",
       width: 150,
-      editable: true,
+      editable: false,
+      searchable: true,
+      sortable: true,
     },
     {
       field: "clientName",
       headerName: "Client",
       width: 150,
       editable: true,
+      searchable: true,
+      sortable: true,
     },
     {
       field: "categoryName",
       headerName: "Category",
       width: 150,
       editable: true,
+      searchable: true,
+      sortable: true,
     },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
+      sortable: false,
+      searchable: false,
+      editable: false,
       renderCell: (params) => (
         <div>
           <IconButton
@@ -214,7 +222,7 @@ export default function Applications() {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Search"
+                    label="Search by title"
                     value={search}
                     onChange={handleSearch}
                   />
@@ -232,7 +240,7 @@ export default function Applications() {
                     onClick={handleAdd}
                     sx={{ ml: 2 }}
                   >
-                    Add New Application
+                    Add a New Application
                   </Button>
                 </Box>
               </Grid>

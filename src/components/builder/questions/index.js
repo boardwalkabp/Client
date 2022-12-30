@@ -46,13 +46,37 @@ export default function Questions() {
     fetchQuestions();
   }, []);
 
+  useEffect(() => {
+    const results = questions.filter((question) =>
+      question.body.toLowerCase().includes(search.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [search, questions]);
+
   const columns = [
-    { field: "body", headerName: "Question", width: 500 },
-    { field: "questionType", headerName: "Type", width: 100 },
+    {
+      field: "body",
+      headerName: "Question",
+      width: 500,
+      editable: true,
+      sortable: true,
+      searchable: true,
+    },
+    {
+      field: "questionType",
+      headerName: "Type",
+      width: 100,
+      editable: false,
+      sortable: true,
+      searchable: true,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
+      sortable: false,
+      searchable: false,
+      editable: false,
       renderCell: (params) => (
         <div>
           <IconButton
@@ -86,17 +110,6 @@ export default function Questions() {
     setSearchKeyword(search);
   };
 
-  useEffect(() => {
-    if (searchKeyword !== "") {
-      const results = questions.filter((question) =>
-        question.body.toLowerCase().includes(searchKeyword)
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults(questions);
-    }
-  }, [searchKeyword, questions]);
-
   const handlePageChange = (params) => {
     setPage(params.page);
   };
@@ -127,7 +140,7 @@ export default function Questions() {
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Search"
+                label="Search by question"
                 value={search}
                 onChange={handleSearch}
               />
@@ -145,7 +158,7 @@ export default function Questions() {
                 onClick={handleAdd}
                 sx={{ ml: 2 }}
               >
-                Add New Question
+                Add a New Question
               </Button>
             </Box>
           </Grid>

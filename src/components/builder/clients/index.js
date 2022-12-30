@@ -46,14 +46,45 @@ export default function Clients() {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    const results = clients.filter((client) =>
+      client.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [search, clients]);
+
   const columns = [
-    { field: "name", headerName: "Name", width: 200 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "address", headerName: "Address", width: 200 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 200,
+      editable: true,
+      sortable: true,
+      searchable: true,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 200,
+      editable: true,
+      sortable: true,
+      searchable: true,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      width: 200,
+      editable: true,
+      sortable: true,
+      searchable: true,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
+      sortable: false,
+      searchable: false,
+      editable: false,
       renderCell: (params) => (
         <div>
           <IconButton
@@ -84,17 +115,6 @@ export default function Clients() {
   const handleSearchClick = () => {
     setSearchKeyword(search);
   };
-
-  useEffect(() => {
-    if (searchKeyword !== "") {
-      const results = clients.filter((client) =>
-        client.name.toLowerCase().includes(searchKeyword)
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults(clients);
-    }
-  }, [searchKeyword, clients]);
 
   const handlePageChange = (e) => {
     setPage(e.target.value);
@@ -129,7 +149,7 @@ export default function Clients() {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Search"
+                    label="Search by name"
                     value={search}
                     onChange={handleSearch}
                   />
@@ -147,7 +167,7 @@ export default function Clients() {
                     onClick={handleAdd}
                     sx={{ ml: 2 }}
                   >
-                    Add New Client
+                    Add a New Client
                   </Button>
                 </Box>
               </Grid>

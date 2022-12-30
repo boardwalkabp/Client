@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
-import { Box } from "@mui/system";
 
 export default function DeleteQuestion() {
   const [question, setQuestion] = useState({});

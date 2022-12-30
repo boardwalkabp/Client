@@ -1,6 +1,5 @@
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
 import AppsIcon from "@mui/icons-material/Apps";
 import CssBaseline from "@mui/material/CssBaseline";
 import Stack from "@mui/material/Stack";
@@ -10,7 +9,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router";
+import UserLogin from "../components/auth/UserLogin";
+import ClientLogin from "../components/auth/ClientLogin";
 
 function Copyright(props) {
   return (
@@ -53,15 +53,6 @@ const abpTheme = createTheme({
 });
 
 export default function HomeView() {
-  const navigate = useNavigate();
-  const handleUserLogin = () => {
-    navigate("/login");
-  };
-
-  const handlClientLogin = () => {
-    navigate("/viewer/login");
-  };
-
   return (
     <ThemeProvider theme={abpTheme}>
       <CssBaseline />
@@ -74,7 +65,6 @@ export default function HomeView() {
         </Toolbar>
       </AppBar>
       <main>
-        {/* Hero unit */}
         <Box
           sx={{
             bgcolor: "background.paper",
@@ -106,21 +96,15 @@ export default function HomeView() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained" onClick={handleUserLogin}>
-                Login as a user
-              </Button>
-              <Button variant="outlined" onClick={handlClientLogin}>
-                Login as a client
-              </Button>
+              <UserLogin />
+              <ClientLogin />
             </Stack>
           </Container>
         </Box>
       </main>
-      {/* Footer */}
       <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
         <Copyright />
       </Box>
-      {/* End footer */}
     </ThemeProvider>
   );
 }

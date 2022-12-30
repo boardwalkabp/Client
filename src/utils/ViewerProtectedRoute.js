@@ -8,7 +8,7 @@ const PrivateRoutes = () => {
 
   if (context.role === "Client") auth.token = true;
 
-  return auth.token ? <Outlet /> : <Navigate to="/viewer/login" />;
+  return auth.token ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoutes;

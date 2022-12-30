@@ -51,12 +51,29 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    const results = categories.filter((category) =>
+      category.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setSearchResults(results);
+  }, [search, categories]);
+
   const columns = [
-    { field: "name", headerName: "Name", width: 400 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 400,
+      editable: true,
+      sortable: true,
+      searchable: true,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 200,
+      sortable: false,
+      searchable: false,
+      editable: false,
       renderCell: (params) => (
         <div>
           <IconButton
@@ -94,17 +111,6 @@ export default function Categories() {
     setSearchKeyword(search);
   };
 
-  useEffect(() => {
-    if (searchKeyword !== "") {
-      const results = categories.filter((category) =>
-        category.name.toLowerCase().includes(searchKeyword)
-      );
-      setSearchResults(results);
-    } else {
-      setSearchResults(categories);
-    }
-  }, [searchKeyword, categories]);
-
   const handlePageChange = (params) => {
     setPage(params.page);
   };
@@ -132,7 +138,7 @@ export default function Categories() {
               <TextField
                 fullWidth
                 variant="outlined"
-                label="Search"
+                label="Search by name"
                 value={search}
                 onChange={handleSearch}
               />
@@ -150,7 +156,7 @@ export default function Categories() {
                 onClick={handleAdd}
                 sx={{ ml: 2 }}
               >
-                Add New Category
+                Add a New Category
               </Button>
             </Box>
           </Grid>

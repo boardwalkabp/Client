@@ -115,22 +115,38 @@ export default function EditApplication() {
     }
   };
 
+  // useEffect(() => {
+  //   if (id) {
+  //     createAPIEndpoint(ENDPOINTS.applications)
+  //       .fetchById(id)
+  //       .then((res) => {
+  //         setValues(res.data);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, [id]);
+
+  const fetchApplication = (id) => {
+    createAPIEndpoint(ENDPOINTS.applications)
+      .fetchById(id)
+      .then((res) => {
+        setValues({
+          ...res.data,
+          questions: res.data.questions.sort((a, b) => a.order - b.order),
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
-    if (id) {
-      createAPIEndpoint(ENDPOINTS.applications)
-        .fetchById(id)
-        .then((res) => {
-          setValues(res.data);
-        })
-        .catch((err) => console.log(err));
-    }
+    if (id) fetchApplication(id);
   }, [id]);
 
   return (
     <Card>
       <CardContent>
         <Typography variant="h6" component="div">
-          {id ? "Edit Application" : "Add Application"}
+          {id.title}
         </Typography>
         <br />
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>

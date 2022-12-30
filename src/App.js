@@ -3,10 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Auth routes
 import HomeView from "./views/HomeView";
-import UserLogin from "./components/auth/UserLogin";
 import UserRegister from "./components/auth/UserRegister";
-import ClientRegister from "./components/auth/ClientRegister";
-import ClientLogin from "./components/auth/ClientLogin";
 import BuilderProtectedRoute from "./utils/BuilderProtectedRoute";
 import ViewerProtectedRoute from "./utils/ViewerProtectedRoute";
 
@@ -25,6 +22,7 @@ import EditCategory from "./components/builder/categories/EditCategory";
 import ViewCategory from "./components/builder/categories/ViewCategory";
 import DeleteCategory from "./components/builder/categories/DeleteCategory";
 import Clients from "./components/builder/clients";
+import AddClient from "./components/builder/clients/AddClient";
 import EditClient from "./components/builder/clients/EditClient";
 import ViewClient from "./components/builder/clients/ViewClient";
 import DeleteClient from "./components/builder/clients/DeleteClient";
@@ -45,11 +43,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" exact element={<UserRegister />} />
-        <Route path="/login" exact element={<UserLogin />} />
-        <Route path="/viewer/login" exact element={<ClientLogin />} />
-        <Route path="*" exact element={<h1>404 Not Found</h1>} />
         <Route path="/" exact element={<HomeView />} />
+        <Route path="/register" exact element={<UserRegister />} />
+        <Route path="*" exact element={<h1>404 Not Found</h1>} />
 
         {/* Builder routes */}
         <Route path="/builder" exact element={<BuilderProtectedRoute />}>
@@ -110,11 +106,7 @@ function App() {
             />
 
             <Route path="/builder/clients" exact element={<Clients />} />
-            <Route
-              path="/builder/clients/add"
-              exact
-              element={<ClientRegister />}
-            />
+            <Route path="/builder/clients/add" exact element={<AddClient />} />
             <Route
               path="/builder/clients/edit/:id"
               exact

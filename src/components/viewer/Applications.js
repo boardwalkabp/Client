@@ -47,17 +47,25 @@ export default function Applications() {
       field: "title",
       headerName: "Title",
       width: 300,
-      editable: true,
+      editable: false,
+      searchable: true,
+      sortable: true,
     },
     {
       field: "status",
       headerName: "Status",
       width: 200,
+      editable: false,
+      searchable: true,
+      sortable: true,
     },
     {
       field: "actions",
       headerName: "Actions",
       width: 150,
+      sortable: false,
+      searchable: false,
+      editable: false,
       renderCell: (params) => (
         <div>
           {params.row.status === "Completed" ? (

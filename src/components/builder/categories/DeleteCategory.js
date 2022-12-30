@@ -1,16 +1,9 @@
-import React from 'react'
+import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  Grid,
-  Button,
-  Typography,
-} from "@mui/material";
-import { Box } from "@mui/system";
+import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
 
 export default function DeleteCategory() {
   const [category, setCategory] = useState({});
@@ -67,5 +60,5 @@ export default function DeleteCategory() {
         </Grid>
       </CardContent>
     </Card>
-  )
+  );
 }
