@@ -256,6 +256,7 @@ export default function EditApplication() {
                 variant="contained"
                 color="primary"
                 onClick={handleAddClick}
+                disabled={!selectedQuestion}
               >
                 Add
               </Button>

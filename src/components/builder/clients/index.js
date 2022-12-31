@@ -111,10 +111,6 @@ export default function Clients() {
     setSearchKeyword(e.target.value);
   };
 
-  const handleSearchClick = () => {
-    setSearchKeyword(search);
-  };
-
   const handlePageChange = (params) => {
     setPage(params.page);
   };
@@ -155,16 +151,8 @@ export default function Clients() {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleSearchClick}
-                    sx={{ ml: 2 }}
-                  >
-                    Search
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
                     onClick={handleAdd}
-                    sx={{ ml: 2 }}
+                    sx={{ ml: 2, mt: -1, mb: -1 }}
                   >
                     Add a New Client
                   </Button>
