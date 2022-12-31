@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 
-export default function UserRegister() {
+export default function AddClient() {
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -49,10 +49,12 @@ export default function UserRegister() {
     temp.name = values.name ? "" : "This field is required.";
     temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
     temp.username = values.username ? "" : "This field is required.";
-    temp.password = /^(?=.{6,}$)/.test(values.password)
-      ? ""
-      : "Must contain at least 6 characters";
-    // temp.password = (/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/).test(values.password) ? "" : "Must contain at least one number and one uppercase and lowercase letter, special charecter and at least 6 characters";
+    temp.password =
+      /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(
+        values.password
+      )
+        ? ""
+        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
     temp.confirmPassword = values.confirmPassword
       ? ""
       : "This field is required.";
