@@ -207,7 +207,7 @@ export default function AnsweredApplications() {
                   <TextField
                     fullWidth
                     variant="outlined"
-                    label="Search"
+                    label="Search by title"
                     value={search}
                     onChange={handleSearch}
                   />

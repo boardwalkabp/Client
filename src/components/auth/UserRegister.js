@@ -42,7 +42,7 @@ export default function UserRegister() {
         values.password
       )
         ? ""
-        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length 6 characters.";
+        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
     temp.confirmPassword = values.confirmPassword
       ? ""
       : "This field is required.";

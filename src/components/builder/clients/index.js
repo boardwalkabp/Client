@@ -1,5 +1,4 @@
 import React from "react";
-import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -116,8 +115,8 @@ export default function Clients() {
     setSearchKeyword(search);
   };
 
-  const handlePageChange = (e) => {
-    setPage(e.target.value);
+  const handlePageChange = (params) => {
+    setPage(params.page);
   };
 
   const handleRowsPerPageChange = (e) => {
