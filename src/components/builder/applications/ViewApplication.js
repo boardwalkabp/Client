@@ -75,6 +75,8 @@ export default function ViewApplication() {
     }
   }, [categoryId]);
 
+  const applicationURL = `abp-demo.netlify.app/viewer/applications/answer/${application.id}`;
+
   return (
     <Card>
       <CardContent>
@@ -99,6 +101,12 @@ export default function ViewApplication() {
               Status: {application.status}
             </Typography>
           </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body1" gutterBottom>
+              Client URL: {applicationURL}
+            </Typography>
+          </Grid>
+
           <Grid item xs={12}>
             {questions.map((question) => (
               <div className="added_question" key={question.id}>

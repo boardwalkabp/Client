@@ -1,7 +1,7 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import {
   Card,
@@ -15,19 +15,22 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  Alert,
+  Link,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function AddApplication() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { id } = useParams();
   const [questionId, setQuestions] = useState([]);
   const [categoryId, setCategories] = useState([]);
   const [clientId, setClients] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
   const [values, setValues] = useState({
     title: "",
     questionId: "",
@@ -80,7 +83,8 @@ export default function AddApplication() {
             })),
           })
           .then((res) => {
-            navigate("/builder/applications");
+            setShowAlert(true);
+            // navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       } else {
@@ -93,7 +97,8 @@ export default function AddApplication() {
             })),
           })
           .then((res) => {
-            navigate("/builder/applications");
+            setShowAlert(true);
+            // navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       }
@@ -131,6 +136,18 @@ export default function AddApplication() {
           {id ? "Edit an Application" : "Add an Application"}
         </Typography>
         <br />
+
+        {showAlert && (
+          <Grid item xs={12}>
+            <Alert severity="success" onClose={() => setShowAlert(false)}>
+              Application saved successfully! Please click on{" "}
+              <Link href="/builder/applications">here</Link> to view all
+              applications.
+            </Alert>
+            <br />
+          </Grid>
+        )}
+
         <form autoComplete="off" noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -238,6 +255,7 @@ export default function AddApplication() {
                 variant="contained"
                 color="primary"
                 onClick={handleAddClick}
+                disabled={!selectedQuestion}
               >
                 Add
               </Button>
