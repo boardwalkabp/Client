@@ -8,6 +8,10 @@ const getFreshContext = () => {
       "context",
       JSON.stringify({
         username: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
       })
     );
   return JSON.parse(localStorage.getItem("context"));
@@ -17,13 +21,14 @@ export default function useStateContext() {
   const { context, setContext } = useContext(stateContext);
   return {
     context,
-    setContext: obj => { 
-        setContext({ ...context, ...obj }) },
-    resetContext: ()=>{
-        localStorage.removeItem('context')
-        setContext(getFreshContext())
-    }
-};
+    setContext: (obj) => {
+      setContext({ ...context, ...obj });
+    },
+    resetContext: () => {
+      localStorage.removeItem("context");
+      setContext(getFreshContext());
+    },
+  };
 }
 
 export function ContextProvider({ children }) {

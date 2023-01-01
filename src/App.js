@@ -1,14 +1,19 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Auth routes
+// Home routes
+import HomeLayout from "./components/layout/HomeLayout";
 import HomeView from "./views/HomeView";
+import AboutView from "./views/AboutView";
+import ContactView from "./views/ContactView";
+import NotFoundView from "./views/NotFoundView";
 import UserRegister from "./components/auth/UserRegister";
 import BuilderProtectedRoute from "./utils/BuilderProtectedRoute";
 import ViewerProtectedRoute from "./utils/ViewerProtectedRoute";
 
 // Builder routes
 import BuilderHome from "./views/BuilderHome";
+import BuilderProfile from "./views/BuilderProfile";
 import BuilderLayout from "./components/layout/BuilderLayout";
 import Applications from "./components/builder/applications/index";
 import AddApplication from "./components/builder/applications/AddApplication";
@@ -34,6 +39,7 @@ import DeleteQuestion from "./components/builder/questions/DeleteQuestion";
 
 // Viewer routes
 import ViewerHome from "./views/ViewerHome";
+import ViewerProfile from "./views/ViewerProfile";
 import ViewerLayout from "./components/layout/ViewerLayout";
 import ClientApplications from "./components/viewer/Applications";
 import AnswerApplication from "./components/viewer/AnswerApplication";
@@ -43,14 +49,24 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" exact element={<HomeView />} />
-        <Route path="/register" exact element={<UserRegister />} />
-        <Route path="*" exact element={<h1>404 Not Found</h1>} />
+        {/* Home routes */}
+        <Route path="/" exact element={<HomeLayout />}>
+          <Route path="/" exact element={<HomeView />} />
+          <Route path="/about" exact element={<AboutView />} />
+          <Route path="/contact" exact element={<ContactView />} />
+          <Route path="/register" exact element={<UserRegister />} />
+          <Route path="*" element={<NotFoundView />} />
+        </Route>
 
         {/* Builder routes */}
         <Route path="/builder" exact element={<BuilderProtectedRoute />}>
           <Route path="/builder" exact element={<BuilderLayout />}>
             <Route path="/builder/home" exact element={<BuilderHome />} />
+            <Route
+              path="/builder/profile/:id"
+              exact
+              element={<BuilderProfile />}
+            />
 
             <Route
               path="/builder/applications"
@@ -151,6 +167,12 @@ function App() {
         <Route path="/" exact element={<ViewerProtectedRoute />}>
           <Route path="/viewer" exact element={<ViewerLayout />}>
             <Route path="/viewer/home" exact element={<ViewerHome />} />
+            <Route
+              path="/viewer/profile/:id"
+              exact
+              element={<ViewerProfile />}
+            />
+
             <Route
               path="/viewer/applications"
               exact

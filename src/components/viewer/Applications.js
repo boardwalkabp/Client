@@ -157,7 +157,7 @@ export default function Applications() {
                     pageSize={pageSize}
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                     rowsPerPageOptions={[5, 10, 25]}
-                    checkboxSelection
+                    // checkboxSelection
                     disableSelectionOnClick
                     onSelectionModelChange={handleSelectionChange}
                     onRowClick={handleRowClick}

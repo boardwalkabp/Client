@@ -153,7 +153,7 @@ export default function Categories() {
                 pageSize={pageSize}
                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                 rowsPerPageOptions={[5, 10, 20]}
-                checkboxSelection
+                // checkboxSelection
                 disableSelectionOnClick
                 onSelectionModelChange={handleSelect}
                 onPageChange={handlePageChange}

@@ -13,6 +13,7 @@ import {
 import { Box } from "@mui/system";
 
 export default function AddClient() {
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -22,7 +23,6 @@ export default function AddClient() {
     phoneNumber: "",
     address: "",
   });
-  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
   const {
@@ -46,20 +46,39 @@ export default function AddClient() {
 
   const validate = () => {
     let temp = {};
-    temp.name = values.name ? "" : "This field is required.";
-    temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
-    temp.username = values.username ? "" : "This field is required.";
+    temp.name = /^[A-Z][-a-zA-Z]+$/.test(values.name)
+      ? ""
+      : "Name is not valid. Must be at least 2 characters long and contain only letters. Must start with a capital letter. Cannot contain numbers or special characters.";
+    temp.email = /.+@.+\.[A-Za-z]+$/.test(values.email)
+      ? ""
+      : "Email is not valid. Must be in the format: name@email.com or name@email.ca or name@email.co.uk";
+    // temp.username = values.username ? "" : "This field is required.";
+    temp.username =
+      /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
+        values.username
+      )
+        ? ""
+        : "Username is not valid. Must be at least 5 characters long and contain only letters, numbers, periods and underscores. Cannot start or end with a period or underscore. Cannot contain two periods or underscores in a row.";
     temp.password =
       /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(
         values.password
       )
         ? ""
-        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
+        : "Password is not valid. Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
     temp.confirmPassword = values.confirmPassword
       ? ""
       : "This field is required.";
-    temp.phoneNumber = values.phoneNumber ? "" : "This field is required.";
-    temp.address = values.address ? "" : "This field is required.";
+    temp.phoneNumber = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test(
+      values.phoneNumber
+    )
+      ? ""
+      : "Phone number is not valid. Must be in the format: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
+    temp.address =
+      /[0-9]{1,5}( [a-zA-Z.]*){1,4},?( [a-zA-Z]*){1,3},? [a-zA-Z]{2},? [0-9]{5}/.test(
+        values.address
+      )
+        ? ""
+        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, CA 12345";
 
     setErrors({
       ...temp,

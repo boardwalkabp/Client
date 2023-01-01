@@ -1,16 +1,18 @@
-import React from 'react'
-import { Grid } from '@mui/material'
+import React from "react";
+import { Grid } from "@mui/material";
 
 export default function Center(props) {
-    return (
-        <Grid container
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ minHeight: '100vh' }}>
-            <Grid item xs={1}>
-                {props.children}
-            </Grid>
-        </Grid>
-    )
+  return (
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      sx={{ minHeight: "100vh" }}
+    >
+      <Grid item xs={12}>
+        {props.children}
+      </Grid>
+    </Grid>
+  );
 }

@@ -11,41 +11,76 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import { Box } from "@mui/system";
 
 export default function UserRegister() {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
   const [values, setValues] = useState({
     name: "",
     email: "",
     username: "",
     password: "",
     confirmPassword: "",
+    phoneNumber: "",
+    address: "",
   });
 
-  const { name, email, username, password, confirmPassword } = values;
+  const [errors, setErrors] = useState({});
+  const {
+    name,
+    email,
+    username,
+    password,
+    confirmPassword,
+    phoneNumber,
+    address,
+  } = values;
   const {
     name: nameError,
     email: emailError,
     username: usernameError,
     password: passwordError,
     confirmPassword: confirmPasswordError,
+    phoneNumber: phoneNumberError,
+    address: addressError,
   } = errors;
 
   const validate = () => {
     let temp = {};
-    temp.name = values.name ? "" : "This field is required.";
-    temp.email = /\S+@\S+\.\S+/.test(values.email) ? "" : "Email is not valid.";
-    temp.username = values.username ? "" : "This field is required.";
+    temp.name = /^[A-Z][-a-zA-Z]+$/.test(values.name)
+      ? ""
+      : "Name is not valid. Must be at least 2 characters long and contain only letters. Must start with a capital letter. Cannot contain numbers or special characters.";
+    temp.email = /.+@.+\.[A-Za-z]+$/.test(values.email)
+      ? ""
+      : "Email is not valid. Must be in the format: name@email.com or name@email.ca or name@email.co.uk";
+    // temp.username = values.username ? "" : "This field is required.";
+    temp.username =
+      /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
+        values.username
+      )
+        ? ""
+        : "Username is not valid. Must be at least 5 characters long and contain only letters, numbers, periods and underscores. Cannot start or end with a period or underscore. Cannot contain two periods or underscores in a row.";
     temp.password =
       /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/.test(
         values.password
       )
         ? ""
-        : "Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
+        : "Password is not valid. Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
     temp.confirmPassword = values.confirmPassword
       ? ""
       : "This field is required.";
+    temp.phoneNumber = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test(
+      values.phoneNumber
+    )
+      ? ""
+      : "Phone number is not valid. Must be in the format: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
+    temp.address =
+      /[0-9]{1,5}( [a-zA-Z.]*){1,4},?( [a-zA-Z]*){1,3},? [a-zA-Z]{2},? [0-9]{5}/.test(
+        values.address
+      )
+        ? ""
+        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, CA 12345";
+
     setErrors({
       ...temp,
     });
@@ -75,131 +110,142 @@ export default function UserRegister() {
   }, [values.password, values.confirmPassword]);
 
   return (
-    <Center>
-      <Card sx={{ width: 400 }}>
+    <Box sx={{ pt: 0, pb: 4, pr: 2, pl: 2 }}>
+      <Card
+        sx={{
+          height: "auto",
+          padding: "20px",
+          margin: "20px",
+        }}
+      >
         <CardContent sx={{ textAlign: "center" }}>
-          <Typography variant="h4" sx={{ my: 3 }}>
-            Register as a User
-          </Typography>
+          <Typography variant="h5">Register as a User</Typography>
+          <br />
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
               <Grid item xs={12}>
                 <TextField
-                  fullWidth
+                  required
                   label="Name"
-                  name="name"
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      name: e.target.value,
-                    })
-                  }
+                  variant="outlined"
+                  fullWidth
                   value={name}
-                  variant="outlined"
-                  {...(nameError && { error: true, helperText: nameError })}
+                  onChange={(e) =>
+                    setValues({ ...values, name: e.target.value })
+                  }
+                  error={nameError ? true : false}
+                  helperText={nameError}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  fullWidth
+                  required
                   label="Email"
-                  name="email"
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      email: e.target.value,
-                    })
-                  }
+                  variant="outlined"
+                  fullWidth
                   value={email}
-                  variant="outlined"
-                  {...(emailError && { error: true, helperText: emailError })}
+                  onChange={(e) =>
+                    setValues({ ...values, email: e.target.value })
+                  }
+                  error={emailError ? true : false}
+                  helperText={emailError}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  fullWidth
+                  required
                   label="Username"
-                  name="username"
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      username: e.target.value,
-                    })
-                  }
-                  value={username}
                   variant="outlined"
-                  {...(usernameError && {
-                    error: true,
-                    helperText: usernameError,
-                  })}
+                  fullWidth
+                  value={username}
+                  onChange={(e) =>
+                    setValues({ ...values, username: e.target.value })
+                  }
+                  error={usernameError ? true : false}
+                  helperText={usernameError}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  fullWidth
+                  required
                   label="Password"
-                  name="password"
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      password: e.target.value,
-                    })
-                  }
+                  variant="outlined"
+                  fullWidth
                   type="password"
                   value={password}
-                  variant="outlined"
-                  {...(passwordError && {
-                    error: true,
-                    helperText: passwordError,
-                  })}
+                  onChange={(e) =>
+                    setValues({ ...values, password: e.target.value })
+                  }
+                  error={passwordError ? true : false}
+                  helperText={passwordError}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  fullWidth
+                  required
                   label="Confirm Password"
-                  name="confirmPassword"
-                  onChange={(e) =>
-                    setValues({
-                      ...values,
-                      confirmPassword: e.target.value,
-                    })
-                  }
+                  variant="outlined"
+                  fullWidth
                   type="password"
                   value={confirmPassword}
+                  onChange={(e) =>
+                    setValues({ ...values, confirmPassword: e.target.value })
+                  }
+                  error={confirmPasswordError ? true : false}
+                  helperText={confirmPasswordError}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  label="Phone Number"
                   variant="outlined"
-                  {...(confirmPasswordError && {
-                    error: true,
-                    helperText: confirmPasswordError,
-                  })}
+                  fullWidth
+                  value={phoneNumber}
+                  onChange={(e) =>
+                    setValues({ ...values, phoneNumber: e.target.value })
+                  }
+                  error={phoneNumberError ? true : false}
+                  helperText={phoneNumberError}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  label="Address"
+                  variant="outlined"
+                  fullWidth
+                  value={address}
+                  onChange={(e) =>
+                    setValues({ ...values, address: e.target.value })
+                  }
+                  error={addressError ? true : false}
+                  helperText={addressError}
                 />
               </Grid>
               <Grid item xs={12}>
                 <Button
+                  variant="contained"
                   color="primary"
                   fullWidth
-                  size="large"
                   type="submit"
-                  variant="contained"
                   disabled={
                     !name ||
                     !email ||
                     !username ||
                     !password ||
                     !confirmPassword ||
-                    passwordError ||
-                    confirmPasswordError
-                      ? true
-                      : false
+                    !phoneNumber ||
+                    !address
                   }
                 >
-                  Register
+                  Save
                 </Button>
               </Grid>
             </Grid>
           </form>
         </CardContent>
       </Card>
-    </Center>
+    </Box>
   );
 }
