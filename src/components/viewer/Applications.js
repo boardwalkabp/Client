@@ -95,10 +95,6 @@ export default function Applications() {
     setSearchKeyword(e.target.value);
   };
 
-  const handleSearchClick = () => {
-    setSearchKeyword(search);
-  };
-
   const handleSearchClear = () => {
     setSearch("");
     setSearchKeyword("");
@@ -151,14 +147,6 @@ export default function Applications() {
                     value={search}
                     onChange={handleSearch}
                   />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSearchClick}
-                    sx={{ ml: 2 }}
-                  >
-                    Search
-                  </Button>
                 </Box>
               </Grid>
               <Grid item xs={12}>
