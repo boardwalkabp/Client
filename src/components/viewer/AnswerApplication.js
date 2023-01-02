@@ -38,7 +38,7 @@ export default function AnswerApplication() {
       .fetchById(id)
       .then((res) => {
         setApplication(res.data);
-        if (res.data.status == "Completed") {
+        if (res.data.status === "Completed") {
           setShowAlert(true);
         }
         const questionIds = res.data.questions.map(
@@ -106,15 +106,8 @@ export default function AnswerApplication() {
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {
-        setSuccess("Application submitted successfully");
+        setSuccess("Application submitted successfully!");
         setShowAlert(true);
-        //   setTimeout(() => {
-        //     setShowAlert(false);
-        //   }, 1000);
-        //   setLoading(false);
-        //   setTimeout(() => {
-        //     navigate("/viewer/applications");
-        //   }, 1000);
       })
       .catch((err) => console.log(err));
   };
@@ -140,14 +133,12 @@ export default function AnswerApplication() {
       <CardContent>
         {success && showAlert && (
           <Grid item xs={12}>
-            <Alert onClose={handleAlertClose} severity="success">
-              {success}
-            </Alert>
+            <Alert severity="success">{success}</Alert>
           </Grid>
         )}
         {error && showAlert && (
           <Grid item xs={12}>
-            <Alert onClose={setShowAlert(false)} severity="error">
+            <Alert onClose={handleAlertClose} severity="error">
               {error}
             </Alert>
           </Grid>
@@ -268,6 +259,7 @@ export default function AnswerApplication() {
                   variant="outlined"
                   color="primary"
                   onClick={handleBack}
+                  disabled={showAlert}
                 >
                   Back
                 </Button>
