@@ -55,7 +55,6 @@ export default function UserRegister() {
     temp.email = /.+@.+\.[A-Za-z]+$/.test(values.email)
       ? ""
       : "Email is not valid. Must be in the format: name@email.com or name@email.ca or name@email.co.uk";
-    // temp.username = values.username ? "" : "This field is required.";
     temp.username =
       /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
         values.username
@@ -68,9 +67,6 @@ export default function UserRegister() {
       )
         ? ""
         : "Password is not valid. Must contain at least one number, one uppercase and lowercase letter, one special charecter and a minimum length of 6 characters.";
-    temp.confirmPassword = values.confirmPassword
-      ? ""
-      : "This field is required.";
     temp.phoneNumber = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/.test(
       values.phoneNumber
     )
@@ -94,7 +90,7 @@ export default function UserRegister() {
       createAPIEndpoint(ENDPOINTS.registerUser)
         .post(values)
         .then((res) => {
-          if (res.data.success) {
+          if (res.data.statusCode === 1) {
             navigate("/");
           } else {
             setShowAlert(true);
@@ -105,7 +101,6 @@ export default function UserRegister() {
   };
 
   useEffect(() => {
-    // check if passwords match and look for special characters
     if (password !== confirmPassword) {
       setErrors({
         ...errors,
@@ -118,14 +113,6 @@ export default function UserRegister() {
       });
     }
   }, [password, confirmPassword]);
-
-  // if (values.password !== values.confirmPassword)
-  //     setErrors({
-  //       ...errors,
-  //       confirmPassword: "Passwords do not match.",
-  //     });
-  //   else setErrors({ ...errors, confirmPassword: "" });
-  // }, [values.password, values.confirmPassword]);
 
   const handleCloseAlert = () => {
     setShowAlert(false);
@@ -261,13 +248,16 @@ export default function UserRegister() {
                   fullWidth
                   type="submit"
                   disabled={
-                    !name ||
-                    !email ||
-                    !username ||
+                    !confirmPassword ||
                     !password ||
-                    confirmPassword ||
+                    !username ||
+                    !email ||
+                    !name ||
                     !phoneNumber ||
-                    !address
+                    !address ||
+                    confirmPasswordError
+                      ? true
+                      : false
                   }
                 >
                   Sign Up
