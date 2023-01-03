@@ -86,11 +86,10 @@ export default function UserLogin() {
           .post(values)
           .then((res) => {
             setContext(res.data);
-            if (res.data.username !== null) {
+            if (res.data.statusCode === 1) {
               navigate("/builder/home");
               // console.log(res.data);
-            }
-            if (res.data.username === null) {
+            } else {
               setShowAlert(true);
             }
           })

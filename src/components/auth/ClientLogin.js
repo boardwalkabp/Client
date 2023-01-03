@@ -85,11 +85,10 @@ export default function ClientLogin() {
           .post(values)
           .then((res) => {
             setContext(res.data);
-            if (res.data.username !== null) {
+            if (res.data.statusCode === 1) {
               navigate("/viewer/home");
               // console.log(res.data);
-            }
-            if (res.data.username === null) {
+            } else {
               setShowAlert(true);
             }
           })

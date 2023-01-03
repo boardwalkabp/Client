@@ -56,7 +56,10 @@ export default function Applications() {
       createAPIEndpoint(ENDPOINTS.applications)
         .fetch()
         .then((res) => {
-          setApplications(res.data);
+          const filteredApps = res.data.filter(
+            (application) => application.userId === context.id
+          );
+          setApplications(filteredApps);
         })
         .catch((err) => console.log(err));
     }, 100);
@@ -232,7 +235,7 @@ export default function Applications() {
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <div style={{ height: 400, width: "100%" }}>
+                <div style={{ height: 640, width: "100%", overflow: "auto" }}>
                   <DataGrid
                     rows={searchKeyword !== "" ? searchResults : rows}
                     columns={columns}

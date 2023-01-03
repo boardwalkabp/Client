@@ -81,8 +81,8 @@ export default function AnswerApplication() {
             severity={application.status === "Completed" ? "success" : "error"}
           >
             {application.status === "Completed"
-              ? "Application submitted successfully"
-              : "Application already submitted"}
+              ? "Application already submitted."
+              : "Application not submitted."}
           </Alert>
         )}
 

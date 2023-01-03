@@ -16,8 +16,9 @@ export default function AboutView() {
         on AWS, the frontend is hosted on Netlify, and the source code is
         available on{" "}
         <Link href="https://github.com/orgs/boardwalkabp/repositories">
-          GitHub.
+          GitHub
         </Link>
+        .
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>

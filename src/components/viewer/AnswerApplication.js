@@ -106,7 +106,7 @@ export default function AnswerApplication() {
     createAPIEndpoint(ENDPOINTS.applications)
       .put(id, application)
       .then((res) => {
-        setSuccess("Application submitted successfully!");
+        setSuccess("Application submitted successfully! We'll be in touch.");
         setShowAlert(true);
       })
       .catch((err) => console.log(err));

@@ -57,7 +57,7 @@ export default function Questions() {
     {
       field: "body",
       headerName: "Question",
-      width: 500,
+      width: 600,
       editable: true,
       sortable: true,
       searchable: true,
@@ -151,7 +151,7 @@ export default function Questions() {
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <div style={{ height: 400, width: "100%" }}>
+            <div style={{ height: 640, width: "100%", overflow: "auto" }}>
               <DataGrid
                 rows={searchKeyword !== "" ? searchResults : questions}
                 columns={columns}

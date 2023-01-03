@@ -51,7 +51,7 @@ export default function AddClient() {
       : "Name is not valid. Must be at least 2 characters long and contain only letters. Must start with a capital letter. Cannot contain numbers or special characters.";
     temp.email = /.+@.+\.[A-Za-z]+$/.test(values.email)
       ? ""
-      : "Email is not valid. Must be in the format: name@email.com or name@email.ca or name@email.co.uk";
+      : "Email is not valid. Must be in the format of: name@email.com or name@email.ca or name@email.co.uk";
     // temp.username = values.username ? "" : "This field is required.";
     temp.username =
       /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
@@ -72,13 +72,12 @@ export default function AddClient() {
       values.phoneNumber
     )
       ? ""
-      : "Phone number is not valid. Must be in the format: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
-    temp.address =
-      /[0-9]{1,5}( [a-zA-Z.]*){1,4},?( [a-zA-Z]*){1,3},? [a-zA-Z]{2},? [0-9]{5}/.test(
-        values.address
-      )
-        ? ""
-        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, ON, A1A 1A1";
+      : "Phone number is not valid. Must be in the format of: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890.";
+    temp.address = /^\d+ \w+ \w+, \w+town, \w{2} \w\d\w \d\w\d$/.test(
+      values.address
+    )
+      ? ""
+      : "Address is not valid. Must be in this format: 1234 Main St, Anytown, ON M5G 1W6.";
 
     setErrors({
       ...temp,
@@ -224,13 +223,16 @@ export default function AddClient() {
                   fullWidth
                   type="submit"
                   disabled={
-                    !name ||
-                    !email ||
-                    !username ||
-                    !password ||
                     !confirmPassword ||
+                    !password ||
+                    !username ||
+                    !email ||
+                    !name ||
                     !phoneNumber ||
-                    !address
+                    !address ||
+                    confirmPasswordError
+                      ? true
+                      : false
                   }
                 >
                   Save

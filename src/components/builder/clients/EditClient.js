@@ -33,8 +33,7 @@ export default function EditClient() {
       : "Name is not valid. Must be at least 2 characters long and contain only letters. Must start with a capital letter. Cannot contain numbers or special characters.";
     temp.email = /.+@.+\.[A-Za-z]+$/.test(values.email)
       ? ""
-      : "Email is not valid. Must be in the format: name@email.com or name@email.ca or name@email.co.uk";
-    // temp.username = values.username ? "" : "This field is required.";
+      : "Email is not valid. Must be in the format of: name@email.com or name@email.ca or name@email.co.uk";
     temp.username =
       /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
         values.username
@@ -45,12 +44,12 @@ export default function EditClient() {
       values.phoneNumber
     )
       ? ""
-      : "Phone number is not valid. Must be in the format: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
+      : "Phone number is not valid. Must be in the format of: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
     temp.address = /^\d+ \w+ \w+, \w+town, \w{2} \w\d\w \d\w\d$/.test(
       values.address
     )
       ? ""
-      : "Address is not valid. Must be in the format: 1234 Main St, Anytown, ON M5G 1W6";
+      : "Address is not valid. Must be in this format: 1234 Main St, Anytown, ON M5G 1W6";
 
     setErrors({
       ...temp,
@@ -180,11 +179,16 @@ export default function EditClient() {
               color="primary"
               onClick={handleSubmit}
               disabled={
-                !values.name ||
+                !values.confirmPassword ||
+                !values.password ||
                 !values.username ||
                 !values.email ||
+                !values.name ||
                 !values.phoneNumber ||
-                !values.address
+                !values.address ||
+                values.confirmPasswordError
+                  ? true
+                  : false
               }
             >
               Update

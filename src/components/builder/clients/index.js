@@ -159,7 +159,7 @@ export default function Clients() {
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <div style={{ height: 400, width: "100%" }}>
+                <div style={{ height: 640, width: "100%", overflow: "auto" }}>
                   <DataGrid
                     rows={searchKeyword !== "" ? searchResults : clients}
                     columns={columns}
