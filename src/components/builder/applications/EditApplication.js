@@ -115,17 +115,6 @@ export default function EditApplication() {
     }
   };
 
-  // useEffect(() => {
-  //   if (id) {
-  //     createAPIEndpoint(ENDPOINTS.applications)
-  //       .fetchById(id)
-  //       .then((res) => {
-  //         setValues(res.data);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, [id]);
-
   const fetchApplication = (id) => {
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
@@ -277,7 +266,6 @@ export default function EditApplication() {
                       color="primary"
                       onClick={(e) => {
                         e.preventDefault();
-                        // Remove the question from the array
                         setValues({
                           ...values,
                           questions: values.questions.filter(
@@ -344,72 +332,9 @@ export default function EditApplication() {
                     </IconButton>
                   </Grid>
                   <br />
-                  {/* <Grid item xs={12}>
-                    <div className="a_q_title">
-                      {question.questionContent.body}
-                    </div>
-                    <br />
-                    <div className="que_cho">
-                      {(question.questionContent.questionType === "CheckBox" ||
-                        question.questionContent.questionType === "Radio") && (
-                        <div>
-                          <Grid item xs={12}>
-                            {question.questionContent.choices.map(
-                              (choice, i) => (
-                                <Grid item xs={12} key={i}>
-                                  <label key={i}>
-                                    <input
-                                      disabled
-                                      type={
-                                        question.questionContent.questionType
-                                      }
-                                      value={choice.value}
-                                      onChange={(event) => {
-                                        setValues({
-                                          ...values,
-                                          questions: values.questions.map(
-                                            (q) => {
-                                              if (q === question) {
-                                                return {
-                                                  ...q,
-                                                  questionContent: {
-                                                    ...q.questionContent,
-                                                    choices:
-                                                      q.questionContent.choices.map(
-                                                        (c) => {
-                                                          if (c === choice) {
-                                                            return {
-                                                              ...c,
-                                                              value:
-                                                                event.target
-                                                                  .value,
-                                                            };
-                                                          } else {
-                                                            return c;
-                                                          }
-                                                        }
-                                                      ),
-                                                  },
-                                                };
-                                              } else {
-                                                return q;
-                                              }
-                                            }
-                                          ),
-                                        });
-                                      }}
-                                    />
-                                    {choice.value}
-                                  </label>
-                                </Grid>
-                              )
-                            )}
-                          </Grid>
-                        </div>
-                      )}
-                    </div>
-                    <br />
-                  </Grid> */}
+                  <Grid item xs={12}>
+                    {question.body}
+                  </Grid>
                 </div>
               ))}
             </Grid>

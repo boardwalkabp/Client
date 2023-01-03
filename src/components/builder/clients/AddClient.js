@@ -78,7 +78,7 @@ export default function AddClient() {
         values.address
       )
         ? ""
-        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, CA 12345";
+        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, ON, A1A 1A1";
 
     setErrors({
       ...temp,

@@ -5,7 +5,6 @@ import ProfilePicture from "../assets/profile-picture.png";
 
 export default function BuilderProfile() {
   const { context } = useStateContext();
-  console.log(context);
 
   return (
     <div>

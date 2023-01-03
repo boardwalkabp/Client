@@ -1,8 +1,8 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
+import useStateContext from "../../../hooks/useStateContext";
 import {
   Card,
   CardContent,
@@ -23,8 +23,8 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export default function AddApplication() {
-  // const navigate = useNavigate();
   const { id } = useParams();
+  const { context } = useStateContext();
   const [questionId, setQuestions] = useState([]);
   const [categoryId, setCategories] = useState([]);
   const [clientId, setClients] = useState([]);
@@ -37,6 +37,7 @@ export default function AddApplication() {
     clientId: "",
     categoryId: "",
     questions: [],
+    userId: context.id,
   });
 
   const validate = () => {
@@ -104,6 +105,8 @@ export default function AddApplication() {
       }
     }
   };
+
+  console.log(values);
 
   const handleAddClick = () => {
     setValues({

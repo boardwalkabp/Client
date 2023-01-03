@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, Grid, Button, Typography } from "@mui/material";
-import { Box } from "@mui/system";
 
 export default function ViewQuestion() {
   const [question, setQuestion] = useState({});
@@ -37,6 +36,24 @@ export default function ViewQuestion() {
             <Typography variant="h6" gutterBottom>
               Type: {question.questionType}
             </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            {question.questionType !== "Text" && (
+              <Typography variant="h6" gutterBottom>
+                Choices:
+              </Typography>
+            )}
+            {question.choices?.map((choice, index) => (
+              <Grid item xs={12}>
+                <Typography
+                  variant="body1"
+                  gutterBottom
+                  sx={{ marginLeft: "0.5rem" }}
+                >
+                  - {choice.value}
+                </Typography>
+              </Grid>
+            ))}
           </Grid>
           <Grid item xs={12}>
             <Button

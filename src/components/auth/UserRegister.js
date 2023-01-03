@@ -1,6 +1,5 @@
 import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../api";
-import Center from "../layout/Center";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -10,11 +9,14 @@ import {
   TextField,
   Button,
   Typography,
+  Alert,
 } from "@mui/material";
 import { Box } from "@mui/system";
 
 export default function UserRegister() {
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
+  const [error, setError] = useState("Invalid username.");
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -74,12 +76,11 @@ export default function UserRegister() {
     )
       ? ""
       : "Phone number is not valid. Must be in the format: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
-    temp.address =
-      /[0-9]{1,5}( [a-zA-Z.]*){1,4},?( [a-zA-Z]*){1,3},? [a-zA-Z]{2},? [0-9]{5}/.test(
-        values.address
-      )
-        ? ""
-        : "Address is not valid. Must be in the format: 1234 Main St, Anytown, CA 12345";
+    temp.address = /^\d+ \w+ \w+, \w+town, \w{2} \w\d\w \d\w\d$/.test(
+      values.address
+    )
+      ? ""
+      : "Address is not valid. Must be in the format: 1234 Main St, Anytown, ON M5G 1W6";
 
     setErrors({
       ...temp,
@@ -93,21 +94,42 @@ export default function UserRegister() {
       createAPIEndpoint(ENDPOINTS.registerUser)
         .post(values)
         .then((res) => {
-          // console.log(res);
-          navigate("/");
+          if (res.data.success) {
+            navigate("/");
+          } else {
+            setShowAlert(true);
+          }
         })
         .catch((err) => console.log(err));
     }
   };
 
   useEffect(() => {
-    if (values.password !== values.confirmPassword)
+    // check if passwords match and look for special characters
+    if (password !== confirmPassword) {
       setErrors({
         ...errors,
         confirmPassword: "Passwords do not match.",
       });
-    else setErrors({ ...errors, confirmPassword: "" });
-  }, [values.password, values.confirmPassword]);
+    } else {
+      setErrors({
+        ...errors,
+        confirmPassword: "",
+      });
+    }
+  }, [password, confirmPassword]);
+
+  // if (values.password !== values.confirmPassword)
+  //     setErrors({
+  //       ...errors,
+  //       confirmPassword: "Passwords do not match.",
+  //     });
+  //   else setErrors({ ...errors, confirmPassword: "" });
+  // }, [values.password, values.confirmPassword]);
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+  };
 
   return (
     <Box sx={{ pt: 0, pb: 4, pr: 2, pl: 2 }}>
@@ -121,6 +143,15 @@ export default function UserRegister() {
         <CardContent sx={{ textAlign: "center" }}>
           <Typography variant="h5">Register as a User</Typography>
           <br />
+
+          <Grid item xs={12}>
+            {showAlert && (
+              <Alert severity="error" onClose={handleCloseAlert}>
+                {error}
+              </Alert>
+            )}
+            <br />
+          </Grid>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
@@ -234,12 +265,12 @@ export default function UserRegister() {
                     !email ||
                     !username ||
                     !password ||
-                    !confirmPassword ||
+                    confirmPassword ||
                     !phoneNumber ||
                     !address
                   }
                 >
-                  Save
+                  Sign Up
                 </Button>
               </Grid>
             </Grid>
