@@ -14,6 +14,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
@@ -29,6 +30,7 @@ export default function Applications() {
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const matches = useMediaQuery("(max-width:600px)");
 
   const fetchApplications = async () => {
     createAPIEndpoint(ENDPOINTS.applications)
@@ -58,6 +60,7 @@ export default function Applications() {
       editable: false,
       searchable: true,
       sortable: true,
+      hide: matches,
     },
     {
       field: "actions",

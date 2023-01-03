@@ -59,7 +59,7 @@ export default function Categories() {
     {
       field: "name",
       headerName: "Name",
-      width: 400,
+      width: 300,
       editable: true,
       sortable: true,
       searchable: true,

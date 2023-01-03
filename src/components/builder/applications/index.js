@@ -14,6 +14,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,6 +33,7 @@ export default function Applications() {
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const matches = useMediaQuery("(max-width:600px)");
 
   const fetchClients = async () => {
     createAPIEndpoint(ENDPOINTS.clients)
@@ -126,6 +128,7 @@ export default function Applications() {
       editable: true,
       searchable: true,
       sortable: true,
+      hide: matches,
     },
     {
       field: "categoryName",
@@ -134,6 +137,7 @@ export default function Applications() {
       editable: true,
       searchable: true,
       sortable: true,
+      hide: matches,
     },
     {
       field: "actions",

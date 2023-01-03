@@ -12,6 +12,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,6 +30,7 @@ export default function Clients() {
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
+  const matches = useMediaQuery("(max-width:600px)");
 
   const fetchClients = async () => {
     setLoading(true);
@@ -68,6 +70,7 @@ export default function Clients() {
       editable: true,
       sortable: true,
       searchable: true,
+      hide: matches,
     },
     {
       field: "address",
@@ -76,6 +79,7 @@ export default function Clients() {
       editable: true,
       sortable: true,
       searchable: true,
+      hide: matches,
     },
     {
       field: "actions",

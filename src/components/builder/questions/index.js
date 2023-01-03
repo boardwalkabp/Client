@@ -13,6 +13,7 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -29,6 +30,7 @@ export default function Questions() {
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
+  const matches = useMediaQuery("(max-width:600px)");
 
   const fetchQuestions = async () => {
     setLoading(true);
@@ -69,6 +71,7 @@ export default function Questions() {
       editable: false,
       sortable: true,
       searchable: true,
+      hide: matches,
     },
     {
       field: "actions",
