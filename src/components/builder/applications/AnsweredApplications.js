@@ -3,7 +3,6 @@ import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Card,
@@ -11,8 +10,9 @@ import {
   CardHeader,
   Grid,
   TextField,
-  Button,
   IconButton,
+  LinearProgress,
+  Box,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -32,9 +32,11 @@ export default function AnsweredApplications() {
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(false);
   const matches = useMediaQuery("(max-width:600px)");
 
   const fetchClients = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.clients)
       .fetch()
       .then((res) => {
@@ -198,12 +200,24 @@ export default function AnsweredApplications() {
     fetchApplications();
   }, [searchKeyword]);
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <div>
-      <Box sx={{ width: "100%" }}>
-        <Card>
-          <CardHeader title="Answered Applications" />
-          <CardContent>
+    <Box sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          opacity: loading ? 0.5 : 1,
+          transition: "opacity 1s",
+        }}
+      >
+        <CardHeader title="Answered Applications" />
+        <CardContent>
+          {loading && <LinearProgress />}
+          {!loading && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -235,9 +249,9 @@ export default function AnsweredApplications() {
                 </div>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

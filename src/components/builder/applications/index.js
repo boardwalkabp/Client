@@ -3,7 +3,6 @@ import useStateContext from "../../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Card,
@@ -13,6 +12,8 @@ import {
   TextField,
   Button,
   IconButton,
+  LinearProgress,
+  Box,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,8 +35,10 @@ export default function Applications() {
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const matches = useMediaQuery("(max-width:600px)");
+  const [loading, setLoading] = useState(false);
 
   const fetchClients = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.clients)
       .fetch()
       .then((res) => {
@@ -212,12 +215,24 @@ export default function Applications() {
     navigate("/builder/applications/add");
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <div>
-      <Box sx={{ width: "100%" }}>
-        <Card>
-          <CardHeader title="Application Builder" />
-          <CardContent>
+    <Box sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          opacity: loading ? 0.5 : 1,
+          transition: "opacity 1s",
+        }}
+      >
+        <CardHeader title="Application Builder" />
+        <CardContent>
+          {loading && <LinearProgress />}
+          {!loading && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -238,6 +253,7 @@ export default function Applications() {
                   </Button>
                 </Box>
               </Grid>
+
               <Grid item xs={12}>
                 <div style={{ height: 640, width: "100%", overflow: "auto" }}>
                   <DataGrid
@@ -257,9 +273,9 @@ export default function Applications() {
                 </div>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

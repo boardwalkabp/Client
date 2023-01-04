@@ -10,6 +10,8 @@ import {
   Button,
   TextField,
   Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 
 export default function EditClient() {
@@ -23,6 +25,7 @@ export default function EditClient() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -58,6 +61,7 @@ export default function EditClient() {
   };
 
   const fetchClient = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.clients)
       .fetchById(id)
       .then((res) => {
@@ -82,119 +86,150 @@ export default function EditClient() {
     }
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <Card>
+    <Card
+      sx={{
+        opacity: loading ? 0.5 : 1,
+        transition: "opacity 1s",
+      }}
+    >
       <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h6" component="div">
-              {client.name}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Name"
-              name="name"
-              onChange={(e) => setValues({ ...values, name: e.target.value })}
-              {...(errors.name && {
-                error: true,
-                helperText: errors.name,
-              })}
-              required
-              value={values.name}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Username"
-              name="username"
-              onChange={(e) =>
-                setValues({ ...values, username: e.target.value })
-              }
-              {...(errors.username && {
-                error: true,
-                helperText: errors.username,
-              })}
-              required
-              value={values.username}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Email"
-              name="email"
-              onChange={(e) => setValues({ ...values, email: e.target.value })}
-              {...(errors.email && {
-                error: true,
-                helperText: errors.email,
-              })}
-              required
-              value={values.email}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Phone Number"
-              name="phoneNumber"
-              onChange={(e) =>
-                setValues({ ...values, phoneNumber: e.target.value })
-              }
-              {...(errors.phoneNumber && {
-                error: true,
-                helperText: errors.phoneNumber,
-              })}
-              required
-              value={values.phoneNumber}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Address"
-              name="address"
-              onChange={(e) =>
-                setValues({ ...values, address: e.target.value })
-              }
-              {...(errors.address && {
-                error: true,
-                helperText: errors.address,
-              })}
-              required
-              value={values.address}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={
-                !values.confirmPassword ||
-                !values.password ||
-                !values.username ||
-                !values.email ||
-                !values.name ||
-                !values.phoneNumber ||
-                !values.address ||
-                values.confirmPasswordError
-                  ? true
-                  : false
-              }
-            >
-              Update
-            </Button>
-          </Grid>
-        </Grid>
+        {loading && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        {!loading && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h6" component="div">
+                  {client.name}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Name"
+                  name="name"
+                  onChange={(e) =>
+                    setValues({ ...values, name: e.target.value })
+                  }
+                  {...(errors.name && {
+                    error: true,
+                    helperText: errors.name,
+                  })}
+                  required
+                  value={values.name}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Username"
+                  name="username"
+                  onChange={(e) =>
+                    setValues({ ...values, username: e.target.value })
+                  }
+                  {...(errors.username && {
+                    error: true,
+                    helperText: errors.username,
+                  })}
+                  required
+                  value={values.username}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Email"
+                  name="email"
+                  onChange={(e) =>
+                    setValues({ ...values, email: e.target.value })
+                  }
+                  {...(errors.email && {
+                    error: true,
+                    helperText: errors.email,
+                  })}
+                  required
+                  value={values.email}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Phone Number"
+                  name="phoneNumber"
+                  onChange={(e) =>
+                    setValues({ ...values, phoneNumber: e.target.value })
+                  }
+                  {...(errors.phoneNumber && {
+                    error: true,
+                    helperText: errors.phoneNumber,
+                  })}
+                  required
+                  value={values.phoneNumber}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  label="Address"
+                  name="address"
+                  onChange={(e) =>
+                    setValues({ ...values, address: e.target.value })
+                  }
+                  {...(errors.address && {
+                    error: true,
+                    helperText: errors.address,
+                  })}
+                  required
+                  value={values.address}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={
+                    !values.confirmPassword ||
+                    !values.password ||
+                    !values.username ||
+                    !values.email ||
+                    !values.name ||
+                    !values.phoneNumber ||
+                    !values.address ||
+                    values.confirmPasswordError
+                      ? true
+                      : false
+                  }
+                >
+                  Update
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

@@ -18,9 +18,11 @@ import {
   Alert,
   Link,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function AddApplication() {
   const { id } = useParams();
@@ -31,6 +33,7 @@ export default function AddApplication() {
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [errors, setErrors] = useState({});
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     title: "",
     questionId: "",
@@ -74,6 +77,7 @@ export default function AddApplication() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
+      setLoading(true);
       if (id) {
         createAPIEndpoint(ENDPOINTS.applications)
           .put(id, {
@@ -84,7 +88,10 @@ export default function AddApplication() {
             })),
           })
           .then((res) => {
-            setShowAlert(true);
+            setTimeout(() => {
+              setLoading(false);
+              setShowAlert(true);
+            }, 1000);
             // navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
@@ -98,15 +105,18 @@ export default function AddApplication() {
             })),
           })
           .then((res) => {
-            setShowAlert(true);
+            // add a timer to show the alert and set
+            // the loading to false
+            setTimeout(() => {
+              setLoading(false);
+              setShowAlert(true);
+            }, 1000);
             // navigate("/builder/applications");
           })
           .catch((err) => console.log(err));
       }
     }
   };
-
-  console.log(values);
 
   const handleAddClick = () => {
     setValues({
@@ -420,11 +430,14 @@ export default function AddApplication() {
           </Grid>
           <br />
           <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
+            <LoadingButton
               color="primary"
-              type="submit"
+              onClick={handleSubmit}
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              variant="contained"
+              fullWidth
               style={{ marginTop: "10px" }}
               disabled={
                 values.questions.length === 0 ||
@@ -436,7 +449,7 @@ export default function AddApplication() {
               }
             >
               {id ? "Update" : "Save"}
-            </Button>
+            </LoadingButton>
           </Grid>
         </form>
       </CardContent>

@@ -10,15 +10,18 @@ import {
   Button,
   TextField,
   Typography,
+  CircularProgress,
+  Box,
 } from "@mui/material";
-import { Box } from "@mui/system";
 
 export default function EditCategory() {
   const [category, setCategory] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
   const fetchCategory = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.categories)
       .fetchById(id)
       .then((res) => {
@@ -49,35 +52,62 @@ export default function EditCategory() {
     });
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <Card>
+    <Card
+      sx={{
+        opacity: loading ? 0.5 : 1,
+        transition: "opacity 1s",
+      }}
+    >
       <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom>
-              {category.name}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="name"
-              label="Name"
-              onChange={handleInputChange}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={!category.name}
-            >
-              Save
-            </Button>
-          </Grid>
-        </Grid>
+        {loading && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        {!loading && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h4" gutterBottom>
+                  {category.name}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="name"
+                  label="Name"
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={!category.name}
+                >
+                  Save
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

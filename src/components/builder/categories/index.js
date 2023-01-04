@@ -2,7 +2,6 @@ import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Card,
@@ -12,6 +11,8 @@ import {
   TextField,
   Button,
   IconButton,
+  LinearProgress,
+  Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -39,7 +40,6 @@ export default function Categories() {
       .fetch()
       .then((res) => {
         setCategories(res.data);
-        setLoading(false);
       })
       .catch((err) => console.log(err));
   };
@@ -121,48 +121,64 @@ export default function Categories() {
     navigate("/builder/categories/add");
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <Card>
-      <CardHeader title="Category Builder" />
-      <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box sx={{ display: "flex" }}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Search by name"
-                value={search}
-                onChange={handleSearch}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAdd}
-                sx={{ ml: 2, mt: -1, mb: -1 }}
-              >
-                Add a New Category
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <div style={{ height: 640, width: "100%", overflow: "auto" }}>
-              <DataGrid
-                rows={searchKeyword !== "" ? searchResults : categories}
-                columns={columns}
-                pageSize={pageSize}
-                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                rowsPerPageOptions={[5, 10, 20]}
-                // checkboxSelection
-                disableSelectionOnClick
-                onSelectionModelChange={handleSelect}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-              />
-            </div>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+    <Box sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          opacity: loading ? 0.5 : 1,
+          transition: "opacity 1s",
+        }}
+      >
+        <CardHeader title="Category Builder" />
+        <CardContent>
+          {loading && <LinearProgress />}
+          {!loading && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Box sx={{ display: "flex" }}>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    label="Search by name"
+                    value={search}
+                    onChange={handleSearch}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleAdd}
+                    sx={{ ml: 2, mt: -1, mb: -1 }}
+                  >
+                    Add a New Category
+                  </Button>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <div style={{ height: 640, width: "100%", overflow: "auto" }}>
+                  <DataGrid
+                    rows={searchKeyword !== "" ? searchResults : categories}
+                    columns={columns}
+                    pageSize={pageSize}
+                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    // checkboxSelection
+                    disableSelectionOnClick
+                    onSelectionModelChange={handleSelect}
+                    onPageChange={handlePageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                  />
+                </div>
+              </Grid>
+            </Grid>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

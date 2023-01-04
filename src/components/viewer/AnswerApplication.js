@@ -17,6 +17,8 @@ import {
   FormControl,
   TextField,
   RadioGroup,
+  CircularProgress,
+  Box,
 } from "@mui/material";
 
 export default function AnswerApplication() {
@@ -33,7 +35,9 @@ export default function AnswerApplication() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
   const fetchApplication = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.applications)
       .fetchById(id)
       .then((res) => {
@@ -128,191 +132,224 @@ export default function AnswerApplication() {
     setShowAlert(false);
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <Card>
+    <Card
+      sx={{
+        opacity: loading ? 0.5 : 1,
+        transition: "opacity 1s",
+      }}
+    >
       <CardContent>
-        {success && showAlert && (
-          <Grid item xs={12}>
-            <Alert severity="success">{success}</Alert>
-          </Grid>
+        {loading && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
+          </Box>
         )}
-        {error && showAlert && (
-          <Grid item xs={12}>
-            <Alert onClose={handleAlertClose} severity="error">
-              {error}
-            </Alert>
-          </Grid>
-        )}
+        {!loading && (
+          <Box>
+            {success && showAlert && (
+              <Grid item xs={12}>
+                <Alert severity="success">{success}</Alert>
+              </Grid>
+            )}
+            {error && showAlert && (
+              <Grid item xs={12}>
+                <Alert onClose={handleAlertClose} severity="error">
+                  {error}
+                </Alert>
+              </Grid>
+            )}
 
-        <br />
+            <br />
 
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4" gutterBottom>
-              {application.title}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            {questions[currentQuestionIndex] && (
-              <div>
-                <Typography variant="h6" gutterBottom>
-                  {questions[currentQuestionIndex].body}
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h4" gutterBottom>
+                  {application.title}
                 </Typography>
-                {questions[currentQuestionIndex].questionType === "Radio" && (
-                  <FormControl>
-                    <RadioGroup
-                      aria-labelledby="demo-controlled-radio-buttons-group"
-                      name={questions[currentQuestionIndex].id}
-                      onChange={handleChange}
-                    >
-                      {questions[currentQuestionIndex].choices.map(
-                        (option, index) => {
-                          let checked;
-                          if (showAlert) {
-                            checked =
-                              application.answers.find(
+              </Grid>
+
+              <Grid item xs={12}>
+                {questions[currentQuestionIndex] && (
+                  <div>
+                    <Typography variant="h6" gutterBottom>
+                      {questions[currentQuestionIndex].body}
+                    </Typography>
+                    {questions[currentQuestionIndex].questionType ===
+                      "Radio" && (
+                      <FormControl>
+                        <RadioGroup
+                          aria-labelledby="demo-controlled-radio-buttons-group"
+                          name={questions[currentQuestionIndex].id}
+                          onChange={handleChange}
+                        >
+                          {questions[currentQuestionIndex].choices.map(
+                            (option, index) => {
+                              let checked;
+                              if (showAlert) {
+                                checked =
+                                  application.answers.find(
+                                    (answer) =>
+                                      answer.questionId ===
+                                      questions[currentQuestionIndex].id
+                                  )?.value === option.value;
+                              }
+                              return (
+                                <FormControlLabel
+                                  key={index}
+                                  value={option.value}
+                                  control={<Radio />}
+                                  label={option.value}
+                                  disabled={showAlert}
+                                  checked={checked}
+                                />
+                              );
+                            }
+                          )}
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+
+                    {questions[currentQuestionIndex].questionType ===
+                      "CheckBox" && (
+                      <FormGroup>
+                        {questions[currentQuestionIndex].choices.map(
+                          (option, index) => {
+                            let checked;
+                            if (showAlert) {
+                              checked = application.answers
+                                .find(
+                                  (answer) =>
+                                    answer.questionId ===
+                                    questions[currentQuestionIndex].id
+                                )
+                                ?.value.includes(option.value);
+                            }
+                            return (
+                              <FormControlLabel
+                                key={index}
+                                control={
+                                  <Checkbox
+                                    name={questions[currentQuestionIndex].id}
+                                    value={option.value}
+                                    onChange={handleChange}
+                                    key={option.id}
+                                    disabled={showAlert}
+                                    checked={checked}
+                                  />
+                                }
+                                label={option.value}
+                              />
+                            );
+                          }
+                        )}
+                      </FormGroup>
+                    )}
+                    {questions[currentQuestionIndex].questionType ===
+                      "Text" && (
+                      <TextField
+                        variant="outlined"
+                        fullWidth
+                        name={questions[currentQuestionIndex].id}
+                        placeholder={
+                          questions[currentQuestionIndex].placeholder
+                        }
+                        onChange={handleChange}
+                        disabled={showAlert}
+                        {...(showAlert
+                          ? {
+                              value: application.answers.find(
                                 (answer) =>
                                   answer.questionId ===
                                   questions[currentQuestionIndex].id
-                              )?.value === option.value;
-                          }
-                          return (
-                            <FormControlLabel
-                              key={index}
-                              value={option.value}
-                              control={<Radio />}
-                              label={option.value}
-                              disabled={showAlert}
-                              checked={checked}
-                            />
-                          );
-                        }
-                      )}
-                    </RadioGroup>
-                  </FormControl>
-                )}
-
-                {questions[currentQuestionIndex].questionType ===
-                  "CheckBox" && (
-                  <FormGroup>
-                    {questions[currentQuestionIndex].choices.map(
-                      (option, index) => {
-                        let checked;
-                        if (showAlert) {
-                          checked = application.answers
-                            .find(
-                              (answer) =>
-                                answer.questionId ===
-                                questions[currentQuestionIndex].id
-                            )
-                            ?.value.includes(option.value);
-                        }
-                        return (
-                          <FormControlLabel
-                            key={index}
-                            control={
-                              <Checkbox
-                                name={questions[currentQuestionIndex].id}
-                                value={option.value}
-                                onChange={handleChange}
-                                key={option.id}
-                                disabled={showAlert}
-                                checked={checked}
-                              />
+                              )?.value,
                             }
-                            label={option.value}
-                          />
-                        );
-                      }
+                          : {})}
+                      />
                     )}
-                  </FormGroup>
+                  </div>
                 )}
-                {questions[currentQuestionIndex].questionType === "Text" && (
-                  <TextField
-                    variant="outlined"
-                    fullWidth
-                    name={questions[currentQuestionIndex].id}
-                    placeholder={questions[currentQuestionIndex].placeholder}
-                    onChange={handleChange}
-                    disabled={showAlert}
-                    {...(showAlert
-                      ? {
-                          value: application.answers.find(
-                            (answer) =>
-                              answer.questionId ===
-                              questions[currentQuestionIndex].id
-                          )?.value,
-                        }
-                      : {})}
-                  />
-                )}
-              </div>
-            )}
-          </Grid>
+              </Grid>
 
-          <Grid item xs={12}>
-            {currentQuestionIndex > 0 && (
               <Grid item xs={12}>
-                <Button
-                  style={{ float: "left" }}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleBack}
-                  disabled={showAlert}
-                >
-                  Back
-                </Button>
+                {currentQuestionIndex > 0 && (
+                  <Grid item xs={12}>
+                    <Button
+                      style={{ float: "left" }}
+                      variant="outlined"
+                      color="primary"
+                      onClick={handleBack}
+                      disabled={showAlert}
+                    >
+                      Back
+                    </Button>
+                  </Grid>
+                )}
+                {currentQuestionIndex < questions.length - 1 && (
+                  <Grid item xs={12}>
+                    <Button
+                      style={{ float: "right" }}
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      // disable if question is not answered
+                      disabled={
+                        !values.answers.find(
+                          (answer) =>
+                            answer.questionId ===
+                            questions[currentQuestionIndex].id
+                        )
+                      }
+                    >
+                      Next
+                    </Button>
+                  </Grid>
+                )}
+                {currentQuestionIndex === questions.length - 1 &&
+                  !showAlert && (
+                    <Grid item xs={12}>
+                      <Button
+                        style={{ float: "right" }}
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        disabled={values.answers.length !== questions.length}
+                        hidden={showAlert}
+                      >
+                        Submit
+                      </Button>
+                    </Grid>
+                  )}
+                {showAlert && (
+                  <Grid item xs={12}>
+                    <Button
+                      style={{ float: "right" }}
+                      variant="contained"
+                      color="primary"
+                      onClick={handleClose}
+                      hidden={!showAlert}
+                    >
+                      Close
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
-            )}
-            {currentQuestionIndex < questions.length - 1 && (
-              <Grid item xs={12}>
-                <Button
-                  style={{ float: "right" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  // disable if question is not answered
-                  disabled={
-                    !values.answers.find(
-                      (answer) =>
-                        answer.questionId === questions[currentQuestionIndex].id
-                    )
-                  }
-                >
-                  Next
-                </Button>
-              </Grid>
-            )}
-            {currentQuestionIndex === questions.length - 1 && !showAlert && (
-              <Grid item xs={12}>
-                <Button
-                  style={{ float: "right" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={values.answers.length !== questions.length}
-                  hidden={showAlert}
-                >
-                  Submit
-                </Button>
-              </Grid>
-            )}
-            {showAlert && (
-              <Grid item xs={12}>
-                <Button
-                  style={{ float: "right" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={handleClose}
-                  hidden={!showAlert}
-                >
-                  Close
-                </Button>
-              </Grid>
-            )}
-          </Grid>
-        </Grid>
+            </Grid>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

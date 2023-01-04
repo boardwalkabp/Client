@@ -2,7 +2,6 @@ import React from "react";
 import { createAPIEndpoint, ENDPOINTS } from "../../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box } from "@mui/system";
 import {
   Card,
   CardContent,
@@ -11,6 +10,8 @@ import {
   TextField,
   Button,
   IconButton,
+  Box,
+  LinearProgress,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { DataGrid } from "@mui/x-data-grid";
@@ -38,7 +39,6 @@ export default function Clients() {
       .fetch()
       .then((res) => {
         setClients(res.data);
-        setLoading(false);
       })
       .catch((err) => console.log(err));
   };
@@ -136,12 +136,24 @@ export default function Clients() {
     navigate("/builder/clients/add");
   };
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <div>
-      <Box sx={{ width: "100%" }}>
-        <Card>
-          <CardHeader title="Client Builder" />
-          <CardContent>
+    <Box sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          opacity: loading ? 0.5 : 1,
+          transition: "opacity 1s",
+        }}
+      >
+        <CardHeader title="Client Builder" />
+        <CardContent>
+          {loading && <LinearProgress />}
+          {!loading && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -180,9 +192,9 @@ export default function Clients() {
                 </div>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }

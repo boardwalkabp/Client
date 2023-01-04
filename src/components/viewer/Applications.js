@@ -3,7 +3,6 @@ import useStateContext from "../../hooks/useStateContext";
 import { createAPIEndpoint, ENDPOINTS } from "../../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Box } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Card,
@@ -13,6 +12,8 @@ import {
   TextField,
   Button,
   IconButton,
+  LinearProgress,
+  Box,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import EditIcon from "@mui/icons-material/Edit";
@@ -30,9 +31,11 @@ export default function Applications() {
   const [searchResults, setSearchResults] = useState([]);
   const [selected, setSelected] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(false);
   const matches = useMediaQuery("(max-width:600px)");
 
   const fetchApplications = async () => {
+    setLoading(true);
     createAPIEndpoint(ENDPOINTS.applications)
       .fetch()
       .then((res) => {
@@ -60,7 +63,7 @@ export default function Applications() {
       editable: false,
       searchable: true,
       sortable: true,
-      hide: matches,
+      // hide: matches,
     },
     {
       field: "actions",
@@ -134,12 +137,24 @@ export default function Applications() {
     }
   }, [searchKeyword, applications]);
 
+  if (loading) {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
   return (
-    <div>
-      <Box sx={{ width: "100%" }}>
-        <Card>
-          <CardHeader title="Your Applications" />
-          <CardContent>
+    <Box sx={{ width: "100%" }}>
+      <Card
+        sx={{
+          opacity: loading ? 0.5 : 1,
+          transition: "opacity 1s",
+        }}
+      >
+        <CardHeader title="Your Applications" />
+        <CardContent>
+          {loading && <LinearProgress />}
+          {!loading && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -171,9 +186,9 @@ export default function Applications() {
                 </div>
               </Grid>
             </Grid>
-          </CardContent>
-        </Card>
-      </Box>
-    </div>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
