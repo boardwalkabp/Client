@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Container,
   Box,
   AppBar,
   Toolbar,
@@ -9,7 +8,8 @@ import {
   IconButton,
   Grid,
 } from "@mui/material";
-import BoardwalkLogo from "../../assets/boardwalk-white.png";
+// import BoardwalkLogo from "../../assets/boardwalk-white.png";
+import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import EmailIcon from "@mui/icons-material/Email";
 import { Outlet, useNavigate } from "react-router";
@@ -17,6 +17,7 @@ import Footer from "./Footer";
 
 export default function HomeLayout() {
   const navigate = useNavigate();
+
   const handleHomeClick = () => {
     navigate("/");
   };
@@ -32,7 +33,7 @@ export default function HomeLayout() {
       <AppBar position="relative">
         <Toolbar>
           <Grid container spacing={2} alignItems="center">
-            <Grid item sx={{ mt: 1 }}>
+            {/* <Grid item sx={{ mt: 1 }}>
               <img
                 src={BoardwalkLogo}
                 alt="Boardwalk Logo"
@@ -42,6 +43,19 @@ export default function HomeLayout() {
                   cursor: "pointer",
                 }}
               />
+            </Grid> */}
+
+            <Grid item>
+              <IconButton
+                size="large"
+                aria-label="Home"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleHomeClick}
+                color="inherit"
+              >
+                <HomeIcon />
+              </IconButton>
             </Grid>
             <Grid item>
               <Typography

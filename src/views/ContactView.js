@@ -1,16 +1,86 @@
-import React from "react";
-import { Typography, Link } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  TextareaAutosize,
+  Button,
+} from "@mui/material";
+import useStyles from "../hooks/useStyles";
 
 export default function ContactView() {
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const classes = useStyles();
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    // console.log({ email, firstName, subject, message });
+    // TODO: Send form data to an email address
+  };
+
   return (
-    <div>
-      <Typography variant="h3" align="center" color="text.primary" gutterBottom>
-        How can we help?
+    <Box>
+      <Typography variant="h4" className={classes.formHeading}>
+        Contact Us
       </Typography>
-      <Typography variant="h6" align="center" color="text.secondary" paragraph>
-        If you have any questions or concerns, please{" "}
-        <Link href="mailto:salih.salih@mohawkcollege.ca">contact us</Link>.
-      </Typography>
-    </div>
+      <Box className={classes.formContainer}>
+        <Box
+          className={classes.form}
+          component="form"
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            label="Full Name"
+            variant="outlined"
+            fullWidth
+            className={classes.inputField}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            className={classes.inputField}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <TextField
+            label="Subject"
+            variant="outlined"
+            fullWidth
+            className={classes.inputField}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+          />
+
+          <TextareaAutosize
+            aria-label="minimum height"
+            minRows={6}
+            placeholder="Enter a message"
+            className={classes.textArea}
+            spellCheck
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+
+          <Button
+            variant="contained"
+            type="submit"
+            color="primary"
+            sx={{ width: "200px", fontSize: "16px" }}
+            onClick={submitForm}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 }

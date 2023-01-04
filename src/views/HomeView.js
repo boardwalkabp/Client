@@ -1,14 +1,14 @@
 import React from "react";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import { Stack, Typography, Container } from "@mui/material";
 import UserLogin from "../components/auth/UserLogin";
 import ClientLogin from "../components/auth/ClientLogin";
+import Section from "../components/layout/Section";
 
 export default function HomeView() {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Typography
+        fontWeight={500}
         component="h1"
         variant="h2"
         align="center"
@@ -20,9 +20,14 @@ export default function HomeView() {
       <Typography variant="h5" align="center" color="text.secondary" paragraph>
         Applied Research Fall 2022 Project for Boardwalk Insurance.
       </Typography>
-      <Stack sx={{ pt: 4 }} direction="row" spacing={2} justifyContent="center">
+
+      <Stack sx={{ p: 4 }} direction="row" spacing={2} justifyContent="center">
         <UserLogin />
         <ClientLogin />
+      </Stack>
+
+      <Stack direction="row" spacing={2} justifyContent="center">
+        <Section />
       </Stack>
     </Container>
   );
