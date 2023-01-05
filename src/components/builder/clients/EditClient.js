@@ -48,11 +48,12 @@ export default function EditClient() {
     )
       ? ""
       : "Phone number is not valid. Must be in the format of: 123-456-7890 or (123) 456-7890 or 123 456 7890 or 123.456.7890 or +91 (123) 456-7890";
-    temp.address = /^\d+ \w+ \w+, \w+town, \w{2} \w\d\w \d\w\d$/.test(
-      values.address
-    )
-      ? ""
-      : "Address is not valid. Must be in this format: 1234 Main St, Anytown, ON M5G 1W6";
+    temp.address =
+      /^([\d\s]+\w+)\s(St|Ave|Rd|Blvd|Dr|Cres|Way|Pky|Crt)\s?,\s?([\w\s]+),\s([A-Z]{2})\s([A-Z]\d[A-Z]\s?\d[A-Z]\d)$/.test(
+        values.address
+      )
+        ? ""
+        : "Address is not valid. Must be in the format of: 123 Main St, Toronto, ON M1M 1M1.";
 
     setErrors({
       ...temp,
@@ -212,8 +213,6 @@ export default function EditClient() {
                   color="primary"
                   onClick={handleSubmit}
                   disabled={
-                    !values.confirmPassword ||
-                    !values.password ||
                     !values.username ||
                     !values.email ||
                     !values.name ||

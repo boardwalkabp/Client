@@ -13,6 +13,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Alert,
+  Link,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useParams } from "react-router-dom";
@@ -23,7 +25,7 @@ export default function AddQuestion() {
     questionType: "",
     choices: [],
   });
-
+  const [showAlert, setShowAlert] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
@@ -68,14 +70,16 @@ export default function AddQuestion() {
         createAPIEndpoint(ENDPOINTS.questions)
           .put(id, values)
           .then((res) => {
-            navigate("/builder/questions");
+            setShowAlert(true);
+            // navigate("/builder/questions");
           })
           .catch((err) => console.log(err));
       } else {
         createAPIEndpoint(ENDPOINTS.questions)
           .post(values)
           .then((res) => {
-            navigate("/builder/questions");
+            setShowAlert(true);
+            // navigate("/builder/questions");
           })
           .catch((err) => console.log(err));
       }
@@ -99,6 +103,17 @@ export default function AddQuestion() {
         <Typography variant="h6" component="div">
           {id ? "Edit a Question" : "Add a Question"}
         </Typography>
+        <br />
+
+        {showAlert && (
+          <Grid item xs={12}>
+            <Alert severity="success" onClose={() => setShowAlert(false)}>
+              Question saved successfully! Please click on{" "}
+              <Link href="/builder/questions">here</Link> to view all questions.
+            </Alert>
+            <br />
+          </Grid>
+        )}
         <Box sx={{ mt: 3 }}>
           <form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>

@@ -40,7 +40,7 @@ export default function ContactView() {
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log({ email, firstName, subject, message });
+    // console.log({ email, firstName, subject, message });
 
     emailjs
       .sendForm(
@@ -50,7 +50,7 @@ export default function ContactView() {
         "_ERbwv_HXm2Zj0LFt"
       )
       .then((result) => {
-        console.log(result.text);
+        // console.log(result.text);
         setIsSent(true);
         setEmail("");
         setFirstName("");
@@ -81,6 +81,7 @@ export default function ContactView() {
             flexDirection: "column",
             height: "100%",
             p: 2,
+            m: 2,
             boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
             borderRadius: "10px",
             "&:hover": {
@@ -107,6 +108,7 @@ export default function ContactView() {
             ref={form}
           >
             <TextField
+              name="user_name"
               label="Full Name"
               variant="outlined"
               fullWidth
@@ -117,6 +119,7 @@ export default function ContactView() {
             />
 
             <TextField
+              name="user_email"
               label="Email"
               variant="outlined"
               fullWidth
@@ -127,6 +130,7 @@ export default function ContactView() {
             />
 
             <TextField
+              name="subject"
               label="Subject"
               variant="outlined"
               fullWidth
@@ -137,6 +141,7 @@ export default function ContactView() {
             />
 
             <TextareaAutosize
+              name="message"
               aria-label="minimum height"
               minRows={6}
               placeholder="Enter a message"

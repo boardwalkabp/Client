@@ -86,7 +86,7 @@ const styles = (theme) => {
       margin: "10px !important",
       boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
       "&:hover": {
-        transform: "scale(1.01)",
+        transform: "scale(1.02)",
         transition: "transform 0.3s ease-in-out",
       },
     },

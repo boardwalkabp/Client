@@ -360,12 +360,19 @@ export default function EditApplication() {
                           <ArrowUpwardIcon color="primary" />
                         </IconButton>
                       </Grid>
-                      {/* <Grid item xs={12}>
-              {question.body}
-            </Grid> */}
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <CircularProgress />
-                      </Box>
+                      <Grid item xs={12}>
+                        {/* {question.value} */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            opacity: 0.5,
+                            transition: "opacity 1s",
+                          }}
+                        >
+                          <CircularProgress />
+                        </Box>
+                      </Grid>
                     </div>
                   ))}
                 </Grid>

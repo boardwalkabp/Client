@@ -10,8 +10,11 @@ import {
   TextField,
   Button,
   Typography,
+  Alert,
+  Link,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function AddCategory() {
   const navigate = useNavigate();
@@ -20,6 +23,7 @@ export default function AddCategory() {
     name: "",
   });
   const [errors, setErrors] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
 
   const validate = () => {
     let temp = {};
@@ -36,7 +40,8 @@ export default function AddCategory() {
       createAPIEndpoint(ENDPOINTS.categories)
         .post(values)
         .then((res) => {
-          navigate("/builder/categories");
+          setShowAlert(true);
+          // navigate("/builder/categories");
         })
         .catch((err) => console.log(err));
     }
@@ -59,6 +64,17 @@ export default function AddCategory() {
         <Typography variant="h6" component="div">
           {id ? "Edit a Category" : "Add a Category"}
         </Typography>
+        <br />
+        {showAlert && (
+          <Grid item xs={12}>
+            <Alert severity="success" onClose={() => setShowAlert(false)}>
+              Category saved successfully! Please click on{" "}
+              <Link href="/builder/categories">here</Link> to view all
+              categories.
+            </Alert>
+            <br />
+          </Grid>
+        )}
         <Box sx={{ mt: 3 }}>
           <form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
@@ -84,6 +100,7 @@ export default function AddCategory() {
               </Grid>
               <Grid item xs={12}>
                 <Button
+                  startIcon={<SaveIcon />}
                   color="primary"
                   variant="contained"
                   type="submit"

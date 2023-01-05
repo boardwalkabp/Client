@@ -13,7 +13,7 @@ export default function Section() {
       id: 1,
       icon: <UpdateIcon sx={{ fontSize: 100 }} color="primary" />,
       sentence:
-        "The platform enhances the curent process of calling customers, drafting up lengthy emails and sending them over to underwriters at various insurance companies.",
+        "The platform updates the curent process of calling customers, drafting up lengthy emails and sending them over to underwriters at various insurance companies.",
     },
     {
       id: 2,

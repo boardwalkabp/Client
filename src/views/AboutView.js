@@ -69,7 +69,7 @@ export default function AboutView() {
                       boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
                       borderRadius: "10px",
                       "&:hover": {
-                        transform: "scale(1.01)",
+                        transform: "scale(1.02)",
                         transition: "transform 0.3s ease-in-out",
                       },
                     }}
@@ -86,7 +86,8 @@ export default function AboutView() {
                       1. Create an account or login as a user.
                     </Typography>
                     <Typography variant="body1" color="text.primary" paragraph>
-                      2. Create a client, or select an existing client.
+                      2. You may want to create a new category, client, and
+                      questions.
                     </Typography>
                     <Typography variant="body1" color="text.primary" paragraph>
                       3. Create an application.
@@ -113,7 +114,7 @@ export default function AboutView() {
                       boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
                       borderRadius: "10px",
                       "&:hover": {
-                        transform: "scale(1.01)",
+                        transform: "scale(1.02)",
                         transition: "transform 0.3s ease-in-out",
                       },
                     }}
