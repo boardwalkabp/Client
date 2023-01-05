@@ -78,12 +78,17 @@ const styles = (theme) => {
       minHeight: "400px",
     },
     sectionGridItem: {
-      backgroundColor: "#f2f0f1",
+      backgroundColor: "#FFFFFF",
       textAlign: "center",
       padding: "30px",
       width: "200px",
       borderRadius: "10px",
       margin: "10px !important",
+      boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.2)",
+      "&:hover": {
+        transform: "scale(1.01)",
+        transition: "transform 0.3s ease-in-out",
+      },
     },
     inputField: {
       marginBottom: "20px !important",
@@ -93,6 +98,16 @@ const styles = (theme) => {
       marginBottom: "20px",
       fontSize: "16px",
       padding: "10px",
+      borderRadius: "5px",
+      border: "1px solid #ccc",
+      "&:hover": {
+        outline: "#000000",
+        border: "1px solid #000000",
+      },
+      "&:focus": {
+        outline: "#FF7753",
+        border: "1px solid #FF7753",
+      },
     },
     footerContainer: {
       display: "flex",
@@ -100,7 +115,7 @@ const styles = (theme) => {
       miHeight: "10vh",
       padding: "20px",
       justifyContent: "center",
-      backgroundColor: "#f2f0f1",
+      backgroundColor: "#FFFFFF",
       flexDirection: "column",
     },
     footerText: {

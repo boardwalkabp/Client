@@ -2,7 +2,9 @@ import React from "react";
 import { Stack, Typography, Container } from "@mui/material";
 import UserLogin from "../components/auth/UserLogin";
 import ClientLogin from "../components/auth/ClientLogin";
-import Section from "../components/layout/Section";
+// import Section from "../components/layout/Section";
+import AboutView from "./AboutView";
+import ContactView from "./ContactView";
 
 export default function HomeView() {
   return (
@@ -26,9 +28,8 @@ export default function HomeView() {
         <ClientLogin />
       </Stack>
 
-      <Stack direction="row" spacing={2} justifyContent="center">
-        <Section />
-      </Stack>
+      <AboutView />
+      <ContactView />
     </Container>
   );
 }

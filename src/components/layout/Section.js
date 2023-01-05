@@ -24,8 +24,7 @@ export default function Section() {
     {
       id: 3,
       icon: <ShareIcon sx={{ fontSize: 100 }} color="primary" />,
-      sentence:
-        "Allows brokers to share the applications with underwriters and clients.",
+      sentence: "Allows brokers to share the applications with clients.",
     },
   ];
   return (
