@@ -38,10 +38,10 @@ export default function DeleteApplication() {
     createAPIEndpoint(ENDPOINTS.applications)
       .delete(id)
       .then((res) => {
-        if (application.completedAt === "Completed") {
+        if (application.status === "Completed") {
           navigate("/builder/home");
         }
-        if (application.completedAt === "Not Started") {
+        if (application.status === "Not Started") {
           navigate("/builder/applications");
         }
       })
