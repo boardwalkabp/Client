@@ -8,20 +8,21 @@ Frontend of survey builder web-application built with React 18.
 
 # Build Instructions
 
-```
+
 npm i
 npm start
-```
+
 
 # Navigation Map
 
-![5  Navigation Map](https://user-images.githubusercontent.com/62397382/211077222-b6773bf7-ac7b-4a83-95d1-d4cf4c905f61.jpg)
+![5  Navigation Map](https://user-images.githubusercontent.com/62397382/211151954-ede8dc93-57b4-4853-9c9a-6506973b5811.jpg)
+
 
 # Screen Mockups
 
-Homepage
+Home Page
 
-![1 Homepage](https://user-images.githubusercontent.com/62397382/210772668-e6e6368f-2eba-4838-87cb-7c6eaea6d0bb.png)
+![1 Home Page](https://user-images.githubusercontent.com/62397382/211152013-1214661a-ca80-4541-9100-29b231f632d6.png)
 
 User Login
 
@@ -53,7 +54,7 @@ Inserting a new Category
 
 Client Builder
 
-![9 Client Builder](https://user-images.githubusercontent.com/62397382/210774452-f997b3f7-d2c9-497d-9c2a-f82b3bd011b3.png)
+![9 Client Builder](https://user-images.githubusercontent.com/62397382/211169440-a34dbbeb-b38c-448c-94d5-35b9692884af.png)
 
 Inserting a Client
 
