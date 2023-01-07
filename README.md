@@ -9,9 +9,11 @@ Frontend of survey builder web-application built with React 18.
 # Build Instructions
 
 
-```npm i
+```
+npm i
 
-npm start```
+npm start
+```
 
 
 # Navigation Map
